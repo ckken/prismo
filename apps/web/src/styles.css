@@ -63,6 +63,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid color-mix(in srgb, va
 .header-actions { display: flex; gap: 7px; }
 .icon-button { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); cursor: pointer; }
 .icon-button:hover { border-color: var(--line-strong); }
+.locale-button { font: 700 10px ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .02em; }
 .mobile-menu { display: none; }
 
 .hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(420px, .86fr); gap: 76px; align-items: center; min-height: 680px; padding-block: 90px 68px; }
@@ -273,6 +274,10 @@ tbody tr:last-child td { border-bottom: 0; }
   .command-meta { display: grid; justify-content: start; gap: 10px; }
   .site-footer { grid-template-columns: 1fr; gap: 18px; width: calc(100% - 28px); }
   .footer-links { grid-column: auto; }
+}
+
+@media (max-width: 390px) {
+  .site-header .brand-name { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

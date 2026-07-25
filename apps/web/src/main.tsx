@@ -10,7 +10,10 @@ import {
   RouterProvider,
 } from "@tanstack/react-router"
 import { App } from "./App"
+import { applyInitialPreferences } from "./preferences"
 import "./styles.css"
+
+applyInitialPreferences()
 
 const rootRoute = createRootRoute({ component: () => <Outlet /> })
 const indexRoute = createRoute({

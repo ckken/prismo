@@ -18,30 +18,20 @@ import {
 } from "lucide-react"
 import { LogoMark } from "./components/logo"
 import { PreviewDashboard } from "./components/preview-dashboard"
-import { scenarios, type DemoState, type ScenarioId } from "./data"
-
-const states: Array<{ id: DemoState; label: string }> = [
-  { id: "success", label: "Success" },
-  { id: "loading", label: "Loading" },
-  { id: "empty", label: "Empty" },
-  { id: "contract-error", label: "Contract error" },
-]
-
-const proofSteps = [
-  ["01", "Understand", "Project and requirement profiles"],
-  ["02", "Match", "Available recipes only"],
-  ["03", "Install", "Dry-run before source changes"],
-  ["04", "Bind", "One project-side data source"],
-  ["05", "Prove", "Type, build, states and a11y"],
-]
-
-const proofChecks = [
-  ["Type + Build", "passed", "TS 7 noEmit · Rsbuild production"],
-  ["Contract", "passed", "Runtime schema with field paths"],
-  ["States", "passed", "Success · Loading · Empty · Error"],
-  ["Responsive", "manual", "375 · 768 · 1440 browser review"],
-  ["Accessibility", "planned", "Keyboard and contrast audit"],
-]
+import { scenariosByLocale, type DemoState, type ScenarioId } from "./data"
+import { copy, type Locale } from "./i18n"
+import {
+  applyPreferences,
+  getInitialLocale,
+  getInitialTheme,
+  getLocaleOverride,
+  getSystemLocale,
+  getSystemTheme,
+  getThemeOverride,
+  saveLocaleOverride,
+  saveThemeOverride,
+  type Theme,
+} from "./preferences"
 
 function joinBase(path: string) {
   return `${__PUBLIC_BASE_PATH__.replace(/\/$/, "")}/${path.replace(/^\//, "")}`
@@ -50,12 +40,21 @@ function joinBase(path: string) {
 export function App() {
   const [scenarioId, setScenarioId] = useState<ScenarioId>("sales")
   const [demoState, setDemoState] = useState<DemoState>("success")
-  const [theme, setTheme] = useState<"light" | "dark">("dark")
+  const [locale, setLocale] = useState<Locale>(() => getInitialLocale())
+  const [theme, setTheme] = useState<Theme>(() => getInitialTheme())
   const [mobileOpen, setMobileOpen] = useState(false)
   const [copied, setCopied] = useState(false)
+  const t = copy[locale]
+  const scenarios = scenariosByLocale[locale]
+  const states: Array<{ id: DemoState; label: string }> = [
+    { id: "success", label: t.showcase.states.success },
+    { id: "loading", label: t.showcase.states.loading },
+    { id: "empty", label: t.showcase.states.empty },
+    { id: "contract-error", label: t.showcase.states["contract-error"] },
+  ]
   const scenario = useMemo(
     () => scenarios.find((item) => item.id === scenarioId) ?? scenarios[0],
-    [scenarioId],
+    [scenarioId, scenarios],
   )
   const registryUrl = useMemo(() => {
     if (typeof window === "undefined") return joinBase("r/dashboard-overview-01.json")
@@ -65,8 +64,27 @@ export function App() {
   const repositoryUrl = __PUBLIC_REPOSITORY_URL__
 
   useEffect(() => {
-    document.documentElement.dataset.theme = theme
-  }, [theme])
+    applyPreferences(locale, theme)
+    document.title = t.meta.title
+    document.querySelector<HTMLMetaElement>('meta[name="description"]')?.setAttribute("content", t.meta.description)
+  }, [locale, t.meta.description, t.meta.title, theme])
+
+  useEffect(() => {
+    const handleLanguageChange = () => {
+      if (!getLocaleOverride()) setLocale(getSystemLocale())
+    }
+    window.addEventListener("languagechange", handleLanguageChange)
+    return () => window.removeEventListener("languagechange", handleLanguageChange)
+  }, [])
+
+  useEffect(() => {
+    const colorScheme = window.matchMedia("(prefers-color-scheme: dark)")
+    const handleColorSchemeChange = () => {
+      if (!getThemeOverride()) setTheme(getSystemTheme())
+    }
+    colorScheme.addEventListener("change", handleColorSchemeChange)
+    return () => colorScheme.removeEventListener("change", handleColorSchemeChange)
+  }, [])
 
   useEffect(() => {
     const sectionId = window.location.hash.slice(1)
@@ -80,22 +98,38 @@ export function App() {
     window.setTimeout(() => setCopied(false), 1600)
   }
 
+  function toggleLocale() {
+    const nextLocale = locale === "en" ? "zh" : "en"
+    saveLocaleOverride(nextLocale)
+    setLocale(nextLocale)
+    setMobileOpen(false)
+  }
+
+  function toggleTheme() {
+    const nextTheme = theme === "dark" ? "light" : "dark"
+    saveThemeOverride(nextTheme)
+    setTheme(nextTheme)
+  }
+
   return (
     <div className="site-shell">
       <header className="site-header">
         <a href="#top" className="logo-link"><LogoMark /></a>
-        <nav className={mobileOpen ? "site-nav open" : "site-nav"} aria-label="Main navigation">
-          <a href="#workflow" onClick={() => setMobileOpen(false)}>How it works</a>
-          <a href="#showcase" onClick={() => setMobileOpen(false)}>Showcase</a>
-          <a href="#recipes" onClick={() => setMobileOpen(false)}>Recipes</a>
-          <a href="#skill" onClick={() => setMobileOpen(false)}>Skill</a>
+        <nav className={mobileOpen ? "site-nav open" : "site-nav"} aria-label={t.aria.mainNavigation}>
+          <a href="#workflow" onClick={() => setMobileOpen(false)}>{t.nav.workflow}</a>
+          <a href="#showcase" onClick={() => setMobileOpen(false)}>{t.nav.showcase}</a>
+          <a href="#recipes" onClick={() => setMobileOpen(false)}>{t.nav.recipes}</a>
+          <a href="#skill" onClick={() => setMobileOpen(false)}>{t.nav.skill}</a>
         </nav>
         <div className="header-actions">
-          <button className="icon-button" type="button" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} aria-label="Toggle color theme">
+          <button className="icon-button locale-button" type="button" onClick={toggleLocale} aria-label={t.aria.switchLanguage}>
+            {locale === "en" ? "中" : "EN"}
+          </button>
+          <button className="icon-button" type="button" onClick={toggleTheme} aria-label={theme === "dark" ? t.aria.switchToLight : t.aria.switchToDark}>
             {theme === "dark" ? <Sun size={17} /> : <Moon size={17} />}
           </button>
-          <a className="icon-button" href={repositoryUrl} aria-label="Open GitHub repository"><Github size={17} /></a>
-          <button className="icon-button mobile-menu" type="button" onClick={() => setMobileOpen(!mobileOpen)} aria-label="Toggle menu">
+          <a className="icon-button" href={repositoryUrl} aria-label={t.aria.openGithub}><Github size={17} /></a>
+          <button className="icon-button mobile-menu" type="button" onClick={() => setMobileOpen(!mobileOpen)} aria-label={t.aria.toggleMenu}>
             {mobileOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
@@ -104,60 +138,60 @@ export function App() {
       <main id="top">
         <section className="hero section-wrap">
           <div className="hero-copy">
-            <div className="eyebrow"><span /> Independent toolkit for shadcn-compatible React projects</div>
-            <h1>From request<br />to <em>proof.</em></h1>
-            <p>Give your coding agent a dashboard request. It selects an installable recipe, keeps the source in your project, connects your data, and verifies the result.</p>
+            <div className="eyebrow"><span /> {t.hero.eyebrow}</div>
+            <h1>{t.hero.titleBefore}<br />{t.hero.titleAfter} <em>{t.hero.titleEmphasis}</em></h1>
+            <p>{t.hero.description}</p>
             <div className="hero-actions">
-              <a className="button primary" href="#showcase">Explore showcase <ArrowRight size={16} /></a>
-              <a className="button secondary" href="#skill">Read the skill <ChevronRight size={16} /></a>
+              <a className="button primary" href="#showcase">{t.hero.primaryAction} <ArrowRight size={16} /></a>
+              <a className="button secondary" href="#skill">{t.hero.secondaryAction} <ChevronRight size={16} /></a>
             </div>
-            <div className="hero-footnote"><ShieldCheck size={15} /> No black-box UI runtime. No silent overwrite.</div>
+            <div className="hero-footnote"><ShieldCheck size={15} /> {t.hero.footnote}</div>
           </div>
-          <div className="hero-console" aria-label="Agent delivery plan preview">
+          <div className="hero-console" aria-label={t.aria.agentPreview}>
             <div className="console-bar"><span /><span /><span /><code>agent-plan.json</code></div>
             <div className="console-body">
-              <div className="console-line muted">$ shadcn-agent inspect</div>
+              <div className="console-line muted">{t.console.command}</div>
               <div className="console-group">
                 <span className="line-number">01</span>
-                <div><small>PROJECT</small><strong>React 19 · Rsbuild · shadcn</strong></div>
+                <div><small>{t.console.project}</small><strong>{t.console.projectValue}</strong></div>
                 <Check size={16} />
               </div>
               <div className="console-group active">
                 <span className="line-number">02</span>
-                <div><small>RECIPE MATCH</small><strong>dashboard-overview-01</strong></div>
+                <div><small>{t.console.match}</small><strong>{t.console.matchValue}</strong></div>
                 <span className="score">94</span>
               </div>
               <div className="console-group">
                 <span className="line-number">03</span>
-                <div><small>DRY RUN</small><strong>5 files · 0 conflicts</strong></div>
+                <div><small>{t.console.dryRun}</small><strong>{t.console.dryRunValue}</strong></div>
                 <Check size={16} />
               </div>
               <div className="console-group">
                 <span className="line-number">04</span>
-                <div><small>PROOF</small><strong>4 passed · 1 planned</strong></div>
+                <div><small>{t.console.proof}</small><strong>{t.console.proofValue}</strong></div>
                 <FileCheck2 size={16} />
               </div>
             </div>
-            <div className="console-proof"><span className="pulse" /> Simulated agent plan · deterministic demo</div>
+            <div className="console-proof"><span className="pulse" /> {t.console.note}</div>
           </div>
         </section>
 
-        <section className="trust-strip" aria-label="Project properties">
-          <span>Editable source</span><i />
-          <span>shadcn Registry</span><i />
-          <span>Runtime contracts</span><i />
-          <span>Proof reports</span>
+        <section className="trust-strip" aria-label={t.aria.projectProperties}>
+          <span>{t.trust[0]}</span><i />
+          <span>{t.trust[1]}</span><i />
+          <span>{t.trust[2]}</span><i />
+          <span>{t.trust[3]}</span>
         </section>
 
         <section className="workflow section-wrap" id="workflow">
           <div className="section-heading split-heading">
-            <div><span className="section-index">01 / WORKFLOW</span><h2>A delivery rail your agent can follow.</h2></div>
-            <p>Reasoning stays with the coding agent. Fragile steps become inspectable scripts, schemas, and file plans.</p>
+            <div><span className="section-index">{t.workflow.index}</span><h2>{t.workflow.title}</h2></div>
+            <p>{t.workflow.description}</p>
           </div>
           <div className="rail">
-            {proofSteps.map(([index, title, description]) => (
-              <article className="rail-step" key={index}>
-                <span>{index}</span><div className="rail-dot" /><h3>{title}</h3><p>{description}</p>
+            {t.workflow.steps.map((step) => (
+              <article className="rail-step" key={step.index}>
+                <span>{step.index}</span><div className="rail-dot" /><h3>{step.title}</h3><p>{step.description}</p>
               </article>
             ))}
           </div>
@@ -165,96 +199,94 @@ export function App() {
 
         <section className="showcase section-wrap" id="showcase">
           <div className="section-heading">
-            <span className="section-index">02 / SHOWCASE</span>
-            <h2>One request. A concrete plan.</h2>
-            <p>Explore three scenario contracts before they become public recipes. The live preview is deterministic and runs without an online model.</p>
+            <span className="section-index">{t.showcase.index}</span>
+            <h2>{t.showcase.title}</h2>
+            <p>{t.showcase.description}</p>
           </div>
 
           <div className="showcase-frame">
             <aside className="prompt-panel">
-              <span className="panel-label">REQUEST</span>
-              <div className="scenario-tabs" role="tablist" aria-label="Scenario">
+              <span className="panel-label">{t.showcase.request}</span>
+              <div className="scenario-tabs" role="tablist" aria-label={t.aria.scenario}>
                 {scenarios.map((item) => (
                   <button key={item.id} role="tab" aria-selected={scenarioId === item.id} className={scenarioId === item.id ? "active" : ""} type="button" onClick={() => setScenarioId(item.id)}>{item.label}</button>
                 ))}
               </div>
               <div className="prompt-box"><WandSparkles size={16} /><p>{scenario.prompt}</p></div>
               <div className="requirement-list">
-                <span className="panel-label">EXTRACTED REQUIREMENTS</span>
-                {["KPI overview", "Time-series trend", "Managed data table", "Runtime contract"].map((item) => <div key={item}><Check size={13} />{item}</div>)}
+                <span className="panel-label">{t.showcase.requirements}</span>
+                {t.showcase.requirementItems.map((item) => <div key={item}><Check size={13} />{item}</div>)}
               </div>
-              <div className="concept-note"><span>Candidate</span> No install command until verification passes.</div>
+              <div className="concept-note"><span>{t.showcase.candidate}</span> {t.showcase.candidateNote}</div>
             </aside>
 
             <div className="preview-panel">
               <div className="preview-toolbar">
-                <div><span className="status-dot" /> Preview</div>
-                <div className="state-tabs" role="tablist" aria-label="Data state">
+                <div><span className="status-dot" /> {t.showcase.preview}</div>
+                <div className="state-tabs" role="tablist" aria-label={t.aria.dataState}>
                   {states.map((item) => <button key={item.id} role="tab" aria-selected={demoState === item.id} className={demoState === item.id ? "active" : ""} type="button" onClick={() => setDemoState(item.id)}>{item.label}</button>)}
                 </div>
               </div>
-              <PreviewDashboard scenario={scenario} state={demoState} />
+              <PreviewDashboard scenario={scenario} state={demoState} locale={locale} />
             </div>
 
             <aside className="inspector-panel">
-              <span className="panel-label">INSPECTOR</span>
-              <div className="inspector-tabs" aria-label="Inspector view"><span className="active">Recipe</span><span>Data</span><span>Proof</span></div>
+              <span className="panel-label">{t.showcase.inspector}</span>
+              <div className="inspector-tabs" aria-label={t.aria.inspector}>{t.showcase.inspectorTabs.map((item, index) => <span className={index === 0 ? "active" : ""} key={item}>{item}</span>)}</div>
               <div className="tree">
                 <div><ChevronRight size={13} /> <strong>{scenario.id}</strong></div>
-                <div className="tree-child"><PackageCheck size={13} /> metric-cards</div>
-                <div className="tree-child"><PackageCheck size={13} /> trend-chart</div>
-                <div className="tree-child"><PackageCheck size={13} /> managed-table</div>
+                {t.showcase.treeItems.map((item) => <div className="tree-child" key={item}><PackageCheck size={13} /> {item}</div>)}
               </div>
-              <div className="inspector-card"><span>TABLE LEVEL</span><strong>L2 · Server controlled</strong></div>
-              <div className="inspector-card"><span>ADAPTER</span><strong>Fixture / REST source</strong></div>
-              <div className="inspector-card"><span>STATES</span><strong>4 required · 1 failure branch</strong></div>
+              <div className="inspector-card"><span>{t.showcase.tableLevel}</span><strong>{t.showcase.tableLevelValue}</strong></div>
+              <div className="inspector-card"><span>{t.showcase.adapter}</span><strong>{t.showcase.adapterValue}</strong></div>
+              <div className="inspector-card"><span>{t.showcase.statesLabel}</span><strong>{t.showcase.statesValue}</strong></div>
             </aside>
           </div>
         </section>
 
         <section className="recipes section-wrap" id="recipes">
           <div className="section-heading split-heading">
-            <div><span className="section-index">03 / RECIPES</span><h2>Start with dashboards. Keep the protocol.</h2></div>
-            <p>The same inspect, install, bind, and prove contract can later support brand sites and workflow apps.</p>
+            <div><span className="section-index">{t.recipes.index}</span><h2>{t.recipes.title}</h2></div>
+            <p>{t.recipes.description}</p>
           </div>
           <div className="family-grid">
             <article className="family-card featured">
-              <span className="family-status available">Registry POC available</span>
+              <span className="family-status available">{t.recipes.available}</span>
               <Code2 />
-              <h3>Dashboards</h3>
-              <p>KPI, charts, filters, management tables, contracts, and data states.</p>
-              <div className="family-list"><span>Overview starter</span><span>Sales</span><span>Commerce</span><span>Agent Ops</span></div>
+              <h3>{t.recipes.dashboards.title}</h3>
+              <p>{t.recipes.dashboards.description}</p>
+              <div className="family-list">{t.recipes.dashboards.items.map((item) => <span key={item}>{item}</span>)}</div>
             </article>
             <article className="family-card">
-              <span className="family-status">Candidate</span>
+              <span className="family-status">{t.recipes.candidate}</span>
               <Search />
-              <h3>Sites</h3>
-              <p>Brand pages, product launches, documentation, metadata, links, and performance.</p>
-              <div className="family-list"><span>SaaS landing</span><span>Docs</span><span>Launch page</span></div>
+              <h3>{t.recipes.sites.title}</h3>
+              <p>{t.recipes.sites.description}</p>
+              <div className="family-list">{t.recipes.sites.items.map((item) => <span key={item}>{item}</span>)}</div>
             </article>
             <article className="family-card">
-              <span className="family-status">Candidate</span>
+              <span className="family-status">{t.recipes.candidate}</span>
               <PackageCheck />
-              <h3>Apps</h3>
-              <p>Onboarding, settings, billing, approvals, state transitions, and permissions.</p>
-              <div className="family-list"><span>Onboarding</span><span>Settings</span><span>Billing</span></div>
+              <h3>{t.recipes.apps.title}</h3>
+              <p>{t.recipes.apps.description}</p>
+              <div className="family-list">{t.recipes.apps.items.map((item) => <span key={item}>{item}</span>)}</div>
             </article>
           </div>
         </section>
 
         <section className="proof-section section-wrap">
           <div className="proof-copy">
-            <span className="section-index">04 / PROOF</span>
-            <h2>Proof is part of the recipe.</h2>
-            <p>A build is useful evidence, not the whole answer. Reports preserve failed and unverified checks instead of turning them green.</p>
-            <div className="proof-quote"><FileCheck2 /><span>proof-report.json</span><strong>Machine-readable. Human-reviewable.</strong></div>
+            <span className="section-index">{t.proof.index}</span>
+            <h2>{t.proof.title}</h2>
+            <p>{t.proof.description}</p>
+            <div className="proof-quote"><FileCheck2 /><span>proof-report.json</span><strong>{t.proof.quote}</strong></div>
           </div>
           <div className="proof-list">
-            {proofChecks.map(([label, status, detail]) => (
-              <div className="proof-row" key={label}>
-                <span className={`proof-icon ${status}`}><Check size={14} /></span>
-                <div><strong>{label}</strong><small>{detail}</small></div>
-                <span className={`proof-status ${status}`}>{status}</span>
+            {t.proof.checks.map((check) => (
+              <div className="proof-row" key={check.label}>
+                <span className={`proof-icon ${check.status}`}><Check size={14} /></span>
+                <div><strong>{check.label}</strong><small>{check.detail}</small></div>
+                <span className={`proof-status ${check.status}`}>{check.statusLabel}</span>
               </div>
             ))}
           </div>
@@ -262,29 +294,29 @@ export function App() {
 
         <section className="getting-started section-wrap" id="skill">
           <div className="section-heading">
-            <span className="section-index">05 / GET STARTED</span>
-            <h2>Install the first registry POC.</h2>
-            <p>The URL below resolves to a real static Registry item on this site. Preview it before adding source to a project.</p>
+            <span className="section-index">{t.gettingStarted.index}</span>
+            <h2>{t.gettingStarted.title}</h2>
+            <p>{t.gettingStarted.description}</p>
           </div>
           <div className="command-card">
-            <div className="command-tabs"><span className="active">Direct URL</span><span>Namespace</span></div>
-            <div className="command-line"><code>{installCommand}</code><button type="button" onClick={copyInstall} aria-label={copied ? "Dry-run command copied" : "Copy dry-run command"}>{copied ? <Check size={16} /> : <Clipboard size={16} />}</button></div>
-            <div className="command-meta"><span><Check size={14} /> Editable React source</span><span><Check size={14} /> No runtime package</span><span><Check size={14} /> Dry-run supported</span></div>
+            <div className="command-tabs"><span className="active">{t.gettingStarted.directUrl}</span><span>{t.gettingStarted.namespace}</span></div>
+            <div className="command-line"><code>{installCommand}</code><button type="button" onClick={copyInstall} aria-label={copied ? t.aria.copiedCommand : t.aria.copyCommand}>{copied ? <Check size={16} /> : <Clipboard size={16} />}</button></div>
+            <div className="command-meta">{t.gettingStarted.meta.map((item) => <span key={item}><Check size={14} /> {item}</span>)}</div>
           </div>
         </section>
 
         <section className="final-cta section-wrap">
           <LogoMark compact />
-          <h2>Give your agent something<br />it can actually ship.</h2>
-          <p>Start with one proven recipe. Keep every line of source.</p>
-          <a className="button primary" href="#showcase">Open showcase <ArrowRight size={16} /></a>
+          <h2>{t.finalCta.titleBefore}<br />{t.finalCta.titleAfter}</h2>
+          <p>{t.finalCta.description}</p>
+          <a className="button primary" href="#showcase">{t.finalCta.action} <ArrowRight size={16} /></a>
         </section>
       </main>
 
       <footer className="site-footer">
-        <div><LogoMark /><p>From request to proof.</p></div>
-        <p className="disclaimer">Shadcn Agent Kit is an independent community project. It is not affiliated with, endorsed by, or sponsored by shadcn or shadcn/ui. The shadcn name is used only to describe compatibility.</p>
-        <div className="footer-links"><a href="#workflow">Workflow</a><a href="#recipes">Recipes</a><a href="#skill">Skill</a><a href={repositoryUrl}>GitHub</a></div>
+        <div><LogoMark /><p>{t.footer.slogan}</p></div>
+        <p className="disclaimer">{t.footer.disclaimer}</p>
+        <div className="footer-links"><a href="#workflow">{t.footer.workflow}</a><a href="#recipes">{t.footer.recipes}</a><a href="#skill">{t.footer.skill}</a><a href={repositoryUrl}>GitHub</a></div>
       </footer>
     </div>
   )
