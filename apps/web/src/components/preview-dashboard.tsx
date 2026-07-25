@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from "react"
 import {
+  BadgeCheck,
   BarChart3,
   Bell,
   Bot,
-  ChevronDown,
+  ChevronsUpDown,
+  CreditCard,
   Download,
   LayoutDashboard,
   ListChecks,
+  LogOut,
   Menu,
   Search,
   Settings,
@@ -29,9 +32,14 @@ export function PreviewDashboard({ scenario, state, locale }: { scenario: Scenar
   const [query, setQuery] = useState("")
   const [range, setRange] = useState<PreviewRange>("30d")
   const [notificationsOpen, setNotificationsOpen] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
   const navigationRef = useRef<HTMLElement>(null)
   const navigationToggleRef = useRef<HTMLButtonElement>(null)
+  const settingsLinkRef = useRef<HTMLAnchorElement>(null)
+  const userMenuRef = useRef<HTMLDivElement>(null)
+  const userMenuTriggerRef = useRef<HTMLButtonElement>(null)
+  const userMenuOpenRef = useRef(false)
   const searchRef = useRef<HTMLInputElement>(null)
   const toastTimerRef = useRef<number | null>(null)
 
@@ -43,12 +51,22 @@ export function PreviewDashboard({ scenario, state, locale }: { scenario: Scenar
 
   const closeNavigation = () => {
     setNavigationOpen(false)
+    setUserMenuOpen(false)
     if (compactNavigation) window.requestAnimationFrame(() => navigationToggleRef.current?.focus())
+  }
+
+  userMenuOpenRef.current = userMenuOpen
+
+  const selectUserMenuItem = (message: string) => {
+    setUserMenuOpen(false)
+    announce(message)
+    window.requestAnimationFrame(() => userMenuTriggerRef.current?.focus())
   }
 
   useEffect(() => {
     setNavigationOpen(false)
     setNotificationsOpen(false)
+    setUserMenuOpen(false)
     setActiveNav(chrome.navigation[0][1])
     setQuery("")
     setRange("30d")
@@ -84,6 +102,7 @@ export function PreviewDashboard({ scenario, state, locale }: { scenario: Scenar
     sidebar?.querySelector<HTMLElement>("button, a")?.focus()
     const trapFocus = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
+        if (userMenuOpenRef.current) return
         closeNavigation()
         return
       }
@@ -104,6 +123,25 @@ export function PreviewDashboard({ scenario, state, locale }: { scenario: Scenar
     return () => window.removeEventListener("keydown", trapFocus)
   }, [compactNavigation, navigationOpen])
 
+  useEffect(() => {
+    if (!userMenuOpen) return
+    window.requestAnimationFrame(() => userMenuRef.current?.querySelector<HTMLButtonElement>('[role="menuitem"]')?.focus())
+    const closeOnOutsidePress = (event: PointerEvent) => {
+      if (!userMenuRef.current?.contains(event.target as Node)) setUserMenuOpen(false)
+    }
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return
+      setUserMenuOpen(false)
+      userMenuTriggerRef.current?.focus()
+    }
+    document.addEventListener("pointerdown", closeOnOutsidePress)
+    window.addEventListener("keydown", closeOnEscape)
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutsidePress)
+      window.removeEventListener("keydown", closeOnEscape)
+    }
+  }, [userMenuOpen])
+
   let iconIndex = 0
 
   return (
@@ -121,7 +159,7 @@ export function PreviewDashboard({ scenario, state, locale }: { scenario: Scenar
         <div className="dashboard-brand">
           <span><Sparkles size={16} /></span>
           <div><strong>{chrome.brand}</strong><small>{chrome.workspace}</small></div>
-          <ChevronDown className="dashboard-brand-chevron" size={14} />
+          <ChevronsUpDown className="dashboard-brand-chevron" size={14} />
           <button className="dashboard-sidebar-close" type="button" aria-label={t.navigation.close} onClick={closeNavigation}><X size={15} /></button>
         </div>
         <nav className="dashboard-navigation" aria-label={t.navigation.label}>
@@ -147,11 +185,65 @@ export function PreviewDashboard({ scenario, state, locale }: { scenario: Scenar
           ))}
         </nav>
         <div className="dashboard-sidebar-footer">
-          <a href="#showcase" onClick={(event) => { event.preventDefault(); setActiveNav(t.navigation.settings); closeNavigation(); announce(locale === "zh" ? "设置为预览交互" : "Settings is simulated") }}><Settings size={13} /><span>{t.navigation.settings}</span></a>
-          <div className="dashboard-user">
-            <span className="dashboard-avatar">AK</span>
-            <div><strong>Agent Kit</strong><small>{t.navigation.role}</small></div>
-            <ChevronDown size={12} />
+          <a ref={settingsLinkRef} href="#showcase" onClick={(event) => { event.preventDefault(); setActiveNav(t.navigation.settings); closeNavigation(); announce(locale === "zh" ? "设置为预览交互" : "Settings is simulated") }}><Settings size={13} /><span>{t.navigation.settings}</span></a>
+          <div className="dashboard-user-menu" ref={userMenuRef}>
+            {userMenuOpen ? (
+              <div
+                className="dashboard-user-popover"
+                id="dashboard-user-menu"
+                role="menu"
+                aria-label={t.navigation.userMenu}
+                onKeyDown={(event) => {
+                  if (event.key === "Tab") {
+                    event.preventDefault()
+                    setUserMenuOpen(false)
+                    const destination = event.shiftKey
+                      ? settingsLinkRef.current
+                      : compactNavigation
+                        ? userMenuTriggerRef.current
+                        : searchRef.current
+                    window.requestAnimationFrame(() => destination?.focus())
+                    return
+                  }
+                  if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return
+                  event.preventDefault()
+                  const items = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>('[role="menuitem"]'))
+                  const current = items.indexOf(document.activeElement as HTMLButtonElement)
+                  const next = event.key === "Home"
+                    ? 0
+                    : event.key === "End"
+                      ? items.length - 1
+                      : event.key === "ArrowDown"
+                        ? (current + 1) % items.length
+                        : (current - 1 + items.length) % items.length
+                  items[next]?.focus()
+                }}
+              >
+                <div className="dashboard-user-summary">
+                  <span className="dashboard-avatar">AK</span>
+                  <div><strong>Agent Kit</strong><small>agent@shadcnkit.dev</small></div>
+                </div>
+                <div className="dashboard-user-separator" role="separator" />
+                <button type="button" role="menuitem" onClick={() => selectUserMenuItem(`${t.navigation.account} · ${locale === "zh" ? "预览" : "preview"}`)}><BadgeCheck size={14} /><span>{t.navigation.account}</span></button>
+                <button type="button" role="menuitem" onClick={() => selectUserMenuItem(`${t.navigation.billing} · ${locale === "zh" ? "预览" : "preview"}`)}><CreditCard size={14} /><span>{t.navigation.billing}</span></button>
+                <button type="button" role="menuitem" onClick={() => selectUserMenuItem(`${t.navigation.notificationSettings} · ${locale === "zh" ? "预览" : "preview"}`)}><Bell size={14} /><span>{t.navigation.notificationSettings}</span></button>
+                <div className="dashboard-user-separator" role="separator" />
+                <button type="button" role="menuitem" onClick={() => selectUserMenuItem(t.navigation.logoutPreview)}><LogOut size={14} /><span>{t.navigation.logout}</span></button>
+              </div>
+            ) : null}
+            <button
+              ref={userMenuTriggerRef}
+              className="dashboard-user"
+              type="button"
+              aria-haspopup="menu"
+              aria-controls="dashboard-user-menu"
+              aria-expanded={userMenuOpen}
+              onClick={() => { setNotificationsOpen(false); setUserMenuOpen((value) => !value) }}
+            >
+              <span className="dashboard-avatar">AK</span>
+              <span className="dashboard-user-copy"><strong>Agent Kit</strong><small>agent@shadcnkit.dev</small></span>
+              <ChevronsUpDown size={14} />
+            </button>
           </div>
         </div>
       </aside>
@@ -167,7 +259,7 @@ export function PreviewDashboard({ scenario, state, locale }: { scenario: Scenar
             <kbd>⌘ K</kbd>
           </label>
           <div className="dashboard-topbar-actions">
-            <button type="button" aria-label={t.navigation.notifications} aria-expanded={notificationsOpen} onClick={() => setNotificationsOpen(!notificationsOpen)}><Bell size={14} /><span /></button>
+            <button type="button" aria-label={t.navigation.notifications} aria-expanded={notificationsOpen} onClick={() => { setUserMenuOpen(false); setNotificationsOpen((value) => !value) }}><Bell size={14} /><span /></button>
             <span className="dashboard-avatar">AK</span>
             {notificationsOpen ? <div className="notification-popover" role="status"><strong>{locale === "zh" ? "通知" : "Notifications"}</strong><p>{chrome.notification}</p><button type="button" onClick={() => setNotificationsOpen(false)}>{locale === "zh" ? "知道了" : "Dismiss"}</button></div> : null}
           </div>
