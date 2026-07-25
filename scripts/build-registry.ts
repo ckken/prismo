@@ -11,10 +11,10 @@ const item = {
   $schema: "https://ui.shadcn.com/schema/registry-item.json",
   name: "dashboard-overview-01",
   title: "Dashboard Overview 01",
-  description: "A contract-aware overview with metrics, a managed table, and four explicit data states.",
+  description: "A contract-aware admin dashboard with responsive sidebar navigation, command search, charts, a managed table, and four explicit data states.",
   type: "registry:block",
-  dependencies: ["@tanstack/react-table", "lucide-react", "zod"],
-  registryDependencies: ["badge", "card", "skeleton", "table"],
+  dependencies: ["@tanstack/react-table", "lucide-react", "recharts", "zod"],
+  registryDependencies: ["badge", "button", "card", "chart", "input", "separator", "sidebar", "skeleton", "table"],
   files: [
     {
       path: "components/dashboard-overview-01.tsx",
@@ -26,7 +26,7 @@ const item = {
   meta: {
     project: "Shadcn Agent Kit",
     status: "available",
-    tableLevel: "L0",
+    tableLevel: "L2",
     states: ["success", "loading", "empty", "contract-error"],
   },
 }
