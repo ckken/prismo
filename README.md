@@ -44,7 +44,7 @@ bun run proof:install
 
 ```bash
 bunx --bun shadcn@4.14.1 add \
-  https://<owner>.github.io/shadcn-agent-kit/r/dashboard-overview-01.json \
+  https://ckken.github.io/shadcnagent/r/dashboard-overview-01.json \
   --dry-run
 ```
 
