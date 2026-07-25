@@ -13,7 +13,6 @@ import {
   Search,
   ShieldCheck,
   Sun,
-  WandSparkles,
   X,
 } from "lucide-react"
 import { LogoMark } from "./components/logo"
@@ -204,43 +203,23 @@ export function App() {
             <p>{t.showcase.description}</p>
           </div>
 
-          <div className="showcase-frame">
-            <aside className="prompt-panel">
-              <span className="panel-label">{t.showcase.request}</span>
-              <div className="scenario-tabs" role="tablist" aria-label={t.aria.scenario}>
-                {scenarios.map((item) => (
-                  <button key={item.id} role="tab" aria-selected={scenarioId === item.id} className={scenarioId === item.id ? "active" : ""} type="button" onClick={() => setScenarioId(item.id)}>{item.label}</button>
-                ))}
-              </div>
-              <div className="prompt-box"><WandSparkles size={16} /><p>{scenario.prompt}</p></div>
-              <div className="requirement-list">
-                <span className="panel-label">{t.showcase.requirements}</span>
-                {t.showcase.requirementItems.map((item) => <div key={item}><Check size={13} />{item}</div>)}
-              </div>
-              <div className="concept-note"><span>{t.showcase.candidate}</span> {t.showcase.candidateNote}</div>
-            </aside>
-
+          <div className="showcase-frame preview-only">
             <div className="preview-panel">
-              <div className="preview-toolbar">
-                <div><span className="status-dot" /> {t.showcase.preview}</div>
-                <div className="state-tabs" role="tablist" aria-label={t.aria.dataState}>
-                  {states.map((item) => <button key={item.id} role="tab" aria-selected={demoState === item.id} className={demoState === item.id ? "active" : ""} type="button" onClick={() => setDemoState(item.id)}>{item.label}</button>)}
+              <div className="preview-toolbar preview-toolbar-rich">
+                <div className="preview-mode-group">
+                  <span><span className="status-dot" /> {t.showcase.preview}</span>
+                  <div className="scenario-tabs" role="group" aria-label={t.aria.scenario}>
+                    {scenarios.map((item) => (
+                      <button key={item.id} aria-pressed={scenarioId === item.id} className={scenarioId === item.id ? "active" : ""} type="button" onClick={() => { setScenarioId(item.id); setDemoState("success") }}>{item.label}</button>
+                    ))}
+                  </div>
+                </div>
+                <div className="state-tabs" role="group" aria-label={t.aria.dataState}>
+                  {states.map((item) => <button key={item.id} aria-pressed={demoState === item.id} className={demoState === item.id ? "active" : ""} type="button" onClick={() => setDemoState(item.id)}>{item.label}</button>)}
                 </div>
               </div>
-              <PreviewDashboard scenario={scenario} state={demoState} locale={locale} />
+              <PreviewDashboard key={scenario.id} scenario={scenario} state={demoState} locale={locale} />
             </div>
-
-            <aside className="inspector-panel">
-              <span className="panel-label">{t.showcase.inspector}</span>
-              <div className="inspector-tabs" aria-label={t.aria.inspector}>{t.showcase.inspectorTabs.map((item, index) => <span className={index === 0 ? "active" : ""} key={item}>{item}</span>)}</div>
-              <div className="tree">
-                <div><ChevronRight size={13} /> <strong>{scenario.id}</strong></div>
-                {t.showcase.treeItems.map((item) => <div className="tree-child" key={item}><PackageCheck size={13} /> {item}</div>)}
-              </div>
-              <div className="inspector-card"><span>{t.showcase.tableLevel}</span><strong>{t.showcase.tableLevelValue}</strong></div>
-              <div className="inspector-card"><span>{t.showcase.adapter}</span><strong>{t.showcase.adapterValue}</strong></div>
-              <div className="inspector-card"><span>{t.showcase.statesLabel}</span><strong>{t.showcase.statesValue}</strong></div>
-            </aside>
           </div>
         </section>
 

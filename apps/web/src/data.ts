@@ -12,11 +12,11 @@ const scenarioSchema = z.object({
   prompt: z.string(),
   metrics: z.array(
     z.object({ label: z.string(), value: z.string(), delta: z.string() }),
-  ),
+  ).min(3),
   rows: z.array(
     z.object({ name: z.string(), owner: z.string(), status: z.string(), value: z.string() }),
   ),
-  chart: z.array(z.number()),
+  chart: z.array(z.number()).min(2),
   contractPath: z.string(),
 })
 
