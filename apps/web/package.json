@@ -1,0 +1,30 @@
+{
+  "name": "@shadcn-agent-kit/web",
+  "version": "0.1.0-alpha.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "rsbuild dev",
+    "build": "rsbuild build",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "5.101.4",
+    "@tanstack/react-router": "1.170.18",
+    "@tanstack/react-table": "8.21.3",
+    "lucide-react": "0.468.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@rsbuild/core": "2.1.8",
+    "@rsbuild/plugin-react": "2.1.0",
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/react": "19.2.10",
+    "@types/react-dom": "19.2.3",
+    "tailwindcss": "4.3.3",
+    "typescript": "7.0.2"
+  }
+}
+

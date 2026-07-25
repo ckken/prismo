@@ -1,0 +1,25 @@
+{
+  "name": "shadcn-agent-kit",
+  "version": "0.1.0-alpha.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "bun@1.3.14",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "bun run registry:build && bun --cwd apps/web dev",
+    "build": "bun run registry:build && bun --cwd apps/web build",
+    "typecheck": "bun --cwd apps/web typecheck && bunx tsc -p tsconfig.scripts.json --noEmit",
+    "test": "bun run registry:build && bun test",
+    "check": "bun run typecheck && bun run test && bun run build",
+    "registry:build": "bun scripts/build-registry.ts",
+    "skill:validate": "bun scripts/validate-skill.ts skills/shadcn-agent-kit",
+    "proof:install": "bun run registry:build && bun scripts/proof-install.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "1.3.4",
+    "typescript": "7.0.2"
+  }
+}

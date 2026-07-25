@@ -1,0 +1,4 @@
+interface:
+  display_name: "Shadcn Agent Kit"
+  short_description: "Install and verify shadcn-compatible web recipes"
+  default_prompt: "Use $shadcn-agent-kit to inspect this project, choose an available recipe, preview changes, and verify the installation."

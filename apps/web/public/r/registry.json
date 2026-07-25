@@ -1,0 +1,44 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "shadcn-agent-kit",
+  "homepage": "https://github.com",
+  "items": [
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "dashboard-overview-01",
+      "title": "Dashboard Overview 01",
+      "description": "A contract-aware overview with metrics, a managed table, and four explicit data states.",
+      "type": "registry:block",
+      "dependencies": [
+        "@tanstack/react-table",
+        "lucide-react",
+        "zod"
+      ],
+      "registryDependencies": [
+        "badge",
+        "card",
+        "skeleton",
+        "table"
+      ],
+      "files": [
+        {
+          "path": "components/dashboard-overview-01.tsx",
+          "type": "registry:component",
+          "target": "components/dashboard-overview-01.tsx",
+          "content": "import { useMemo } from \"react\"\nimport { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from \"@tanstack/react-table\"\nimport { ArrowDownRight, ArrowUpRight, Minus } from \"lucide-react\"\nimport { z } from \"zod\"\nimport { Badge } from \"@/components/ui/badge\"\nimport { Card, CardContent, CardHeader, CardTitle } from \"@/components/ui/card\"\nimport { Skeleton } from \"@/components/ui/skeleton\"\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from \"@/components/ui/table\"\n\nexport const dashboardOverviewSchema = z.object({\n  metrics: z.array(z.object({\n    label: z.string(),\n    value: z.string(),\n    delta: z.string(),\n  })).min(1),\n  rows: z.array(z.object({\n    name: z.string(),\n    owner: z.string(),\n    status: z.string(),\n    value: z.string(),\n  })),\n})\n\nexport type DashboardOverviewData = z.infer<typeof dashboardOverviewSchema>\nexport type DashboardOverviewState = \"success\" | \"loading\" | \"empty\" | \"contract-error\"\n\nfunction Delta({ value }: { value: string }) {\n  const direction = /^[\\s]*[-−]/.test(value) ? \"down\" : /^[\\s]*\\+/.test(value) ? \"up\" : \"neutral\"\n  const Icon = direction === \"down\" ? ArrowDownRight : direction === \"up\" ? ArrowUpRight : Minus\n  const color = direction === \"down\" ? \"text-red-600\" : direction === \"up\" ? \"text-emerald-600\" : \"text-muted-foreground\"\n  return <div className={`mt-1 flex items-center text-xs ${color}`}><Icon className=\"mr-1 size-3\" />{value}</div>\n}\n\nconst row = createColumnHelper<DashboardOverviewData[\"rows\"][number]>()\nconst columns = [\n  row.accessor(\"name\", { header: \"Name\" }),\n  row.accessor(\"owner\", { header: \"Owner\" }),\n  row.accessor(\"status\", {\n    header: \"Status\",\n    cell: (info) => <Badge variant=\"secondary\">{info.getValue()}</Badge>,\n  }),\n  row.accessor(\"value\", { header: \"Value\" }),\n]\n\nconst fixture: DashboardOverviewData = {\n  metrics: [\n    { label: \"Revenue\", value: \"$842k\", delta: \"+12.4%\" },\n    { label: \"Target\", value: \"86.2%\", delta: \"+4.1%\" },\n    { label: \"Pipeline\", value: \"$1.8m\", delta: \"+9.8%\" },\n  ],\n  rows: [\n    { name: \"Northwind\", owner: \"Maya\", status: \"Qualified\", value: \"$84k\" },\n    { name: \"Acme Labs\", owner: \"Theo\", status: \"Proposal\", value: \"$67k\" },\n    { name: \"Sora Retail\", owner: \"Iris\", status: \"Negotiation\", value: \"$52k\" },\n  ],\n}\n\nexport function DashboardOverview01({\n  data = fixture,\n  state = \"success\",\n}: {\n  data?: DashboardOverviewData\n  state?: DashboardOverviewState\n}) {\n  const parsed = dashboardOverviewSchema.safeParse(data)\n  const rows = parsed.success ? parsed.data.rows : []\n  const table = useReactTable({ data: rows, columns, getCoreRowModel: getCoreRowModel() })\n  const metrics = useMemo(() => parsed.success ? parsed.data.metrics : [], [parsed])\n\n  if (state === \"loading\") {\n    return <div className=\"grid gap-4 md:grid-cols-3\">{[0, 1, 2].map((item) => <Skeleton className=\"h-28\" key={item} />)}</div>\n  }\n\n  if (state === \"contract-error\" || !parsed.success) {\n    return <Card className=\"border-destructive\"><CardHeader><CardTitle>Contract mismatch</CardTitle></CardHeader><CardContent className=\"text-sm text-muted-foreground\">Check the data adapter against dashboardOverviewSchema.</CardContent></Card>\n  }\n\n  if (state === \"empty\" || rows.length === 0) {\n    return <Card><CardContent className=\"flex min-h-48 items-center justify-center text-sm text-muted-foreground\">No records in this range.</CardContent></Card>\n  }\n\n  return (\n    <section className=\"grid gap-4\" aria-label=\"Dashboard overview\">\n      <div className=\"grid gap-4 md:grid-cols-3\">\n        {metrics.map((metric) => (\n          <Card key={metric.label}>\n            <CardHeader className=\"pb-2\"><CardTitle className=\"text-sm font-medium text-muted-foreground\">{metric.label}</CardTitle></CardHeader>\n            <CardContent><div className=\"text-2xl font-semibold\">{metric.value}</div><Delta value={metric.delta} /></CardContent>\n          </Card>\n        ))}\n      </div>\n      <Card>\n        <CardHeader><CardTitle>Priority accounts</CardTitle></CardHeader>\n        <CardContent>\n          <Table>\n            <TableHeader>{table.getHeaderGroups().map((group) => <TableRow key={group.id}>{group.headers.map((header) => <TableHead key={header.id}>{flexRender(header.column.columnDef.header, header.getContext())}</TableHead>)}</TableRow>)}</TableHeader>\n            <TableBody>{table.getRowModel().rows.map((tableRow) => <TableRow key={tableRow.id}>{tableRow.getVisibleCells().map((cell) => <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>)}</TableRow>)}</TableBody>\n          </Table>\n        </CardContent>\n      </Card>\n    </section>\n  )\n}\n"
+        }
+      ],
+      "meta": {
+        "project": "Shadcn Agent Kit",
+        "status": "available",
+        "tableLevel": "L0",
+        "states": [
+          "success",
+          "loading",
+          "empty",
+          "contract-error"
+        ]
+      }
+    }
+  ]
+}
