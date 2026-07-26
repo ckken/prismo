@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react"
 import {
   ArrowRight,
   Check,
@@ -7,12 +7,19 @@ import {
   Code2,
   FileCheck2,
   Github,
+  Maximize2,
   Menu,
+  Minimize2,
+  Monitor,
   Moon,
   PackageCheck,
+  RefreshCw,
   Search,
   ShieldCheck,
+  Smartphone,
   Sun,
+  Tablet,
+  Terminal,
   X,
 } from "lucide-react"
 import { LogoMark } from "./components/logo"
@@ -39,10 +46,18 @@ function joinBase(path: string) {
 export function App() {
   const [scenarioId, setScenarioId] = useState<ScenarioId>("sales")
   const [demoState, setDemoState] = useState<DemoState>("success")
+  const [previewMode, setPreviewMode] = useState<"preview" | "code">("preview")
+  const [previewViewport, setPreviewViewport] = useState<"desktop" | "tablet" | "mobile">("desktop")
+  const [previewRefreshKey, setPreviewRefreshKey] = useState(0)
+  const [previewExpanded, setPreviewExpanded] = useState(false)
   const [locale, setLocale] = useState<Locale>(() => getInitialLocale())
   const [theme, setTheme] = useState<Theme>(() => getInitialTheme())
   const [mobileOpen, setMobileOpen] = useState(false)
   const [copied, setCopied] = useState(false)
+  const blockViewerRef = useRef<HTMLDivElement>(null)
+  const previewTabRef = useRef<HTMLButtonElement>(null)
+  const codeTabRef = useRef<HTMLButtonElement>(null)
+  const expandButtonRef = useRef<HTMLButtonElement>(null)
   const t = copy[locale]
   const scenarios = scenariosByLocale[locale]
   const states: Array<{ id: DemoState; label: string }> = [
@@ -86,10 +101,64 @@ export function App() {
   }, [])
 
   useEffect(() => {
+    const compactShowcase = window.matchMedia("(max-width: 1020px)")
+    const keepPreviewReachable = () => {
+      if (compactShowcase.matches) setPreviewMode("preview")
+    }
+    keepPreviewReachable()
+    compactShowcase.addEventListener("change", keepPreviewReachable)
+    return () => compactShowcase.removeEventListener("change", keepPreviewReachable)
+  }, [])
+
+  useEffect(() => {
     const sectionId = window.location.hash.slice(1)
     if (!sectionId) return
     window.requestAnimationFrame(() => document.getElementById(sectionId)?.scrollIntoView())
   }, [])
+
+  useEffect(() => {
+    if (!previewExpanded) return
+    const viewer = blockViewerRef.current
+    expandButtonRef.current?.focus()
+    const handleExpandedKeys = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        const nestedOverlay = viewer?.querySelector('[role="dialog"][aria-modal="true"], [role="menu"]')
+        if (nestedOverlay) return
+        setPreviewExpanded(false)
+        window.requestAnimationFrame(() => expandButtonRef.current?.focus())
+        return
+      }
+      if (event.key !== "Tab" || !viewer) return
+      const focusable = Array.from(viewer.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'))
+        .filter((element) => !element.closest("[hidden]") && element.getClientRects().length > 0)
+      if (!focusable.length) return
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+    window.addEventListener("keydown", handleExpandedKeys)
+    return () => window.removeEventListener("keydown", handleExpandedKeys)
+  }, [previewExpanded])
+
+  function handlePreviewTabKeyDown(event: ReactKeyboardEvent<HTMLButtonElement>, mode: "preview" | "code") {
+    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return
+    event.preventDefault()
+    const nextMode = event.key === "Home"
+      ? "preview"
+      : event.key === "End"
+        ? "code"
+        : mode === "preview"
+          ? "code"
+          : "preview"
+    setPreviewMode(nextMode)
+    window.requestAnimationFrame(() => (nextMode === "preview" ? previewTabRef : codeTabRef).current?.focus())
+  }
 
   async function copyInstall() {
     await navigator.clipboard.writeText(installCommand)
@@ -203,22 +272,79 @@ export function App() {
             <p>{t.showcase.description}</p>
           </div>
 
-          <div className="showcase-frame preview-only">
-            <div className="preview-panel">
-              <div className="preview-toolbar preview-toolbar-rich">
-                <div className="preview-mode-group">
-                  <span><span className="status-dot" /> {t.showcase.preview}</span>
-                  <div className="scenario-tabs" role="group" aria-label={t.aria.scenario}>
-                    {scenarios.map((item) => (
-                      <button key={item.id} aria-pressed={scenarioId === item.id} className={scenarioId === item.id ? "active" : ""} type="button" onClick={() => { setScenarioId(item.id); setDemoState("success") }}>{item.label}</button>
+          <div className="showcase-frame">
+            <div
+              ref={blockViewerRef}
+              className={previewExpanded ? "block-viewer is-expanded" : "block-viewer"}
+              role={previewExpanded ? "dialog" : undefined}
+              aria-modal={previewExpanded ? true : undefined}
+              aria-label={previewExpanded ? t.showcase.toolbar.description : undefined}
+            >
+              <div className="block-viewer-toolbar">
+                <div className="block-viewer-tabs" role="tablist" aria-label={t.aria.previewMode}>
+                  <button ref={previewTabRef} id="preview-tab" role="tab" type="button" tabIndex={previewMode === "preview" ? 0 : -1} aria-selected={previewMode === "preview"} aria-controls="preview-panel" className={previewMode === "preview" ? "active" : ""} onKeyDown={(event) => handlePreviewTabKeyDown(event, "preview")} onClick={() => setPreviewMode("preview")}>{t.showcase.toolbar.preview}</button>
+                  <button ref={codeTabRef} id="code-tab" role="tab" type="button" tabIndex={previewMode === "code" ? 0 : -1} aria-selected={previewMode === "code"} aria-controls="code-panel" className={previewMode === "code" ? "active" : ""} onKeyDown={(event) => handlePreviewTabKeyDown(event, "code")} onClick={() => setPreviewMode("code")}>{t.showcase.toolbar.code}</button>
+                </div>
+                <span className="block-viewer-separator" aria-hidden="true" />
+                <div className="block-viewer-title">{t.showcase.toolbar.description}</div>
+                <div className="block-viewer-actions">
+                  <div className="viewport-switcher" role="group" aria-label={t.aria.viewport}>
+                    {[
+                      { id: "desktop" as const, label: t.showcase.toolbar.desktop, Icon: Monitor },
+                      { id: "tablet" as const, label: t.showcase.toolbar.tablet, Icon: Tablet },
+                      { id: "mobile" as const, label: t.showcase.toolbar.mobile, Icon: Smartphone },
+                    ].map(({ id, label, Icon }) => (
+                      <button key={id} type="button" aria-label={label} aria-pressed={previewViewport === id} className={previewViewport === id ? "active" : ""} onClick={() => { setPreviewViewport(id); setPreviewMode("preview") }}><Icon size={15} /></button>
                     ))}
                   </div>
-                </div>
-                <div className="state-tabs" role="group" aria-label={t.aria.dataState}>
-                  {states.map((item) => <button key={item.id} aria-pressed={demoState === item.id} className={demoState === item.id ? "active" : ""} type="button" onClick={() => setDemoState(item.id)}>{item.label}</button>)}
+                  <button ref={expandButtonRef} type="button" className="block-viewer-icon-action" aria-label={previewExpanded ? t.aria.minimizePreview : t.aria.expandPreview} onClick={() => setPreviewExpanded((expanded) => !expanded)}>{previewExpanded ? <Minimize2 size={16} /> : <Maximize2 size={16} />}</button>
+                  <button type="button" className="block-viewer-icon-action" aria-label={t.aria.refreshPreview} onClick={() => { setPreviewMode("preview"); setPreviewRefreshKey((key) => key + 1) }}><RefreshCw size={16} /></button>
+                  <button type="button" className="block-viewer-command" onClick={copyInstall} aria-label={copied ? t.aria.copiedCommand : t.aria.copyCommand}>
+                    {copied ? <Check size={15} /> : <Terminal size={15} />}<code>{installCommand}</code>
+                  </button>
                 </div>
               </div>
-              <PreviewDashboard key={scenario.id} scenario={scenario} state={demoState} locale={locale} />
+              <div className="block-viewer-mobile-summary">
+                <strong>{t.showcase.toolbar.description}</strong>
+                <code>dashboard-overview-01</code>
+              </div>
+
+              {previewMode === "preview" && (
+                <div className="block-viewer-debugbar">
+                  <div className="debug-control-group">
+                    <span className="debug-control-label">{t.showcase.toolbar.scenario}</span>
+                    <div className="scenario-tabs" role="group" aria-label={t.aria.scenario}>
+                      {scenarios.map((item) => (
+                        <button key={item.id} aria-pressed={scenarioId === item.id} className={scenarioId === item.id ? "active" : ""} type="button" onClick={() => { setScenarioId(item.id); setDemoState("success") }}>{item.label}</button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="debug-control-group">
+                    <span className="debug-control-label">{t.showcase.toolbar.state}</span>
+                    <div className="state-tabs" role="group" aria-label={t.aria.dataState}>
+                      {states.map((item) => <button key={item.id} aria-pressed={demoState === item.id} className={demoState === item.id ? "active" : ""} type="button" onClick={() => setDemoState(item.id)}>{item.label}</button>)}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div id="preview-panel" role="tabpanel" aria-labelledby="preview-tab" className="block-viewer-stage" hidden={previewMode !== "preview"}>
+                <div className="preview-viewport" data-viewport={previewViewport}>
+                  <PreviewDashboard key={`${scenario.id}-${previewRefreshKey}`} scenario={scenario} state={demoState} locale={locale} viewport={previewViewport} />
+                </div>
+              </div>
+              <div id="code-panel" role="tabpanel" aria-labelledby="code-tab" className="block-code-view" hidden={previewMode !== "code"}>
+                <div><span>{t.showcase.code.registryId}</span><code>dashboard-overview-01</code></div>
+                <div><span>{t.showcase.code.installCommand}</span><code>{installCommand}</code></div>
+                <div>
+                  <span>{t.showcase.code.files}</span>
+                  <ul>{t.showcase.code.fileItems.map((item) => <li key={item}>{item}</li>)}</ul>
+                </div>
+                <div>
+                  <span>{t.showcase.code.verification}</span>
+                  <ul>{t.showcase.code.verificationItems.map((item) => <li key={item}>{item}</li>)}</ul>
+                </div>
+              </div>
             </div>
           </div>
         </section>

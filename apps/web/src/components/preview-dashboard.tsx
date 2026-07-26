@@ -10,7 +10,8 @@ import {
   LayoutDashboard,
   ListChecks,
   LogOut,
-  Menu,
+  PanelLeftClose,
+  PanelLeftOpen,
   Search,
   Settings,
   Sparkles,
@@ -23,11 +24,12 @@ import { getSceneChrome, PreviewScene, type PreviewRange } from "./preview-scene
 
 const navigationIcons = [LayoutDashboard, BarChart3, ListChecks, Bot, Users]
 
-export function PreviewDashboard({ scenario, state, locale }: { scenario: Scenario; state: DemoState; locale: Locale }) {
+export function PreviewDashboard({ scenario, state, locale, viewport = "desktop" }: { scenario: Scenario; state: DemoState; locale: Locale; viewport?: "desktop" | "tablet" | "mobile" }) {
   const t = copy[locale].preview
   const chrome = getSceneChrome(locale, scenario.id)
   const [navigationOpen, setNavigationOpen] = useState(false)
   const [compactNavigation, setCompactNavigation] = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [activeNav, setActiveNav] = useState<string>(chrome.navigation[0][1])
   const [query, setQuery] = useState("")
   const [range, setRange] = useState<PreviewRange>("30d")
@@ -35,6 +37,7 @@ export function PreviewDashboard({ scenario, state, locale }: { scenario: Scenar
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
   const navigationRef = useRef<HTMLElement>(null)
+  const shellRef = useRef<HTMLDivElement>(null)
   const navigationToggleRef = useRef<HTMLButtonElement>(null)
   const settingsLinkRef = useRef<HTMLAnchorElement>(null)
   const userMenuRef = useRef<HTMLDivElement>(null)
@@ -78,12 +81,19 @@ export function PreviewDashboard({ scenario, state, locale }: { scenario: Scenar
   }, [])
 
   useEffect(() => {
-    const media = window.matchMedia("(max-width: 760px)")
-    const sync = () => setCompactNavigation(media.matches)
-    sync()
-    media.addEventListener("change", sync)
-    return () => media.removeEventListener("change", sync)
-  }, [])
+    const shell = shellRef.current
+    if (!shell) return
+    const sync = (width: number) => {
+      const compact = width <= 780
+      setCompactNavigation(compact)
+      if (compact) setSidebarCollapsed(false)
+      else setNavigationOpen(false)
+    }
+    sync(shell.getBoundingClientRect().width)
+    const observer = new ResizeObserver((entries) => sync(entries[0]?.contentRect.width ?? shell.getBoundingClientRect().width))
+    observer.observe(shell)
+    return () => observer.disconnect()
+  }, [viewport])
 
   useEffect(() => {
     const focusSearch = (event: KeyboardEvent) => {
@@ -103,6 +113,8 @@ export function PreviewDashboard({ scenario, state, locale }: { scenario: Scenar
     const trapFocus = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         if (userMenuOpenRef.current) return
+        event.preventDefault()
+        event.stopPropagation()
         closeNavigation()
         return
       }
@@ -131,6 +143,8 @@ export function PreviewDashboard({ scenario, state, locale }: { scenario: Scenar
     }
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return
+      event.preventDefault()
+      event.stopPropagation()
       setUserMenuOpen(false)
       userMenuTriggerRef.current?.focus()
     }
@@ -143,16 +157,23 @@ export function PreviewDashboard({ scenario, state, locale }: { scenario: Scenar
   }, [userMenuOpen])
 
   let iconIndex = 0
+  const navigationHidden = compactNavigation ? !navigationOpen : sidebarCollapsed
+  const workspaceHidden = compactNavigation && navigationOpen
+  const shellClassName = [
+    "dashboard-shell",
+    navigationOpen ? "navigation-open" : "",
+    sidebarCollapsed ? "sidebar-collapsed" : "",
+  ].filter(Boolean).join(" ")
 
   return (
-    <div className={navigationOpen ? "dashboard-shell navigation-open" : "dashboard-shell"}>
+    <div ref={shellRef} className={shellClassName}>
       <aside
-        aria-hidden={compactNavigation && !navigationOpen ? true : undefined}
+        aria-hidden={navigationHidden ? true : undefined}
         aria-label={compactNavigation ? t.navigation.label : undefined}
         aria-modal={compactNavigation && navigationOpen ? true : undefined}
         className="dashboard-sidebar"
         id="showcase-dashboard-navigation"
-        inert={compactNavigation && !navigationOpen ? true : undefined}
+        inert={navigationHidden ? true : undefined}
         ref={navigationRef}
         role={compactNavigation ? "dialog" : undefined}
       >
@@ -248,10 +269,20 @@ export function PreviewDashboard({ scenario, state, locale }: { scenario: Scenar
         </div>
       </aside>
 
-      <div className="dashboard-workspace" aria-hidden={compactNavigation && navigationOpen ? true : undefined} inert={compactNavigation && navigationOpen ? true : undefined}>
+      <div className="dashboard-workspace" aria-hidden={workspaceHidden ? true : undefined} inert={workspaceHidden ? true : undefined}>
         <header className="dashboard-topbar">
-          <button ref={navigationToggleRef} className="dashboard-nav-toggle" type="button" aria-label={navigationOpen ? t.navigation.close : t.navigation.open} aria-controls="showcase-dashboard-navigation" aria-expanded={navigationOpen} onClick={() => setNavigationOpen(!navigationOpen)}>
-            {navigationOpen ? <X size={15} /> : <Menu size={15} />}
+          <button
+            ref={navigationToggleRef}
+            className="dashboard-nav-toggle"
+            type="button"
+            aria-label={compactNavigation ? (navigationOpen ? t.navigation.close : t.navigation.open) : (sidebarCollapsed ? t.navigation.open : t.navigation.close)}
+            aria-controls="showcase-dashboard-navigation"
+            aria-expanded={compactNavigation ? navigationOpen : !sidebarCollapsed}
+            onClick={() => compactNavigation ? setNavigationOpen((value) => !value) : setSidebarCollapsed((value) => !value)}
+          >
+            {compactNavigation
+              ? navigationOpen ? <PanelLeftClose size={15} /> : <PanelLeftOpen size={15} />
+              : sidebarCollapsed ? <PanelLeftOpen size={15} /> : <PanelLeftClose size={15} />}
           </button>
           <label className="dashboard-search">
             <Search size={13} />
