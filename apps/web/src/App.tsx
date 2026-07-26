@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react"
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type MouseEvent as ReactMouseEvent } from "react"
 import {
   ArrowRight,
   Check,
@@ -13,6 +13,8 @@ import {
   Monitor,
   Moon,
   PackageCheck,
+  PanelLeftClose,
+  PanelLeftOpen,
   RefreshCw,
   Search,
   ShieldCheck,
@@ -49,12 +51,15 @@ export function App() {
   const [previewMode, setPreviewMode] = useState<"preview" | "code">("preview")
   const [previewViewport, setPreviewViewport] = useState<"desktop" | "tablet" | "mobile">("desktop")
   const [previewRefreshKey, setPreviewRefreshKey] = useState(0)
+  const [previewNavigationVisible, setPreviewNavigationVisible] = useState(true)
   const [previewExpanded, setPreviewExpanded] = useState(false)
   const [locale, setLocale] = useState<Locale>(() => getInitialLocale())
   const [theme, setTheme] = useState<Theme>(() => getInitialTheme())
   const [mobileOpen, setMobileOpen] = useState(false)
   const [copied, setCopied] = useState(false)
   const blockViewerRef = useRef<HTMLDivElement>(null)
+  const previewNavigationReturnFocusRef = useRef<HTMLButtonElement>(null)
+  const previewViewportRef = useRef(previewViewport)
   const previewTabRef = useRef<HTMLButtonElement>(null)
   const codeTabRef = useRef<HTMLButtonElement>(null)
   const expandButtonRef = useRef<HTMLButtonElement>(null)
@@ -76,6 +81,7 @@ export function App() {
   }, [])
   const installCommand = `bunx --bun shadcn@4.14.1 add ${registryUrl} --dry-run`
   const repositoryUrl = __PUBLIC_REPOSITORY_URL__
+  previewViewportRef.current = previewViewport
 
   useEffect(() => {
     applyPreferences(locale, theme)
@@ -103,6 +109,7 @@ export function App() {
   useEffect(() => {
     const compactShowcase = window.matchMedia("(max-width: 1020px)")
     const keepPreviewReachable = () => {
+      if (previewViewportRef.current === "desktop") setPreviewNavigationVisible(!compactShowcase.matches)
       if (compactShowcase.matches) setPreviewMode("preview")
     }
     keepPreviewReachable()
@@ -178,6 +185,19 @@ export function App() {
     saveThemeOverride(nextTheme)
     setTheme(nextTheme)
   }
+
+  function togglePreviewNavigation(event: ReactMouseEvent<HTMLButtonElement>) {
+    previewNavigationReturnFocusRef.current = event.currentTarget
+    if (previewMode === "code") {
+      setPreviewMode("preview")
+      setPreviewNavigationVisible(true)
+      return
+    }
+    setPreviewMode("preview")
+    setPreviewNavigationVisible((visible) => !visible)
+  }
+
+  const previewNavigationExpanded = previewMode === "preview" && previewNavigationVisible
 
   return (
     <div className="site-shell">
@@ -286,7 +306,17 @@ export function App() {
                   <button ref={codeTabRef} id="code-tab" role="tab" type="button" tabIndex={previewMode === "code" ? 0 : -1} aria-selected={previewMode === "code"} aria-controls="code-panel" className={previewMode === "code" ? "active" : ""} onKeyDown={(event) => handlePreviewTabKeyDown(event, "code")} onClick={() => setPreviewMode("code")}>{t.showcase.toolbar.code}</button>
                 </div>
                 <span className="block-viewer-separator" aria-hidden="true" />
-                <div className="block-viewer-title">{t.showcase.toolbar.description}</div>
+                <button
+                  type="button"
+                  className="block-viewer-title"
+                  aria-controls="showcase-dashboard-navigation"
+                  aria-expanded={previewNavigationExpanded}
+                  aria-label={`${t.showcase.toolbar.description} · ${previewNavigationExpanded ? t.preview.navigation.close : t.preview.navigation.open}`}
+                  onClick={togglePreviewNavigation}
+                >
+                  {previewNavigationExpanded ? <PanelLeftClose size={15} /> : <PanelLeftOpen size={15} />}
+                  <span>{t.showcase.toolbar.description}</span>
+                </button>
                 <div className="block-viewer-actions">
                   <div className="viewport-switcher" role="group" aria-label={t.aria.viewport}>
                     {[
@@ -294,7 +324,7 @@ export function App() {
                       { id: "tablet" as const, label: t.showcase.toolbar.tablet, Icon: Tablet },
                       { id: "mobile" as const, label: t.showcase.toolbar.mobile, Icon: Smartphone },
                     ].map(({ id, label, Icon }) => (
-                      <button key={id} type="button" aria-label={label} aria-pressed={previewViewport === id} className={previewViewport === id ? "active" : ""} onClick={() => { setPreviewViewport(id); setPreviewMode("preview") }}><Icon size={15} /></button>
+                      <button key={id} type="button" aria-label={label} aria-pressed={previewViewport === id} className={previewViewport === id ? "active" : ""} onClick={() => { setPreviewViewport(id); setPreviewMode("preview"); setPreviewNavigationVisible(id === "desktop" && !window.matchMedia("(max-width: 1020px)").matches) }}><Icon size={15} /></button>
                     ))}
                   </div>
                   <button ref={expandButtonRef} type="button" className="block-viewer-icon-action" aria-label={previewExpanded ? t.aria.minimizePreview : t.aria.expandPreview} onClick={() => setPreviewExpanded((expanded) => !expanded)}>{previewExpanded ? <Minimize2 size={16} /> : <Maximize2 size={16} />}</button>
@@ -305,7 +335,17 @@ export function App() {
                 </div>
               </div>
               <div className="block-viewer-mobile-summary">
-                <strong>{t.showcase.toolbar.description}</strong>
+                <button
+                  type="button"
+                  className="block-viewer-title"
+                  aria-controls="showcase-dashboard-navigation"
+                  aria-expanded={previewNavigationExpanded}
+                  aria-label={`${t.showcase.toolbar.description} · ${previewNavigationExpanded ? t.preview.navigation.close : t.preview.navigation.open}`}
+                  onClick={togglePreviewNavigation}
+                >
+                  {previewNavigationExpanded ? <PanelLeftClose size={15} /> : <PanelLeftOpen size={15} />}
+                  <span>{t.showcase.toolbar.description}</span>
+                </button>
                 <code>dashboard-overview-01</code>
               </div>
 
@@ -330,7 +370,16 @@ export function App() {
 
               <div id="preview-panel" role="tabpanel" aria-labelledby="preview-tab" className="block-viewer-stage" hidden={previewMode !== "preview"}>
                 <div className="preview-viewport" data-viewport={previewViewport}>
-                  <PreviewDashboard key={`${scenario.id}-${previewRefreshKey}`} scenario={scenario} state={demoState} locale={locale} viewport={previewViewport} />
+                  <PreviewDashboard
+                    scenario={scenario}
+                    state={demoState}
+                    locale={locale}
+                    viewport={previewViewport}
+                    resetKey={previewRefreshKey}
+                    navigationVisible={previewNavigationVisible}
+                    onNavigationVisibleChange={setPreviewNavigationVisible}
+                    navigationReturnFocusRef={previewNavigationReturnFocusRef}
+                  />
                 </div>
               </div>
               <div id="code-panel" role="tabpanel" aria-labelledby="code-tab" className="block-code-view" hidden={previewMode !== "code"}>

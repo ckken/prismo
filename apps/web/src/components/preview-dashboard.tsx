@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import {
   BadgeCheck,
   BarChart3,
@@ -24,12 +24,35 @@ import { getSceneChrome, PreviewScene, type PreviewRange } from "./preview-scene
 
 const navigationIcons = [LayoutDashboard, BarChart3, ListChecks, Bot, Users]
 
-export function PreviewDashboard({ scenario, state, locale, viewport = "desktop" }: { scenario: Scenario; state: DemoState; locale: Locale; viewport?: "desktop" | "tablet" | "mobile" }) {
+type PreviewViewport = "desktop" | "tablet" | "mobile"
+
+type PreviewDashboardProps = {
+  scenario: Scenario
+  state: DemoState
+  locale: Locale
+  viewport?: PreviewViewport
+  resetKey?: number
+  navigationVisible: boolean
+  onNavigationVisibleChange: (visible: boolean) => void
+  navigationReturnFocusRef: { current: HTMLButtonElement | null }
+}
+
+export function PreviewDashboard({
+  scenario,
+  state,
+  locale,
+  viewport = "desktop",
+  resetKey = 0,
+  navigationVisible,
+  onNavigationVisibleChange,
+  navigationReturnFocusRef,
+}: PreviewDashboardProps) {
   const t = copy[locale].preview
   const chrome = getSceneChrome(locale, scenario.id)
-  const [navigationOpen, setNavigationOpen] = useState(false)
-  const [compactNavigation, setCompactNavigation] = useState(false)
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [compactMeasurement, setCompactMeasurement] = useState<{ viewport: PreviewViewport; compact: boolean }>(() => ({
+    viewport,
+    compact: viewport !== "desktop",
+  }))
   const [activeNav, setActiveNav] = useState<string>(chrome.navigation[0][1])
   const [query, setQuery] = useState("")
   const [range, setRange] = useState<PreviewRange>("30d")
@@ -43,8 +66,14 @@ export function PreviewDashboard({ scenario, state, locale, viewport = "desktop"
   const userMenuRef = useRef<HTMLDivElement>(null)
   const userMenuTriggerRef = useRef<HTMLButtonElement>(null)
   const userMenuOpenRef = useRef(false)
+  const previousNavigationVisibleRef = useRef(navigationVisible)
   const searchRef = useRef<HTMLInputElement>(null)
   const toastTimerRef = useRef<number | null>(null)
+  const compactNavigation = compactMeasurement.viewport === viewport
+    ? compactMeasurement.compact
+    : viewport !== "desktop"
+  const navigationOpen = compactNavigation && navigationVisible
+  const sidebarCollapsed = !compactNavigation && !navigationVisible
 
   const announce = (message: string) => {
     setToast(message)
@@ -53,9 +82,15 @@ export function PreviewDashboard({ scenario, state, locale, viewport = "desktop"
   }
 
   const closeNavigation = () => {
-    setNavigationOpen(false)
+    if (compactNavigation) onNavigationVisibleChange(false)
     setUserMenuOpen(false)
-    if (compactNavigation) window.requestAnimationFrame(() => navigationToggleRef.current?.focus())
+    if (compactNavigation) {
+      window.requestAnimationFrame(() => {
+        const returnTarget = navigationReturnFocusRef.current
+        if (returnTarget?.isConnected && returnTarget.getClientRects().length > 0) returnTarget.focus()
+        else navigationToggleRef.current?.focus()
+      })
+    }
   }
 
   userMenuOpenRef.current = userMenuOpen
@@ -67,33 +102,48 @@ export function PreviewDashboard({ scenario, state, locale, viewport = "desktop"
   }
 
   useEffect(() => {
-    setNavigationOpen(false)
     setNotificationsOpen(false)
     setUserMenuOpen(false)
     setActiveNav(chrome.navigation[0][1])
     setQuery("")
     setRange("30d")
     setToast(null)
-  }, [chrome, scenario.id])
+  }, [chrome, resetKey, scenario.id])
 
   useEffect(() => () => {
     if (toastTimerRef.current) window.clearTimeout(toastTimerRef.current)
   }, [])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const shell = shellRef.current
     if (!shell) return
     const sync = (width: number) => {
+      if (width <= 0) return
       const compact = width <= 780
-      setCompactNavigation(compact)
-      if (compact) setSidebarCollapsed(false)
-      else setNavigationOpen(false)
+      setCompactMeasurement((current) => (
+        current.viewport === viewport && current.compact === compact
+          ? current
+          : { viewport, compact }
+      ))
     }
     sync(shell.getBoundingClientRect().width)
     const observer = new ResizeObserver((entries) => sync(entries[0]?.contentRect.width ?? shell.getBoundingClientRect().width))
     observer.observe(shell)
     return () => observer.disconnect()
   }, [viewport])
+
+  useLayoutEffect(() => {
+    const wasVisible = previousNavigationVisibleRef.current
+    previousNavigationVisibleRef.current = navigationVisible
+    if (navigationVisible) return
+
+    setUserMenuOpen(false)
+    if (!wasVisible || !navigationRef.current?.contains(document.activeElement)) return
+
+    const returnTarget = navigationReturnFocusRef.current
+    if (returnTarget?.isConnected && returnTarget.getClientRects().length > 0) returnTarget.focus()
+    else navigationToggleRef.current?.focus()
+  }, [navigationReturnFocusRef, navigationVisible])
 
   useEffect(() => {
     const focusSearch = (event: KeyboardEvent) => {
@@ -133,7 +183,7 @@ export function PreviewDashboard({ scenario, state, locale, viewport = "desktop"
     }
     window.addEventListener("keydown", trapFocus)
     return () => window.removeEventListener("keydown", trapFocus)
-  }, [compactNavigation, navigationOpen])
+  }, [compactNavigation, navigationOpen, resetKey, scenario.id])
 
   useEffect(() => {
     if (!userMenuOpen) return
@@ -157,7 +207,7 @@ export function PreviewDashboard({ scenario, state, locale, viewport = "desktop"
   }, [userMenuOpen])
 
   let iconIndex = 0
-  const navigationHidden = compactNavigation ? !navigationOpen : sidebarCollapsed
+  const navigationHidden = !navigationVisible
   const workspaceHidden = compactNavigation && navigationOpen
   const shellClassName = [
     "dashboard-shell",
@@ -275,14 +325,15 @@ export function PreviewDashboard({ scenario, state, locale, viewport = "desktop"
             ref={navigationToggleRef}
             className="dashboard-nav-toggle"
             type="button"
-            aria-label={compactNavigation ? (navigationOpen ? t.navigation.close : t.navigation.open) : (sidebarCollapsed ? t.navigation.open : t.navigation.close)}
+            aria-label={navigationVisible ? t.navigation.close : t.navigation.open}
             aria-controls="showcase-dashboard-navigation"
-            aria-expanded={compactNavigation ? navigationOpen : !sidebarCollapsed}
-            onClick={() => compactNavigation ? setNavigationOpen((value) => !value) : setSidebarCollapsed((value) => !value)}
+            aria-expanded={navigationVisible}
+            onClick={(event) => {
+              navigationReturnFocusRef.current = event.currentTarget
+              onNavigationVisibleChange(!navigationVisible)
+            }}
           >
-            {compactNavigation
-              ? navigationOpen ? <PanelLeftClose size={15} /> : <PanelLeftOpen size={15} />
-              : sidebarCollapsed ? <PanelLeftOpen size={15} /> : <PanelLeftClose size={15} />}
+            {navigationVisible ? <PanelLeftClose size={15} /> : <PanelLeftOpen size={15} />}
           </button>
           <label className="dashboard-search">
             <Search size={13} />
@@ -311,7 +362,7 @@ export function PreviewDashboard({ scenario, state, locale, viewport = "desktop"
             </div>
           </div>
           <div className="dashboard-canvas">
-            <PreviewScene key={`${scenario.id}-${locale}-${state}`} scenario={scenario} state={state} locale={locale} query={query} range={range} announce={announce} />
+            <PreviewScene key={`${scenario.id}-${locale}-${state}-${resetKey}`} scenario={scenario} state={state} locale={locale} query={query} range={range} announce={announce} />
           </div>
         </section>
       </div>
