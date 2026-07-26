@@ -91,8 +91,8 @@ const chromeCopy = {
     "agent-ops": {
       brand: "Agent Control",
       workspace: "生产可观测中心",
-      navigation: [["观测", "运行总览", "调用链", "模型"], ["运维", "告警", "预算", "路由"]],
-      search: "搜索 Trace、Agent 或模型...",
+      navigation: [["观测", "运行总览", "调用记录", "模型"], ["运维", "告警", "预算", "路由"]],
+      search: "搜索调用、Agent 或模型...",
       range: { "7d": "近 24 小时", "30d": "近 7 天", "90d": "近 30 天" },
       exportReady: "Agent 运行快照.json 已生成",
       notification: "P95 延迟已超过预警阈值。",
@@ -167,7 +167,7 @@ function ContractAlert({ locale, path }: { locale: Locale; path: string }) {
   return (
     <div className="scene-contract-alert" role="alert">
       <AlertTriangle size={16} />
-      <div><strong>{locale === "zh" ? "局部数据契约不匹配" : "Widget contract mismatch"}</strong><span>{locale === "zh" ? "其他模块继续使用最近一次有效快照。" : "Other widgets keep the last valid snapshot."}</span></div>
+      <div><strong>{locale === "zh" ? "部分模块的数据格式不匹配" : "Widget contract mismatch"}</strong><span>{locale === "zh" ? "其他模块仍显示最近一次有效数据。" : "Other widgets keep the last valid snapshot."}</span></div>
       <code>{path}</code>
     </div>
   )
@@ -241,7 +241,7 @@ function SalesScene({ locale, query, range, scenario, state, announce }: ScenePr
     "30d": { revenue: scenario.metrics[0].value, target: scenario.metrics[1].value, pipeline: scenario.metrics[2].value, winRate: "31.8%", chart: scenario.chart.slice(-10) },
     "90d": { revenue: "$2.38m", target: "91.4%", pipeline: "$2.64m", winRate: "34.1%", chart: scenario.chart.map((item, index) => item + [2, -5, 4, -2][index % 4]) },
   }[range]
-  if (state === "loading") return <SceneLoading label={zh ? "正在加载销售 Dashboard" : "Loading sales dashboard"} />
+  if (state === "loading") return <SceneLoading label={zh ? "正在加载销售数据" : "Loading sales dashboard"} />
   return (
     <div className="scene sales-scene">
       <div className="scene-metrics-grid">
@@ -254,12 +254,12 @@ function SalesScene({ locale, query, range, scenario, state, announce }: ScenePr
         <>
           <div className="sales-main-grid">
             <article className="scene-card sales-forecast">
-              <div className="scene-card-heading"><div><span>{zh ? "预测" : "Forecast"}</span><strong>{zh ? "实际营收 vs 目标" : "Revenue vs target"}</strong></div><div className="scene-legend"><span /><small>{zh ? "实际" : "Actual"}</small><span className="comparison" /><small>{zh ? "目标" : "Target"}</small></div></div>
+              <div className="scene-card-heading"><div><span>{zh ? "预测" : "Forecast"}</span><strong>{zh ? "营收与目标对比" : "Revenue vs target"}</strong></div><div className="scene-legend"><span /><small>{zh ? "实际" : "Actual"}</small><span className="comparison" /><small>{zh ? "目标" : "Target"}</small></div></div>
               <MiniTrend values={rangeData.chart} label={zh ? "销售实际与目标趋势" : "Sales actual versus target trend"} compare />
               <div className="scene-axis"><span>{zh ? "第 1 周" : "W1"}</span><span>{zh ? "第 4 周" : "W4"}</span><span>{zh ? "第 8 周" : "W8"}</span><span>{zh ? "第 12 周" : "W12"}</span></div>
             </article>
             <article className="scene-card followups-card">
-              <div className="scene-card-heading"><div><span>{zh ? "今日" : "Today"}</span><strong>{zh ? "优先跟进" : "Priority follow-ups"}</strong></div><span className="scene-count">{2 - Math.min(scheduled.length, 2)}</span></div>
+              <div className="scene-card-heading"><div><span>{zh ? "今日" : "Today"}</span><strong>{zh ? "优先跟进事项" : "Priority follow-ups"}</strong></div><span className="scene-count">{2 - Math.min(scheduled.length, 2)}</span></div>
               <div className="followup-list">
                 {salesAccounts.filter((item) => ["acme", "sora"].includes(item.id) && !scheduled.includes(item.id)).map((item) => (
                   <div key={item.id}><span className="scene-avatar">{item.owner.slice(0, 2).toUpperCase()}</span><div><strong>{item.name}</strong><small>{localizedLabel(item.risk, zh, salesRiskZh)} · {localizedSalesDate(item.close, zh)}</small></div><button type="button" aria-label={zh ? `安排 ${item.name} 跟进` : `Schedule ${item.name} follow-up`} onClick={() => { setScheduled((value) => [...value, item.id]); announce(zh ? `${item.name} 已安排跟进` : `${item.name} follow-up scheduled`) }}><Check size={13} /></button></div>
@@ -269,7 +269,7 @@ function SalesScene({ locale, query, range, scenario, state, announce }: ScenePr
             </article>
           </div>
           <article className="scene-card pipeline-card">
-            <div className="scene-card-heading"><div><span>{zh ? "销售管道" : "Pipeline"}</span><strong>{zh ? "按阶段查看" : "Stage conversion"}</strong></div><small>{zh ? "点击阶段筛选客户" : "Select a stage to filter accounts"}</small></div>
+            <div className="scene-card-heading"><div><span>{zh ? "销售管道" : "Pipeline"}</span><strong>{zh ? "各阶段转化" : "Stage conversion"}</strong></div><small>{zh ? "点击阶段筛选客户" : "Select a stage to filter accounts"}</small></div>
             <div className="pipeline-funnel" role="group" aria-label={zh ? "商机阶段筛选" : "Pipeline stage filter"}>
               {[["All", 32, "$1.8m"], ["Discovery", 24, "$620k"], ["Qualified", 18, "$480k"], ["Proposal", 11, "$342k"], ["Negotiation", 6, "$214k"]].map(([name, count, value], index) => (
                 <button aria-pressed={stage === name} className={stage === name ? "active" : ""} style={{ width: `${100 - index * 9}%` }} type="button" key={name} onClick={() => { setStage(String(name)); setPage(0) }}><span>{localizedLabel(String(name), zh, salesStageZh)}</span><strong>{count}</strong><small>{value}</small></button>
@@ -282,7 +282,7 @@ function SalesScene({ locale, query, range, scenario, state, announce }: ScenePr
               <div className="scene-table-scroll"><table><thead><tr><th>{zh ? "客户" : "Account"}</th><th>{zh ? "阶段" : "Stage"}</th><th>{zh ? "负责人" : "Owner"}</th><th aria-sort={sortDesc ? "descending" : "ascending"}><button type="button" onClick={() => setSortDesc(!sortDesc)}>{zh ? "金额" : "Value"}<ChevronDown className={sortDesc ? "" : "rotated"} size={12} /></button></th><th>{zh ? "风险" : "Risk"}</th></tr></thead><tbody>{current.length ? current.map((item) => <tr key={item.id}><td><button className="scene-link" type="button" onClick={() => setSelected(selected === item.id ? null : item.id)}>{item.name}</button></td><td><span className="scene-badge">{localizedLabel(item.stage, zh, salesStageZh)}</span></td><td>{item.owner}</td><td>${Math.round(item.amount / 1000)}k</td><td><span className={`scene-risk ${item.risk === "Overdue" || item.risk === "At risk" ? "danger" : ""}`}>{localizedLabel(item.risk, zh, salesRiskZh)}</span></td></tr>) : <tr><td className="scene-table-empty" colSpan={5}>{zh ? "没有匹配的商机" : "No matching opportunities"}</td></tr>}</tbody></table></div>
             )}
             {state !== "contract-error" ? <div className="scene-pagination"><span>{zh ? `第 ${page + 1} 页` : `Page ${page + 1}`}</span><button type="button" aria-label={zh ? "上一页" : "Previous page"} disabled={page === 0} onClick={() => setPage(page - 1)}><ChevronLeft size={13} /></button><button type="button" aria-label={zh ? "下一页" : "Next page"} disabled={(page + 1) * 3 >= accounts.length} onClick={() => setPage(page + 1)}><ChevronRight size={13} /></button></div> : null}
-            {selectedAccount ? <div className="scene-detail"><div><Sparkles size={15} /><strong>{selectedAccount.name}</strong><button type="button" aria-label={zh ? "关闭客户详情" : "Close account details"} onClick={() => setSelected(null)}><X size={13} /></button></div><p>{zh ? "Agent 建议：确认决策人并在 48 小时内发送方案摘要。" : "Agent suggestion: confirm the decision maker and send the proposal summary within 48 hours."}</p><span>{zh ? "下一步" : "Next step"}: {localizedSalesDate(selectedAccount.close, zh)}</span></div> : null}
+            {selectedAccount ? <div className="scene-detail"><div><Sparkles size={15} /><strong>{selectedAccount.name}</strong><button type="button" aria-label={zh ? "关闭客户详情" : "Close account details"} onClick={() => setSelected(null)}><X size={13} /></button></div><p>{zh ? "建议操作：确认决策人，并在 48 小时内发送方案摘要。" : "Agent suggestion: confirm the decision maker and send the proposal summary within 48 hours."}</p><span>{zh ? "下一步" : "Next step"}: {localizedSalesDate(selectedAccount.close, zh)}</span></div> : null}
           </article>
         </>
       )}
@@ -313,7 +313,7 @@ function CommerceScene({ locale, query, range, scenario, state, announce }: Scen
     "90d": { gmv: "$362k", orders: "9,604", conversion: "5.1%", pending: "42", pattern: [5, -4, 3, -6, 8, -2, 6, -5, 4, -3, 7, -1] },
   }[range]
   const rangeChart = scenario.chart.slice(range === "7d" ? -7 : 0).map((item, index) => item + rangeData.pattern[index])
-  if (state === "loading") return <SceneLoading label={zh ? "正在加载电商 Dashboard" : "Loading commerce dashboard"} />
+  if (state === "loading") return <SceneLoading label={zh ? "正在加载电商数据" : "Loading commerce dashboard"} />
   return (
     <div className="scene commerce-scene">
       <div className="scene-metrics-grid">
@@ -338,7 +338,7 @@ function CommerceScene({ locale, query, range, scenario, state, announce }: Scen
           </div>
           <div className="commerce-detail-grid">
             <article className="scene-card products-card">
-              <div className="scene-card-heading"><div><span>{zh ? "商品" : "Products"}</span><strong>{zh ? "Top SKU" : "Top products"}</strong></div><Box size={15} /></div>
+              <div className="scene-card-heading"><div><span>{zh ? "商品" : "Products"}</span><strong>{zh ? "热销商品" : "Top products"}</strong></div><Box size={15} /></div>
               {[{ name: zh ? "工作室台灯" : "Studio lamp", value: "$18.4k", trend: "+18%" }, { name: zh ? "旅行背包" : "Travel pack", value: "$14.2k", trend: "+11%" }, { name: zh ? "桌面系统" : "Desk system", value: "$12.8k", trend: "+9%" }].map((item) => <button aria-pressed={product === item.name} className={product === item.name ? "active" : ""} type="button" key={item.name} onClick={() => setProduct(product === item.name ? null : item.name)}><PackageCheck size={14} /><span><strong>{item.name}</strong><small>{item.value}</small></span><em>{item.trend}</em></button>)}
               {product ? <div className="product-detail"><strong>{product}</strong><span>{zh ? "转化率 6.8% · 库存可售 18 天" : "6.8% conversion · 18 days of inventory"}</span></div> : null}
             </article>
@@ -351,7 +351,7 @@ function CommerceScene({ locale, query, range, scenario, state, announce }: Scen
           <article className="scene-card scene-table-card orders-card">
             <div className="scene-card-heading"><div><span>{zh ? "订单" : "Orders"}</span><strong>{zh ? "操作队列" : "Operations queue"}</strong></div><span>{orders.length} {zh ? "笔" : "orders"}</span></div>
             {state === "contract-error" ? <ContractAlert locale={locale} path={scenario.contractPath} /> : <div className="scene-table-scroll"><table><thead><tr><th><span className="sr-only">{zh ? "选择" : "Select"}</span></th><th>{zh ? "订单" : "Order"}</th><th>{zh ? "客户" : "Customer"}</th><th>{zh ? "渠道" : "Channel"}</th><th>{zh ? "状态" : "Status"}</th><th>{zh ? "金额" : "Amount"}</th></tr></thead><tbody>{orders.length ? orders.map((item) => <tr key={item.id}><td><input type="checkbox" aria-label={`${zh ? "选择订单" : "Select order"} ${item.id}`} checked={selectedOrders.includes(item.id)} onChange={() => setSelectedOrders((value) => value.includes(item.id) ? value.filter((id) => id !== item.id) : [...value, item.id])} /></td><td><strong>{item.id}</strong></td><td>{item.customer}</td><td>{localizedLabel(item.channel, zh, commerceChannelZh)}</td><td><span className={`scene-badge ${item.status === "Review" && !fulfilled.includes(item.id) ? "warning" : ""}`}>{fulfilled.includes(item.id) ? (zh ? "已履约" : "Fulfilled") : localizedLabel(item.status, zh, commerceStatusZh)}</span></td><td>${item.amount.toLocaleString()}</td></tr>) : <tr><td className="scene-table-empty" colSpan={6}>{zh ? "没有匹配的订单" : "No matching orders"}</td></tr>}</tbody></table></div>}
-            {selectedOrders.length ? <div className="bulk-bar" role="status"><strong>{selectedOrders.length} {zh ? "笔已选" : "selected"}</strong><button type="button" onClick={() => { setFulfilled((value) => [...new Set([...value, ...selectedOrders])]); announce(zh ? `${selectedOrders.length} 笔订单已标记履约` : `${selectedOrders.length} orders marked fulfilled`); setSelectedOrders([]) }}><CheckCircle2 size={13} />{zh ? "标记已履约" : "Mark fulfilled"}</button><button type="button" onClick={() => { announce(zh ? "已生成选中订单文件" : "Selection export prepared"); setSelectedOrders([]) }}>{zh ? "导出选中项" : "Export selection"}</button></div> : null}
+            {selectedOrders.length ? <div className="bulk-bar" role="status"><strong>{selectedOrders.length} {zh ? "笔已选" : "selected"}</strong><button type="button" onClick={() => { setFulfilled((value) => [...new Set([...value, ...selectedOrders])]); announce(zh ? `已将 ${selectedOrders.length} 笔订单标记为已履约` : `${selectedOrders.length} orders marked fulfilled`); setSelectedOrders([]) }}><CheckCircle2 size={13} />{zh ? "标记为已履约" : "Mark fulfilled"}</button><button type="button" onClick={() => { announce(zh ? "已生成选中订单文件" : "Selection export prepared"); setSelectedOrders([]) }}>{zh ? "导出选中项" : "Export selection"}</button></div> : null}
           </article>
         </>
       )}
@@ -400,7 +400,7 @@ function AgentOpsScene({ locale, query, range, scenario, state, announce }: Scen
     "30d": { requests: 1.24, cost: scenario.metrics[1].value, latency: scenario.metrics[2].value, pattern: [0, 4, -2, 3, -4, 2, -1, 5, -3, 2, -2, 4] },
     "90d": { requests: 5.48, cost: "$28.6k", latency: "2.1s", pattern: [6, -4, 5, -5, 7, -3, 4, -6, 8, -2, 5, -1] },
   }[range]
-  if (state === "loading") return <SceneLoading label={zh ? "正在加载 Agent 运行 Dashboard" : "Loading agent operations dashboard"} />
+  if (state === "loading") return <SceneLoading label={zh ? "正在加载 Agent 运行数据" : "Loading agent operations dashboard"} />
   return (
     <div className="scene agent-scene">
       <div className="agent-control-row">
@@ -417,13 +417,13 @@ function AgentOpsScene({ locale, query, range, scenario, state, announce }: Scen
         <>
           <div className="agent-main-grid">
             <article className="scene-card agent-trend-card">
-              <div className="scene-card-heading"><div><span>{zh ? "实时运行" : "Live traffic"}</span><strong>{metric === "Requests" ? (zh ? "请求量" : "Request volume") : metric === "Latency" ? (zh ? "延迟" : "Latency") : (zh ? "成本" : "Cost")}</strong></div><div className="scene-segmented compact" role="group" aria-label={zh ? "趋势指标" : "Trend metric"}>{["Requests", "Latency", "Cost"].map((item) => <button aria-pressed={metric === item} className={metric === item ? "active" : ""} type="button" key={item} onClick={() => setMetric(item as typeof metric)}>{item === "Requests" && zh ? "请求" : item === "Latency" && zh ? "延迟" : item === "Cost" && zh ? "成本" : item}</button>)}</div></div>
+              <div className="scene-card-heading"><div><span>{zh ? "实时流量" : "Live traffic"}</span><strong>{metric === "Requests" ? (zh ? "请求量" : "Request volume") : metric === "Latency" ? (zh ? "延迟" : "Latency") : (zh ? "成本" : "Cost")}</strong></div><div className="scene-segmented compact" role="group" aria-label={zh ? "趋势指标" : "Trend metric"}>{["Requests", "Latency", "Cost"].map((item) => <button aria-pressed={metric === item} className={metric === item ? "active" : ""} type="button" key={item} onClick={() => setMetric(item as typeof metric)}>{item === "Requests" && zh ? "请求" : item === "Latency" && zh ? "延迟" : item === "Cost" && zh ? "成本" : item}</button>)}</div></div>
               <MiniTrend values={scenario.chart.map((item, index) => Math.round((metric === "Requests" ? item + tick : metric === "Latency" ? item * .72 + (index % 2 ? 5 : -3) : item * .34 + (index % 3) * 4) + rangeData.pattern[index]))} label={zh ? `${metric === "Requests" ? "请求量" : metric === "Latency" ? "延迟" : "成本"}趋势` : `${metric} trend`} />
               <div className="scene-axis"><span>00:00</span><span>08:00</span><span>16:00</span><span>{zh ? "现在" : "Now"}</span></div>
             </article>
             <article className="scene-card alerts-card">
-              <div className="scene-card-heading"><div><span>{zh ? "告警" : "Alerts"}</span><strong>{zh ? "正在发生" : "Active now"}</strong></div><span className="scene-count danger">{environment === "Production" ? 2 : 0}</span></div>
-              {environment === "Production" ? <div className="alert-list"><button type="button" onClick={() => { setSelectedTrace("tr_8f20"); setFailureCode("TOOL_5XX") }}><span className="alert-dot" /><div><strong>{zh ? "P95 延迟 > 1.5 秒" : "P95 latency > 1.5s"}</strong><small>{zh ? "影响研究简报 Agent" : "Research brief affected"}</small></div><ChevronRight size={13} /></button><button type="button" onClick={() => { setSelectedTrace("tr_8f18"); setFailureCode("RATE_LIMIT") }}><span className="alert-dot warning" /><div><strong>{zh ? "限流压力升高" : "Rate limit pressure"}</strong><small>{zh ? "gpt-5.6 路由" : "gpt-5.6 route"}</small></div><ChevronRight size={13} /></button></div> : <div className="scene-inline-success"><CheckCircle2 size={15} />{zh ? "预发环境正常" : "Staging is healthy"}</div>}
+              <div className="scene-card-heading"><div><span>{zh ? "告警" : "Alerts"}</span><strong>{zh ? "当前告警" : "Active now"}</strong></div><span className="scene-count danger">{environment === "Production" ? 2 : 0}</span></div>
+              {environment === "Production" ? <div className="alert-list"><button type="button" onClick={() => { setSelectedTrace("tr_8f20"); setFailureCode("TOOL_5XX") }}><span className="alert-dot" /><div><strong>{zh ? "P95 延迟 > 1.5 秒" : "P95 latency > 1.5s"}</strong><small>{zh ? "研究简报 Agent 受影响" : "Research brief affected"}</small></div><ChevronRight size={13} /></button><button type="button" onClick={() => { setSelectedTrace("tr_8f18"); setFailureCode("RATE_LIMIT") }}><span className="alert-dot warning" /><div><strong>{zh ? "限流压力升高" : "Rate limit pressure"}</strong><small>{zh ? "gpt-5.6 路由" : "gpt-5.6 route"}</small></div><ChevronRight size={13} /></button></div> : <div className="scene-inline-success"><CheckCircle2 size={15} />{zh ? "预发环境正常" : "Staging is healthy"}</div>}
             </article>
           </div>
           <div className="agent-detail-grid">
@@ -437,9 +437,9 @@ function AgentOpsScene({ locale, query, range, scenario, state, announce }: Scen
             </article>
           </div>
           <article className="scene-card scene-table-card traces-card">
-            <div className="scene-card-heading"><div><span>{zh ? "调用链探索" : "Trace explorer"}</span><strong>{zh ? "最近运行" : "Recent runs"}</strong></div><span>{visibleTraces.length} {zh ? "条 Trace" : "traces"}</span></div>
-            {state === "contract-error" ? <ContractAlert locale={locale} path={scenario.contractPath} /> : <div className="scene-table-scroll"><table><thead><tr><th>Trace</th><th>Agent</th><th>{zh ? "模型" : "Model"}</th><th>{zh ? "延迟" : "Latency"}</th><th>{zh ? "状态" : "Status"}</th><th>{zh ? "成本" : "Cost"}</th></tr></thead><tbody>{visibleTraces.length ? visibleTraces.map((item) => <tr key={item.id}><td><button className="scene-link mono" type="button" onClick={() => setSelectedTrace(selectedTrace === item.id ? null : item.id)}>{item.id}</button></td><td>{localizedLabel(item.agent, zh, agentNameZh)}</td><td>{item.model}</td><td>{item.latency}</td><td><span className={`scene-badge ${item.status === "Failed" && !retried.includes(item.id) ? "danger" : ""}`}>{retried.includes(item.id) ? (zh ? "已成功" : "Succeeded") : localizedLabel(item.status, zh, traceStatusZh)}</span></td><td>{item.cost}</td></tr>) : <tr><td className="scene-table-empty" colSpan={6}>{zh ? "没有匹配的 Trace" : "No matching traces"}</td></tr>}</tbody></table></div>}
-            {selected ? <div className="trace-detail"><div><div><span className="trace-status-dot" /><strong>{selected.id}</strong></div><button type="button" aria-label={zh ? "关闭 Trace 详情" : "Close trace details"} onClick={() => setSelectedTrace(null)}><X size={13} /></button></div><div className="trace-timeline"><span><i /><strong>{zh ? "提示词组装完成" : "Prompt assembled"}</strong><small>84ms</small></span><span><i /><strong>{zh ? "模型响应" : "Model response"}</strong><small>{selected.latency}</small></span><span className={selected.status === "Failed" && !retried.includes(selected.id) ? "failed" : ""}><i /><strong>{retried.includes(selected.id) ? (zh ? "重试已成功" : "Retry succeeded") : selected.code}</strong><small>{selected.cost}</small></span></div>{selected.status === "Failed" && !retried.includes(selected.id) ? <button className="scene-action" type="button" onClick={() => { announce(zh ? `${selected.id} 重试已成功` : `${selected.id} retry succeeded`); setRetried((value) => [...value, selected.id]) }}><RefreshCw size={13} />{zh ? "仿真重试" : "Retry simulation"}</button> : null}</div> : null}
+            <div className="scene-card-heading"><div><span>{zh ? "调用记录" : "Trace explorer"}</span><strong>{zh ? "最近运行" : "Recent runs"}</strong></div><span>{visibleTraces.length} {zh ? "条调用记录" : "traces"}</span></div>
+            {state === "contract-error" ? <ContractAlert locale={locale} path={scenario.contractPath} /> : <div className="scene-table-scroll"><table><thead><tr><th>{zh ? "调用 ID" : "Trace"}</th><th>Agent</th><th>{zh ? "模型" : "Model"}</th><th>{zh ? "延迟" : "Latency"}</th><th>{zh ? "状态" : "Status"}</th><th>{zh ? "成本" : "Cost"}</th></tr></thead><tbody>{visibleTraces.length ? visibleTraces.map((item) => <tr key={item.id}><td><button className="scene-link mono" type="button" onClick={() => setSelectedTrace(selectedTrace === item.id ? null : item.id)}>{item.id}</button></td><td>{localizedLabel(item.agent, zh, agentNameZh)}</td><td>{item.model}</td><td>{item.latency}</td><td><span className={`scene-badge ${item.status === "Failed" && !retried.includes(item.id) ? "danger" : ""}`}>{retried.includes(item.id) ? (zh ? "已成功" : "Succeeded") : localizedLabel(item.status, zh, traceStatusZh)}</span></td><td>{item.cost}</td></tr>) : <tr><td className="scene-table-empty" colSpan={6}>{zh ? "没有匹配的调用记录" : "No matching traces"}</td></tr>}</tbody></table></div>}
+            {selected ? <div className="trace-detail"><div><div><span className="trace-status-dot" /><strong>{selected.id}</strong></div><button type="button" aria-label={zh ? "关闭调用详情" : "Close trace details"} onClick={() => setSelectedTrace(null)}><X size={13} /></button></div><div className="trace-timeline"><span><i /><strong>{zh ? "提示词组装完成" : "Prompt assembled"}</strong><small>84ms</small></span><span><i /><strong>{zh ? "模型响应" : "Model response"}</strong><small>{selected.latency}</small></span><span className={selected.status === "Failed" && !retried.includes(selected.id) ? "failed" : ""}><i /><strong>{retried.includes(selected.id) ? (zh ? "重试已成功" : "Retry succeeded") : selected.code}</strong><small>{selected.cost}</small></span></div>{selected.status === "Failed" && !retried.includes(selected.id) ? <button className="scene-action" type="button" onClick={() => { announce(zh ? `${selected.id} 重试已成功` : `${selected.id} retry succeeded`); setRetried((value) => [...value, selected.id]) }}><RefreshCw size={13} />{zh ? "模拟重试" : "Retry simulation"}</button> : null}</div> : null}
           </article>
         </>
       )}

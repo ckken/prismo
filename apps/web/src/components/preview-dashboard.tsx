@@ -256,7 +256,7 @@ export function PreviewDashboard({
           ))}
         </nav>
         <div className="dashboard-sidebar-footer">
-          <a ref={settingsLinkRef} href="#showcase" onClick={(event) => { event.preventDefault(); setActiveNav(t.navigation.settings); closeNavigation(); announce(locale === "zh" ? "设置为预览交互" : "Settings is simulated") }}><Settings size={13} /><span>{t.navigation.settings}</span></a>
+          <a ref={settingsLinkRef} href="#showcase" onClick={(event) => { event.preventDefault(); setActiveNav(t.navigation.settings); closeNavigation(); announce(locale === "zh" ? "设置仅供演示" : "Settings is simulated") }}><Settings size={13} /><span>{t.navigation.settings}</span></a>
           <div className="dashboard-user-menu" ref={userMenuRef}>
             {userMenuOpen ? (
               <div
@@ -352,7 +352,7 @@ export function PreviewDashboard({
             <div>
               <span className="dash-kicker">{activeNav}</span>
               <h3>{scenario.eyebrow}</h3>
-              <p>{locale === "zh" ? "所有操作均为本地仿真，不会写入真实数据。" : "Every action is a local simulation with no persistent writes."}</p>
+              <p>{locale === "zh" ? "当前为本地演示，不会写入真实数据。" : "Every action is a local simulation with no persistent writes."}</p>
             </div>
             <div className="dash-actions">
               <select className="mini-button" aria-label={locale === "zh" ? "时间范围" : "Date range"} value={range} onChange={(event) => setRange(event.target.value as PreviewRange)}>

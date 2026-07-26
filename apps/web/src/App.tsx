@@ -227,7 +227,10 @@ export function App() {
         <section className="hero section-wrap">
           <div className="hero-copy">
             <div className="eyebrow"><span /> {t.hero.eyebrow}</div>
-            <h1>{t.hero.titleBefore}<br />{t.hero.titleAfter} <em>{t.hero.titleEmphasis}</em></h1>
+            <h1>
+              <span>{t.hero.titleBefore}</span><br />
+              <span>{t.hero.titleAfter}{locale === "en" ? " " : null}<em>{t.hero.titleEmphasis}</em></span>
+            </h1>
             <p>{t.hero.description}</p>
             <div className="hero-actions">
               <a className="button primary" href="#showcase">{t.hero.primaryAction} <ArrowRight size={16} /></a>
@@ -288,7 +291,11 @@ export function App() {
         <section className="showcase section-wrap" id="showcase">
           <div className="section-heading">
             <span className="section-index">{t.showcase.index}</span>
-            <h2>{t.showcase.title}</h2>
+            <h2>
+              {t.showcase.titleParts
+                ? <>{t.showcase.titleParts.before}<span className="no-break">{t.showcase.titleParts.noBreak}</span>{t.showcase.titleParts.after}</>
+                : t.showcase.title}
+            </h2>
             <p>{t.showcase.description}</p>
           </div>
 

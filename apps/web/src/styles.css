@@ -22,6 +22,10 @@
   text-rendering: optimizeLegibility;
 }
 
+:root:lang(zh-CN) {
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
 :root[data-theme="dark"] {
   color-scheme: dark;
   --canvas: #0a100f;
@@ -71,6 +75,8 @@ button:focus-visible, a:focus-visible { outline: 3px solid color-mix(in srgb, va
 .eyebrow { display: flex; align-items: center; gap: 9px; }
 .eyebrow span, .status-dot { width: 7px; height: 7px; border-radius: 999px; background: var(--brand); box-shadow: 0 0 0 5px color-mix(in srgb, var(--brand) 14%, transparent); }
 .hero h1 { margin: 24px 0 22px; font-size: clamp(62px, 7.2vw, 102px); font-weight: 520; line-height: .91; letter-spacing: -.075em; }
+.hero h1 > span { display: inline-block; white-space: nowrap; }
+.no-break { white-space: nowrap; }
 .hero h1 em { color: var(--brand); font-family: Georgia, serif; font-weight: 400; }
 .hero-copy > p { max-width: 630px; margin: 0; color: var(--ink-muted); font-size: 18px; line-height: 1.7; }
 .hero-actions { display: flex; gap: 11px; margin-top: 34px; }
@@ -502,6 +508,84 @@ select.mini-button { min-width: 124px; outline: none; }
 .disclaimer { margin: 0; }
 .footer-links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 17px; color: var(--ink-muted); font-size: 10px; }
 
+:root:lang(zh-CN) .hero h1 {
+  font-size: clamp(52px, 5vw, 66px);
+  font-weight: 650;
+  line-height: 1.1;
+  letter-spacing: -.04em;
+}
+:root:lang(zh-CN) .hero h1 em { font-family: inherit; font-weight: inherit; font-style: normal; }
+:root:lang(zh-CN) .hero-copy > p { line-height: 1.75; }
+:root:lang(zh-CN) .section-heading h2,
+:root:lang(zh-CN) .proof-copy h2,
+:root:lang(zh-CN) .final-cta h2 {
+  font-size: clamp(34px, 4vw, 54px);
+  font-weight: 600;
+  line-height: 1.14;
+  letter-spacing: -.035em;
+  text-wrap: balance;
+}
+:root:lang(zh-CN) .eyebrow,
+:root:lang(zh-CN) .section-index,
+:root:lang(zh-CN) .panel-label,
+:root:lang(zh-CN) .dash-kicker,
+:root:lang(zh-CN) .console-group small,
+:root:lang(zh-CN) .trust-strip,
+:root:lang(zh-CN) .dashboard-nav-group > span,
+:root:lang(zh-CN) .debug-control-label,
+:root:lang(zh-CN) .block-code-view span,
+:root:lang(zh-CN) .family-status,
+:root:lang(zh-CN) .proof-status {
+  font-family: inherit;
+  letter-spacing: .025em;
+  text-transform: none;
+}
+:root:lang(zh-CN) .debug-control-label,
+:root:lang(zh-CN) .block-code-view span,
+:root:lang(zh-CN) .dash-kicker { font-size: 10px; }
+:root:lang(zh-CN) .dash-heading p { font-size: 12px; line-height: 1.6; }
+:root:lang(zh-CN) .scene-metric-heading,
+:root:lang(zh-CN) .scene-card-heading span,
+:root:lang(zh-CN) .scene-card-heading small,
+:root:lang(zh-CN) .scene-delta,
+:root:lang(zh-CN) .scene-filter-row button,
+:root:lang(zh-CN) .scene-segmented button,
+:root:lang(zh-CN) .scene-pagination span,
+:root:lang(zh-CN) .scene-detail > span,
+:root:lang(zh-CN) .scene-action,
+:root:lang(zh-CN) .scene-inline-success {
+  font-size: 11px;
+  line-height: 1.45;
+}
+:root:lang(zh-CN) .scene-table-card th,
+:root:lang(zh-CN) .scene-table-card td { font-size: 12px; }
+:root:lang(zh-CN) .scene-contract-alert strong { font-size: 12px; }
+:root:lang(zh-CN) .scene-axis,
+:root:lang(zh-CN) .scene-badge,
+:root:lang(zh-CN) .scene-risk,
+:root:lang(zh-CN) .scene-contract-alert span,
+:root:lang(zh-CN) .scene-contract-alert code,
+:root:lang(zh-CN) .followup-list small,
+:root:lang(zh-CN) .pipeline-funnel button small,
+:root:lang(zh-CN) .products-card > button small,
+:root:lang(zh-CN) .products-card > button em,
+:root:lang(zh-CN) .product-detail,
+:root:lang(zh-CN) .inventory-alert small,
+:root:lang(zh-CN) .bulk-bar button,
+:root:lang(zh-CN) .alert-list small,
+:root:lang(zh-CN) .routing-stack button,
+:root:lang(zh-CN) .failure-codes button,
+:root:lang(zh-CN) .trace-timeline span {
+  font-size: 10px;
+  line-height: 1.45;
+}
+:root:lang(zh-CN) .followup-list strong,
+:root:lang(zh-CN) .pipeline-funnel button span,
+:root:lang(zh-CN) .products-card > button strong,
+:root:lang(zh-CN) .inventory-alert strong,
+:root:lang(zh-CN) .bulk-bar strong,
+:root:lang(zh-CN) .alert-list strong { font-size: 11px; }
+
 @media (max-width: 1020px) {
   .hero { grid-template-columns: 1fr 390px; gap: 35px; }
   .showcase-frame { grid-template-columns: 1fr; grid-template-areas: "prompt" "preview"; }
@@ -530,6 +614,7 @@ select.mini-button { min-width: 124px; outline: none; }
   .mobile-menu { display: grid; }
   .hero { grid-template-columns: 1fr; min-height: auto; padding-block: 80px 60px; }
   .hero h1 { font-size: clamp(56px, 19vw, 82px); }
+  :root:lang(zh-CN) .hero h1 { font-size: clamp(38px, 11.5vw, 45px); line-height: 1.14; }
   .hero-copy > p { font-size: 16px; }
   .hero-console { transform: none; }
   .trust-strip { justify-content: flex-start; gap: 13px; overflow-x: auto; }
