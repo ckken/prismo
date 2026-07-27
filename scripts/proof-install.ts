@@ -1,10 +1,11 @@
 import { mkdtemp, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join, resolve } from "node:path"
+import { dashboardOverviewRecipe, SHADCN_CLI_VERSION } from "../packages/dashboard-agent/src/catalog.ts"
 
 const root = resolve(import.meta.dir, "..")
 const fixture = await mkdtemp(join(tmpdir(), "shadcn-agent-kit-proof-"))
-const registryItem = await Bun.file(resolve(root, "apps/web/public/r/dashboard-overview-01.json")).text()
+const registryItem = await Bun.file(resolve(root, `apps/web/public/r/${dashboardOverviewRecipe.id}.json`)).text()
 
 async function write(path: string, content: string) {
   await Bun.write(resolve(fixture, path), content)
@@ -24,7 +25,7 @@ async function run(label: string, command: string[]) {
 const server = Bun.serve({
   port: 0,
   fetch(request) {
-    return new URL(request.url).pathname === "/dashboard-overview-01.json"
+    return new URL(request.url).pathname === `/${dashboardOverviewRecipe.id}.json`
       ? new Response(registryItem, { headers: { "content-type": "application/json" } })
       : new Response("Not found", { status: 404 })
   },
@@ -87,9 +88,9 @@ try {
   ])
 
   await run("fixture dependency install", ["bun", "install"])
-  const registryUrl = `http://127.0.0.1:${server.port}/dashboard-overview-01.json`
-  await run("shadcn registry dry-run", ["bunx", "--bun", "shadcn@4.14.1", "add", registryUrl, "--dry-run"])
-  await run("shadcn registry add", ["bunx", "--bun", "shadcn@4.14.1", "add", registryUrl, "--yes"])
+  const registryUrl = `http://127.0.0.1:${server.port}/${dashboardOverviewRecipe.id}.json`
+  await run("shadcn registry dry-run", ["bunx", "--bun", `shadcn@${SHADCN_CLI_VERSION}`, "add", registryUrl, "--dry-run"])
+  await run("shadcn registry add", ["bunx", "--bun", `shadcn@${SHADCN_CLI_VERSION}`, "add", registryUrl, "--yes"])
   await run("TypeScript 7 noEmit", ["bunx", "tsc", "--noEmit"])
   await run("four explicit data states", ["bun", "proof-states.tsx"])
   await run("Rsbuild production build", ["bunx", "rsbuild", "build"])

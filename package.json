@@ -13,6 +13,7 @@
     "build": "bun run registry:build && bun --cwd apps/web build",
     "typecheck": "bun --cwd apps/web typecheck && bunx tsc -p tsconfig.scripts.json --noEmit",
     "test": "bun run registry:build && bun test",
+    "dashboard-agent": "bun packages/dashboard-agent/src/cli.ts",
     "check": "bun run typecheck && bun run test && bun run build",
     "registry:build": "bun scripts/build-registry.ts",
     "skill:validate": "bun scripts/validate-skill.ts skills/shadcn-agent-kit",

@@ -21,7 +21,6 @@ import {
   Smartphone,
   Sun,
   Tablet,
-  Terminal,
   X,
 } from "lucide-react"
 import { LogoMark } from "./components/logo"
@@ -336,9 +335,9 @@ export function App() {
                   </div>
                   <button ref={expandButtonRef} type="button" className="block-viewer-icon-action" aria-label={previewExpanded ? t.aria.minimizePreview : t.aria.expandPreview} onClick={() => setPreviewExpanded((expanded) => !expanded)}>{previewExpanded ? <Minimize2 size={16} /> : <Maximize2 size={16} />}</button>
                   <button type="button" className="block-viewer-icon-action" aria-label={t.aria.refreshPreview} onClick={() => { setPreviewMode("preview"); setPreviewRefreshKey((key) => key + 1) }}><RefreshCw size={16} /></button>
-                  <button type="button" className="block-viewer-command" onClick={copyInstall} aria-label={copied ? t.aria.copiedCommand : t.aria.copyCommand}>
-                    {copied ? <Check size={15} /> : <Terminal size={15} />}<code>{installCommand}</code>
-                  </button>
+                  <span className="block-viewer-command" role="status" aria-label={t.showcase.candidateNote}>
+                    <ShieldCheck size={15} /><code>{t.showcase.candidate}</code>
+                  </span>
                 </div>
               </div>
               <div className="block-viewer-mobile-summary">
@@ -353,7 +352,7 @@ export function App() {
                   {previewNavigationExpanded ? <PanelLeftClose size={15} /> : <PanelLeftOpen size={15} />}
                   <span>{t.showcase.toolbar.description}</span>
                 </button>
-                <code>dashboard-overview-01</code>
+                <code>{t.showcase.candidate}</code>
               </div>
 
               {previewMode === "preview" && (
@@ -390,8 +389,8 @@ export function App() {
                 </div>
               </div>
               <div id="code-panel" role="tabpanel" aria-labelledby="code-tab" className="block-code-view" hidden={previewMode !== "code"}>
-                <div><span>{t.showcase.code.registryId}</span><code>dashboard-overview-01</code></div>
-                <div><span>{t.showcase.code.installCommand}</span><code>{installCommand}</code></div>
+                <div><span>{t.showcase.code.status}</span><code>{t.showcase.candidate}</code></div>
+                <div><span>{t.showcase.code.availability}</span><code>{t.showcase.candidateNote}</code></div>
                 <div>
                   <span>{t.showcase.code.files}</span>
                   <ul>{t.showcase.code.fileItems.map((item) => <li key={item}>{item}</li>)}</ul>
@@ -440,7 +439,7 @@ export function App() {
             <span className="section-index">{t.proof.index}</span>
             <h2>{t.proof.title}</h2>
             <p>{t.proof.description}</p>
-            <div className="proof-quote"><FileCheck2 /><span>proof-report.json</span><strong>{t.proof.quote}</strong></div>
+            <div className="proof-quote"><FileCheck2 /><span>{t.proof.artifact}</span><strong>{t.proof.quote}</strong></div>
           </div>
           <div className="proof-list">
             {t.proof.checks.map((check) => (

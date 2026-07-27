@@ -6,12 +6,14 @@ Agent 加载仓库内的 `skills/shadcn-agent-kit/`。首发以 Codex + Bun + Rs
 
 | 阶段 | Agent 行为 | 确定性产物 |
 |---|---|---|
-| Inspect | 读取目标项目局部 | `ProjectProfile` |
-| Select | 只评分 Available | `RecipeDecision` |
+| Inspect | 定位目标 workspace，并以 `shadcn info --json` 读取项目真相 | `ProjectProfile` |
+| Plan | 结构化需求，只评分兼容的 Available Recipe | `DashboardSpec` + `RecipeDecision` |
 | Preview | `shadcn add --dry-run` | `InstallPlan` |
 | Install | 用户确认后写入源码 | 文件与依赖清单 |
 | Adapt | 业务字段映射到 Contract | 一个 Data Source / Adapter |
 | Proof | 类型、构建、四态、响应式 | `ProofReport` |
+
+通用 shadcn 项目识别、Registry 搜索和安装交给固定版本的官方 CLI；本项目只维护 DashboardSpec、领域选择、Adapter 和 Proof。
 
 ## 最少项目侧代码
 
@@ -40,7 +42,7 @@ interface DataSource<TQuery, TRaw> {
 }
 ```
 
-`toDashboardOverview(raw)` 是项目侧唯一字段映射，输出 Recipe 的 `{ metrics, rows }` ViewModel。只有原始 API 已严格匹配该结构时才可省略映射并直接 `dashboardOverviewSchema.parse(raw)`。L2 列表可让 `TRaw` 使用 `{ items, total }`，但必须由 Adapter 转成对应 Recipe Contract，不能直接传给当前 L0 Recipe。
+`toDashboardOverview(raw)` 是项目侧唯一字段映射，输出 Recipe 的 `{ metrics, chart, rows }` ViewModel。只有原始 API 已严格匹配该结构时才可省略映射并直接 `dashboardOverviewSchema.parse(raw)`。L2 列表可让 `TRaw` 使用 `{ items, total }`，由 Adapter 分别映射为 Recipe 数据和受控 `rowCount`。
 
 Fixture 与 REST Adapter 使用同一 Contract 测试。网络错误、权限错误、取消和 Contract mismatch 不合并为同一种状态。
 
@@ -51,6 +53,8 @@ Fixture 与 REST Adapter 使用同一 Contract 测试。网络错误、权限错
 | L0 | 静态摘要、响应式滚动 | 排序、筛选、选择 |
 | L1 | 客户端排序/筛选/分页、列显隐、行选择 | 大数据量和后台任务 |
 | L2 | 受控服务端分页/排序/筛选、取消请求、总数 | 权限、审计、导出、虚拟化、跨页选择 |
+
+当前 `dashboard-overview-01` 同时支持内部客户端状态与外部受控查询，按最高能力标记为 L2；是否实际启用 L2 由接入方式决定。
 
 类 Excel 的单元格编辑、公式、冻结区和协同不由 shadcn + TanStack Table 承诺。
 

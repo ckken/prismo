@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ckken.github.io/shadcnagent/schemas/dashboard-plan.v1.schema.json",
+  "title": "DashboardPlan v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["dashboardSpec", "projectProfile", "recipeDecision", "installPlan", "nextActions"],
+  "properties": {
+    "dashboardSpec": {
+      "$ref": "./dashboard-spec.v1.schema.json"
+    },
+    "projectProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "projectDir",
+        "componentsJson",
+        "rootDir",
+        "lockfile",
+        "packageManager",
+        "packageScripts",
+        "routerPackages",
+        "agentInstructionFiles",
+        "risks",
+        "shadcn"
+      ],
+      "properties": {
+        "projectDir": { "type": "string" },
+        "componentsJson": { "type": "string" },
+        "rootDir": { "type": "string" },
+        "lockfile": { "type": ["string", "null"] },
+        "packageManager": { "enum": ["bun", "pnpm", "yarn", "npm", "unknown"] },
+        "packageScripts": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "routerPackages": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "agentInstructionFiles": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "risks": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "shadcn": {
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "required": ["source", "info"],
+              "properties": {
+                "source": { "const": "shadcn@4.14.1" },
+                "info": {}
+              }
+            }
+          ]
+        }
+      }
+    },
+    "recipeDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "recipe",
+        "reason",
+        "candidates",
+        "matchedCapabilities",
+        "missingCapabilities",
+        "forbiddenCapabilities"
+      ],
+      "properties": {
+        "status": { "enum": ["selected", "clarify", "rejected"] },
+        "recipe": { "type": ["object", "null"] },
+        "reason": { "type": "string" },
+        "candidates": { "type": "array", "items": { "type": "object" } },
+        "matchedCapabilities": { "type": "array", "items": { "type": "string" } },
+        "missingCapabilities": { "type": "array", "items": { "type": "string" } },
+        "forbiddenCapabilities": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "installPlan": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["executable", "argv", "command"],
+          "properties": {
+            "executable": { "const": false },
+            "argv": { "type": "array", "items": { "type": "string" } },
+            "command": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "nextActions": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

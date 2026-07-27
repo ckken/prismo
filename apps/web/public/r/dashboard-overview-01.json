@@ -38,6 +38,13 @@
       "loading",
       "empty",
       "contract-error"
+    ],
+    "capabilities": [
+      "metric-grid",
+      "trend-chart",
+      "data-table",
+      "controlled-query",
+      "four-states"
     ]
   }
 }

@@ -2,12 +2,13 @@
 
 > From request to proof.
 
-面向 Coding Agent 的 shadcn-compatible Web Recipe Kit。当前先交付 Dashboard：Agent 识别目标项目、只从 Available Recipe 中选择、预览源码变更、接入数据，并输出可复核的验证结果。
+面向 Coding Agent 的 CLI-first Dashboard 专家能力包。它用 Skill 约束领域流程，用 CLI 生成机器计划，用 shadcn-compatible Registry 交付可编辑源码，并用 Proof 区分通过、失败和未验证项。
 
 ## 当前可用
 
 | 内容 | 状态 | 说明 |
 |---|---|---|
+| `dashboard-agent inspect / plan` | Available | workspace-aware 项目识别、DashboardSpec、Recipe 决策与 dry-run argv |
 | 品牌官网与 Showcase | Available | 三个确定性场景预览、四种数据状态、深浅主题 |
 | `dashboard-overview-01` | Available | KPI、TanStack Table、Zod Contract、四态 |
 | `shadcn-agent-kit` Skill | Available | Inspect → Select → Preview → Install → Adapt → Proof |
@@ -52,7 +53,18 @@ bunx --bun shadcn@4.14.1 add \
 
 ## Agent 接入
 
-将 [Skill](skills/shadcn-agent-kit/SKILL.md) 提供给 Codex 或兼容的 Coding Agent，然后直接描述业务目标，例如：
+先生成只读机器计划：
+
+```bash
+bun run dashboard-agent plan \
+  --cwd . \
+  --request "增加经营总览：3 个 KPI、趋势图、服务端分页表格" \
+  --json
+```
+
+CLI 会自动定位单一 shadcn workspace，以固定版本 `shadcn info --json` 读取项目配置，并输出 `DashboardSpec + ProjectProfile + RecipeDecision + InstallPlan`。多个 workspace、只有通用词的请求、Candidate 场景和越界能力都会停止猜测，不产生安装计划。
+
+将 [Skill](skills/shadcn-agent-kit/SKILL.md) 提供给 Codex 或兼容的 Coding Agent 后，也可以直接描述业务目标，例如：
 
 ```text
 用 Shadcn Agent Kit 给这个项目增加经营总览：3 个 KPI、状态表格、
@@ -60,6 +72,8 @@ loading/empty/error 状态。先给 dry-run，确认后安装并运行 Proof。
 ```
 
 Agent 只需要在目标项目写少量路由挂载和 Data Adapter；Recipe 内部承担 UI、状态和 Contract。详细边界见 [Agent integration](docs/product/agent-integration.md)。
+
+目标架构、阶段门禁和成功指标见 [Dashboard Agent 演进方案](docs/product/dashboard-agent-evolution.md)，生态取舍见 [Dashboard Agent 研究](docs/research/dashboard-agent-landscape.md)。
 
 ## 表格边界
 

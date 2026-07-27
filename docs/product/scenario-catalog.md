@@ -2,9 +2,11 @@
 
 Catalog version: `0.1.0`。
 
+机器真相源为 `packages/dashboard-agent/src/catalog.ts`；本文只做产品说明，Registry build 与选择器都直接消费该 Catalog。
+
 | Recipe | 状态 | 使用场景 | 表格等级 | 是否可安装 |
 |---|---|---|---|---|
-| `dashboard-overview-01` | Available | KPI + 只读展示表 | L0 | 是 |
+| `dashboard-overview-01` | Available | KPI + 趋势图 + 客户端或受控服务端表格 | L2 | 是 |
 | `sales-command-center` | Candidate | 目标、趋势、排名、客户表 | L2 | 否 |
 | `commerce-operations` | Candidate | GMV、渠道、订单、商品、批量动作 | L2 | 否 |
 | `agent-operations` | Candidate | 调用量、成本、P95、错误、模型分布 | L1/L2 | 否 |

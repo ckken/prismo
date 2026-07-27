@@ -1,6 +1,6 @@
 ---
 name: shadcn-agent-kit
-description: Inspect a React project, select an available shadcn-compatible dashboard recipe, preview source changes, connect a typed data adapter, and produce verification evidence. Use for requests to add dashboard UI with minimal project-side code through a shadcn Registry URL.
+description: Plan and deliver a dashboard through the dashboard-agent CLI, an available shadcn-compatible recipe, one typed data adapter, and explicit verification evidence. Use for dashboard requests that need minimal project-side code and a reviewable Registry install.
 ---
 
 # Shadcn Agent Kit
@@ -12,17 +12,19 @@ This is an independent community project. It is not affiliated with, endorsed by
 ## Workflow
 
 1. Inspect the target before choosing a recipe.
-   - Run `bun scripts/inspect-project.ts <project-dir>` from this skill directory.
-   - Read the target `AGENTS.md`, package manager, `components.json`, aliases, router, Tailwind version, and existing UI conventions.
+   - From the Shadcn Agent Kit repository root, run `bun run dashboard-agent inspect --cwd <project-dir>`.
+   - The CLI locates a single shadcn workspace and uses fixed `shadcn info --json` output as the project truth source.
+   - If multiple `components.json` files exist, pass the exact workspace; never guess.
+   - Also read the target `AGENTS.md`, router, scripts, and existing UI conventions.
    - Do not switch the target package manager or replace established configuration.
-2. Select from Available recipes only.
-   - Read [scenario-catalog.md](references/scenario-catalog.md).
-   - Run `bun scripts/select-recipe.ts '<request>'` for a deterministic shortlist.
+2. Create a machine-readable plan.
+   - Run `bun run dashboard-agent plan --cwd <project-dir> --request '<request>' --json`.
+   - Review `DashboardSpec`, `ProjectProfile`, `RecipeDecision`, `InstallPlan`, and unresolved fields.
+   - Exit code `3` means clarification or rejection is required; do not work around it.
    - Candidate entries are explanatory only. Never generate an install command for them.
    - If no Available recipe satisfies the request, explain the gap and stop before installation.
 3. Preview the change.
-   - Resolve the public Registry URL.
-   - Run `shadcn add <url> --dry-run` with the target project's package runner.
+   - Execute the exact `InstallPlan.argv`; it uses the public Registry URL and `--dry-run`.
    - Report files to create or update, dependencies, conflicts, and assumptions.
    - Ask before overwriting a modified or unknown file.
 4. Install source and adapt data.
@@ -49,6 +51,7 @@ This is an independent community project. It is not affiliated with, endorsed by
 Return:
 
 - `ProjectProfile`: detected stack, package manager, aliases, router, styling, and risks.
+- `DashboardSpec`: inferred intent, widgets, data mode, table level, states, and unresolved fields.
 - `RecipeDecision`: request summary, considered Available recipes, selected recipe, fit, and rejected alternatives.
 - `InstallPlan`: Registry URL, exact command, file/dependency changes, adapter seam, table level, and conflicts.
 - `ProofReport`: typecheck, build, contract, four states, responsive widths, accessibility basics, and unverified items.

@@ -13,6 +13,7 @@ describe("registry build", () => {
     expect(item.registryDependencies).toContain("sidebar")
     expect(item.registryDependencies).toContain("chart")
     expect(item.meta.states).toEqual(["success", "loading", "empty", "contract-error"])
+    expect(item.meta.capabilities).toContain("controlled-query")
     expect(item.files[0].content).toContain("dashboardOverviewSchema")
     expect(item.files[0].content).toContain("onTableQueryChange")
     expect(item.files[0].content).toContain("export type DashboardOverviewProps")
@@ -26,5 +27,12 @@ describe("registry build", () => {
   test("registry index excludes candidate showcase concepts", async () => {
     const registry = await Bun.file(resolve(root, "apps/web/public/r/registry.json")).json()
     expect(registry.items.map((item: { name: string }) => item.name)).toEqual(["dashboard-overview-01"])
+  })
+
+  test("publishes the dashboard agent contract schemas", async () => {
+    const spec = await Bun.file(resolve(root, "apps/web/public/schemas/dashboard-spec.v1.schema.json")).json()
+    const plan = await Bun.file(resolve(root, "apps/web/public/schemas/dashboard-plan.v1.schema.json")).json()
+    expect(spec.$id).toEndWith("/dashboard-spec.v1.schema.json")
+    expect(plan.properties.dashboardSpec.$ref).toBe("./dashboard-spec.v1.schema.json")
   })
 })

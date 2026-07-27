@@ -280,7 +280,7 @@ tbody tr:last-child td { border-bottom: 0; }
 .viewport-switcher button, .block-viewer-icon-action { display: grid; width: 26px; height: 26px; place-items: center; border: 0; border-radius: 5px; background: transparent; color: var(--ink-muted); cursor: pointer; }
 .viewport-switcher button:hover, .viewport-switcher button.active, .block-viewer-icon-action:hover { background: var(--surface-muted); color: var(--ink); }
 .block-viewer-icon-action { width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
-.block-viewer-command { display: flex; align-items: center; gap: 7px; max-width: 265px; height: 34px; padding: 0 11px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); cursor: pointer; }
+.block-viewer-command { display: flex; align-items: center; gap: 7px; max-width: 265px; height: 34px; padding: 0 11px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); }
 .block-viewer-command code { overflow: hidden; font: 11px ui-monospace, SFMono-Regular, Menlo, monospace; text-overflow: ellipsis; white-space: nowrap; }
 .block-viewer-mobile-summary { display: none; }
 .block-viewer-debugbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 46px; margin-bottom: 8px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }

@@ -94,12 +94,12 @@ export const copy = {
         state: "State",
       },
       code: {
-        registryId: "Registry ID",
-        installCommand: "Install command",
+        status: "Status",
+        availability: "Availability",
         files: "Files",
-        fileItems: ["components/dashboard-overview-01.tsx"],
+        fileItems: ["No installable files"],
         verification: "Verification",
-        verificationItems: ["Type check", "Production build", "Preview states"],
+        verificationItems: ["Deterministic preview only", "Registry install pending"],
       },
       states: {
         success: "Success",
@@ -145,6 +145,7 @@ export const copy = {
       title: "Proof is part of the recipe.",
       description:
         "A build is useful evidence, not the whole answer. Reports preserve failed and unverified checks instead of turning them green.",
+      artifact: "ProofReport contract",
       quote: "Machine-readable. Human-reviewable.",
       checks: [
         { label: "Type + Build", status: "passed", statusLabel: "passed", detail: "TS 7 noEmit · Rsbuild production" },
@@ -316,12 +317,12 @@ export const copy = {
         state: "状态",
       },
       code: {
-        registryId: "Registry ID",
-        installCommand: "安装命令",
+        status: "状态",
+        availability: "开放情况",
         files: "文件",
-        fileItems: ["components/dashboard-overview-01.tsx"],
+        fileItems: ["暂无可安装文件"],
         verification: "验证",
-        verificationItems: ["类型检查", "生产构建", "预览状态"],
+        verificationItems: ["仅确定性预览", "Registry 安装待验证"],
       },
       states: {
         success: "正常",
@@ -365,6 +366,7 @@ export const copy = {
       index: "04 / 验证",
       title: "每个 Recipe 都带验证结果。",
       description: "构建通过只是其中一项。失败或尚未验证的检查会原样保留。",
+      artifact: "ProofReport 契约",
       quote: "机器能读取，人也能复核。",
       checks: [
         { label: "类型 + 构建", status: "passed", statusLabel: "通过", detail: "TS 7 noEmit · Rsbuild 生产构建" },

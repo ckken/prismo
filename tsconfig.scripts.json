@@ -3,6 +3,5 @@
   "compilerOptions": {
     "types": ["bun"]
   },
-  "include": ["scripts/**/*.ts", "skills/**/*.ts", "tests/**/*.ts"]
+  "include": ["scripts/**/*.ts", "skills/**/*.ts", "packages/dashboard-agent/**/*.ts", "tests/**/*.ts"]
 }
-

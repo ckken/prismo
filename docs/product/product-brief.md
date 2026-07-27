@@ -18,12 +18,13 @@
 
 目标用户是使用 Codex 等 Coding Agent 的开发者和小团队。常见问题不是缺 UI，而是 Agent 每次从零拼页面、数据边界混乱、复杂表格被低估、完成后缺少证据。
 
-本项目把稳定部分沉淀为四层：
+本项目把稳定部分沉淀为五层：
 
-1. Skill：识别项目与需求，约束选择和交付步骤。
-2. Registry：安装 editable React source，不引入黑盒 UI runtime。
-3. Contract + Adapter：业务字段只在一处映射。
-4. Proof：区分通过、失败和未验证项。
+1. DashboardSpec：把请求转换为可验证的机器协议。
+2. Skill：约束领域判断和交付步骤。
+3. CLI + Registry：确定性识别、选择并安装 editable React source。
+4. Contract + Adapter：业务字段只在一处映射。
+5. Proof：区分通过、失败和未验证项。
 
 ## 使用边界
 

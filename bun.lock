@@ -31,6 +31,13 @@
         "typescript": "7.0.2",
       },
     },
+    "packages/dashboard-agent": {
+      "name": "@shadcnagent/dashboard-agent",
+      "version": "0.1.0-alpha.0",
+      "bin": {
+        "dashboard-agent": "./src/cli.ts",
+      },
+    },
     "packages/registry": {
       "name": "@shadcnagent/registry",
       "version": "0.1.0-alpha.0",
@@ -92,6 +99,8 @@
     "@rspack/plugin-react-refresh": ["@rspack/plugin-react-refresh@2.0.2", "", { "peerDependencies": { "@rspack/core": "^2.0.0", "react-refresh": ">=0.10.0 <1.0.0" }, "optionalPeers": ["@rspack/core"] }, "sha512-dGNZiCxQxgAUI9sah7gd8u+O7OJZRCmqtEJNDOd8xW5RqcieC86F7p5qcShyw6onH5pKf57evpr2VjGbaFGkZg=="],
 
     "@shadcn-agent-kit/web": ["@shadcn-agent-kit/web@workspace:apps/web"],
+
+    "@shadcnagent/dashboard-agent": ["@shadcnagent/dashboard-agent@workspace:packages/dashboard-agent"],
 
     "@shadcnagent/registry": ["@shadcnagent/registry@workspace:packages/registry"],
 
