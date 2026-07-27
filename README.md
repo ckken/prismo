@@ -9,7 +9,7 @@
 | 内容 | 状态 | 说明 |
 |---|---|---|
 | `dashboard-agent inspect / plan` | Available | workspace-aware 项目识别、DashboardSpec、Recipe 决策与 dry-run argv |
-| 路由化品牌官网 | Available | `sidebar-07` 布局、六个 Dashboard 功能组合、Catalog 与交付流程 |
+| 路由化品牌官网 | Available | `sidebar-07` 布局、六个 Dashboard 功能组合、确定性 Mock 数据与时间区间筛选 |
 | `dashboard-overview-01` | Available | KPI、TanStack Table、Zod Contract、四态 |
 | `shadcn-agent-kit` Skill | Available | 一键安装、独立 CLI bundle、Inspect → Select → Preview → Install → Adapt → Proof |
 | Sales / Commerce / Agent Ops / CRM / Finance | Candidate | 只做概念预览，不提供安装命令 |

@@ -24,6 +24,7 @@
 ## 视觉原则
 
 - 官网 Shell 使用 `npx shadcn@latest add sidebar-07` 生成的 SidebarProvider、Sidebar、SidebarInset 和移动 Sheet。
+- Dashboard 页头使用 shadcn `Popover + Calendar` 时间区间组件，提供最近 7 / 28 / 90 天、最近 1 年与自定义起止日期。
 - 参考 shadcn UI Kit 的信息密度和组合方式，但保持 shadcnagent 的品牌、Recipe 状态和真实交付边界。
 - 每个路由先展示该 Dashboard 的功能组合，再展示与场景匹配的卡片、趋势、列表和表格。
 - 桌面 Sidebar 可折叠为图标栏；移动端使用 `sidebar-07` 的 Sheet 抽屉，内容保持单列。
@@ -31,6 +32,8 @@
 ## 静态运行边界
 
 - GitHub Pages 不接在线 LLM，Showcase 是确定性演示。
+- 六个用例的数据来自本地确定性 Mock；同一用例与时间区间总是生成相同结果，切换区间会重算指标、趋势点和表格日期。
+- 时间区间状态由 Dashboard Layout 持有，使用 TanStack Router 切换用例时继续保留；刷新后恢复最近 28 天。
 - `dashboard-overview-01` 是唯一首发可安装项。
 - Sales、Commerce、Agent Ops、CRM、Finance 是 Candidate，只展示概念预览，不显示安装命令。
 - Registry JSON 与官网同源发布到 `/r/*.json`。
@@ -40,6 +43,7 @@
 
 - 375、768、1440 均无页面级横向溢出。
 - 移动端菜单、命令面板、用例导航和复制命令可操作。
+- 时间预设与自定义区间均可操作，选择后指标、趋势周期和表格日期同步变化。
 - 六个 Dashboard、Catalog、Workflow 的深层 URL 可直接打开并刷新。
 - 深浅主题均可读，`focus-visible` 清楚。
 - 支持 `prefers-reduced-motion`。

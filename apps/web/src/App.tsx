@@ -35,6 +35,7 @@ import {
 } from "lucide-react"
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router"
 import { AppSidebar } from "./components/app-sidebar"
+import { DateRangePicker } from "./components/date-range-picker"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -59,6 +60,12 @@ import {
   type Metric,
   type StatusItem,
 } from "./dashboard-site-data"
+import {
+  createDefaultDashboardDateRange,
+  createMockDashboard,
+  getRangePeriodLabel,
+  type DashboardDateRange,
+} from "./dashboard-mock-data"
 import type { Locale } from "./i18n"
 import {
   applyPreferences,
@@ -89,8 +96,10 @@ const dashboardIcons: Record<DashboardId, LucideIcon> = {
 type SiteContextValue = {
   locale: Locale
   theme: Theme
+  dateRange: DashboardDateRange
   setLocale: (locale: Locale) => void
   setTheme: (theme: Theme) => void
+  setDateRange: (range: DashboardDateRange) => void
 }
 
 const SiteContext = createContext<SiteContextValue | null>(null)
@@ -238,6 +247,7 @@ function RouteBreadcrumb() {
 export function DashboardLayout() {
   const [locale, setLocaleState] = useState<Locale>(() => getInitialLocale())
   const [theme, setThemeState] = useState<Theme>(() => getInitialTheme())
+  const [dateRange, setDateRange] = useState<DashboardDateRange>(() => createDefaultDashboardDateRange())
   const [commandOpen, setCommandOpen] = useState(false)
   const commandButtonRef = useRef<HTMLButtonElement>(null)
   const t = siteText[locale]
@@ -283,7 +293,10 @@ export function DashboardLayout() {
     return () => window.removeEventListener("keydown", handleKeys)
   }, [])
 
-  const contextValue = useMemo(() => ({ locale, theme, setLocale, setTheme }), [locale, theme])
+  const contextValue = useMemo(
+    () => ({ locale, theme, dateRange, setLocale, setTheme, setDateRange }),
+    [dateRange, locale, theme],
+  )
 
   return (
     <SiteContext.Provider value={contextValue}>
@@ -327,7 +340,7 @@ export function DashboardLayout() {
 }
 
 function PageHeader({ dashboard }: { dashboard: DashboardDefinition }) {
-  const { locale } = useSiteContext()
+  const { dateRange, locale, setDateRange } = useSiteContext()
   const [copied, setCopied] = useState(false)
   const t = siteText[locale]
   const registryUrl = typeof window === "undefined"
@@ -358,7 +371,7 @@ function PageHeader({ dashboard }: { dashboard: DashboardDefinition }) {
         </div>
       </div>
       <div className="kit-page-actions">
-        <span className="kit-date"><span aria-hidden="true">◫</span>{t.page.date}</span>
+        <DateRangePicker locale={locale} value={dateRange} onChange={setDateRange} />
         {dashboard.status === "available" ? (
           <button className="kit-primary-action" type="button" onClick={copyInstall}>
             {copied ? <Check size={16} /> : <Clipboard size={16} />}
@@ -422,7 +435,7 @@ function CompactLine({ values }: { values: number[] }) {
 }
 
 function TrendChart({ dashboard, className = "" }: { dashboard: DashboardDefinition; className?: string }) {
-  const { locale } = useSiteContext()
+  const { dateRange, locale } = useSiteContext()
   const { chart } = dashboard
   const makePoints = (values: number[]) => {
     const max = Math.max(...values)
@@ -437,7 +450,7 @@ function TrendChart({ dashboard, className = "" }: { dashboard: DashboardDefinit
     <article className={`kit-card kit-chart ${className}`}>
       <div className="kit-card-heading">
         <div><h2>{localize(chart.title, locale)}</h2><p>{localize(chart.description, locale)}</p></div>
-        <span>12M</span>
+        <span>{getRangePeriodLabel(dateRange)}</span>
       </div>
       <div className="kit-chart-legend">
         <span><i />{localize(chart.primaryLabel, locale)}</span>
@@ -591,8 +604,11 @@ function CrmBoard({ dashboard }: { dashboard: DashboardDefinition }) {
 }
 
 export function DashboardPage({ dashboardId }: { dashboardId: DashboardId }) {
-  const { locale } = useSiteContext()
-  const dashboard = dashboards.find((item) => item.id === dashboardId) ?? dashboards[0]
+  const { dateRange, locale } = useSiteContext()
+  const dashboard = useMemo(
+    () => createMockDashboard(dashboardId, dateRange),
+    [dashboardId, dateRange],
+  )
 
   useEffect(() => {
     document.title = `${localize(dashboard.title, locale)} — shadcnagent`

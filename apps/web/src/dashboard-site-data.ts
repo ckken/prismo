@@ -9,6 +9,7 @@ export type Metric = {
   value: string
   delta: string
   direction?: "up" | "down" | "neutral"
+  mockAggregation: "sum" | "average" | "snapshot"
 }
 
 export type ListItem = {
@@ -88,10 +89,10 @@ export const dashboards: DashboardDefinition[] = [
       text("四态处理", "Four states"),
     ],
     metrics: [
-      { label: text("活跃客户", "Active customers"), value: "2,350", delta: "+18.0%", direction: "up" },
-      { label: text("总收入", "Total revenue"), value: "¥452k", delta: "+20.1%", direction: "up" },
-      { label: text("转化率", "Conversion"), value: "12.2%", delta: "+1.9%", direction: "up" },
-      { label: text("待处理事项", "Open actions"), value: "18", delta: "-12.5%", direction: "down" },
+      { label: text("活跃客户", "Active customers"), value: "2,350", delta: "+18.0%", direction: "up", mockAggregation: "snapshot" },
+      { label: text("总收入", "Total revenue"), value: "¥452k", delta: "+20.1%", direction: "up", mockAggregation: "sum" },
+      { label: text("转化率", "Conversion"), value: "12.2%", delta: "+1.9%", direction: "up", mockAggregation: "average" },
+      { label: text("待处理事项", "Open actions"), value: "18", delta: "-12.5%", direction: "down", mockAggregation: "snapshot" },
     ],
     chart: {
       title: text("经营趋势", "Operating trend"),
@@ -141,10 +142,10 @@ export const dashboards: DashboardDefinition[] = [
     description: text("集中跟踪目标、预测、团队表现、Pipeline 和重点客户。", "Track targets, forecasts, team performance, pipeline, and priority accounts."),
     modules: [text("目标进度", "Target progress"), text("销售趋势", "Sales trend"), text("团队排名", "Team ranking"), text("Pipeline", "Pipeline"), text("客户表格", "Accounts table")],
     metrics: [
-      { label: text("本月收入", "Monthly revenue"), value: "$184k", delta: "+12.4%", direction: "up" },
-      { label: text("Pipeline", "Pipeline"), value: "$612k", delta: "+18.7%", direction: "up" },
-      { label: text("成交率", "Win rate"), value: "31.8%", delta: "+2.1%", direction: "up" },
-      { label: text("预测达成", "Forecast"), value: "92%", delta: "-3.0%", direction: "down" },
+      { label: text("区间收入", "Period revenue"), value: "$184k", delta: "+12.4%", direction: "up", mockAggregation: "sum" },
+      { label: text("Pipeline", "Pipeline"), value: "$612k", delta: "+18.7%", direction: "up", mockAggregation: "snapshot" },
+      { label: text("成交率", "Win rate"), value: "31.8%", delta: "+2.1%", direction: "up", mockAggregation: "average" },
+      { label: text("预测达成", "Forecast"), value: "92%", delta: "-3.0%", direction: "down", mockAggregation: "average" },
     ],
     chart: {
       title: text("收入与预测", "Revenue and forecast"),
@@ -195,10 +196,10 @@ export const dashboards: DashboardDefinition[] = [
     description: text("同时观察交易结果、渠道结构、商品表现、库存和订单执行。", "Monitor transactions, channel mix, product performance, inventory, and order execution."),
     modules: [text("GMV 与转化", "GMV and conversion"), text("渠道结构", "Channel mix"), text("商品表现", "Product performance"), text("订单表格", "Orders table"), text("批量动作", "Bulk actions")],
     metrics: [
-      { label: text("GMV", "GMV"), value: "¥928k", delta: "+8.9%", direction: "up" },
-      { label: text("订单", "Orders"), value: "3,248", delta: "+6.2%", direction: "up" },
-      { label: text("转化率", "Conversion"), value: "4.8%", delta: "+0.7%", direction: "up" },
-      { label: text("客单价", "AOV"), value: "¥286", delta: "-1.3%", direction: "down" },
+      { label: text("GMV", "GMV"), value: "¥928k", delta: "+8.9%", direction: "up", mockAggregation: "sum" },
+      { label: text("订单", "Orders"), value: "3,248", delta: "+6.2%", direction: "up", mockAggregation: "sum" },
+      { label: text("转化率", "Conversion"), value: "4.8%", delta: "+0.7%", direction: "up", mockAggregation: "average" },
+      { label: text("客单价", "AOV"), value: "¥286", delta: "-1.3%", direction: "down", mockAggregation: "average" },
     ],
     chart: {
       title: text("GMV 与订单趋势", "GMV and order trend"),
@@ -249,10 +250,10 @@ export const dashboards: DashboardDefinition[] = [
     description: text("统一观察请求规模、成本、延迟、错误、Trace 和模型路由。", "Observe request volume, cost, latency, errors, traces, and model routing."),
     modules: [text("请求与成本", "Requests and cost"), text("P95 延迟", "P95 latency"), text("错误代码", "Error codes"), text("模型分布", "Model mix"), text("Trace 表格", "Trace table")],
     metrics: [
-      { label: text("请求量", "Requests"), value: "1.24m", delta: "+18.2%", direction: "up" },
-      { label: text("成本", "Cost"), value: "$6.8k", delta: "-5.3%", direction: "down" },
-      { label: text("P95 延迟", "P95 latency"), value: "1.8s", delta: "-210ms", direction: "down" },
-      { label: text("错误率", "Error rate"), value: "0.42%", delta: "-0.08%", direction: "down" },
+      { label: text("请求量", "Requests"), value: "1.24m", delta: "+18.2%", direction: "up", mockAggregation: "sum" },
+      { label: text("成本", "Cost"), value: "$6.8k", delta: "-5.3%", direction: "down", mockAggregation: "sum" },
+      { label: text("P95 延迟", "P95 latency"), value: "1.8s", delta: "-210ms", direction: "down", mockAggregation: "average" },
+      { label: text("错误率", "Error rate"), value: "0.42%", delta: "-0.08%", direction: "down", mockAggregation: "average" },
     ],
     chart: {
       title: text("请求、延迟与成本", "Requests, latency, and cost"),
@@ -303,10 +304,10 @@ export const dashboards: DashboardDefinition[] = [
     description: text("围绕客户阶段组织线索、商机、跟进任务和下一步行动。", "Organize leads, deals, follow-up tasks, and next actions around customer stages."),
     modules: [text("客户分层", "Customer tiers"), text("线索来源", "Lead sources"), text("跟进任务", "Follow-up tasks"), text("Pipeline", "Pipeline"), text("客户台账", "Customer ledger")],
     metrics: [
-      { label: text("客户", "Customers"), value: "1,890", delta: "+10.4%", direction: "up" },
-      { label: text("商机", "Deals"), value: "1,300", delta: "-0.8%", direction: "down" },
-      { label: text("收入", "Revenue"), value: "$435k", delta: "+20.1%", direction: "up" },
-      { label: text("续约率", "Renewal"), value: "92.4%", delta: "+3.6%", direction: "up" },
+      { label: text("客户", "Customers"), value: "1,890", delta: "+10.4%", direction: "up", mockAggregation: "snapshot" },
+      { label: text("商机", "Deals"), value: "1,300", delta: "-0.8%", direction: "down", mockAggregation: "snapshot" },
+      { label: text("收入", "Revenue"), value: "$435k", delta: "+20.1%", direction: "up", mockAggregation: "sum" },
+      { label: text("续约率", "Renewal"), value: "92.4%", delta: "+3.6%", direction: "up", mockAggregation: "average" },
     ],
     chart: {
       title: text("客户增长", "Customer growth"),
@@ -357,10 +358,10 @@ export const dashboards: DashboardDefinition[] = [
     description: text("把现金流、预算偏差、异常项目、交易和对账动作放到一处。", "Bring cash flow, budget variance, anomalies, transactions, and reconciliation together."),
     modules: [text("现金流", "Cash flow"), text("预算偏差", "Budget variance"), text("异常检测", "Anomaly detection"), text("交易表格", "Transactions"), text("对账状态", "Reconciliation")],
     metrics: [
-      { label: text("现金余额", "Cash balance"), value: "¥1.25m", delta: "+12.5%", direction: "up" },
-      { label: text("净利润", "Net profit"), value: "¥387k", delta: "+8.5%", direction: "up" },
-      { label: text("支出", "Expenses"), value: "¥264k", delta: "+5.5%", direction: "down" },
-      { label: text("待对账", "To reconcile"), value: "24", delta: "-18.0%", direction: "down" },
+      { label: text("现金余额", "Cash balance"), value: "¥1.25m", delta: "+12.5%", direction: "up", mockAggregation: "snapshot" },
+      { label: text("净利润", "Net profit"), value: "¥387k", delta: "+8.5%", direction: "up", mockAggregation: "sum" },
+      { label: text("支出", "Expenses"), value: "¥264k", delta: "+5.5%", direction: "down", mockAggregation: "sum" },
+      { label: text("待对账", "To reconcile"), value: "24", delta: "-18.0%", direction: "down", mockAggregation: "snapshot" },
     ],
     chart: {
       title: text("月度收支", "Monthly cash flow"),
@@ -409,7 +410,7 @@ export const siteText = {
   zh: {
     nav: { dashboards: "Dashboards", agentKit: "Agent Kit", catalog: "功能目录", workflow: "交付流程", github: "GitHub" },
     header: { search: "搜索页面与操作…", command: "命令面板", language: "Switch to English", theme: "切换主题", menu: "打开导航", close: "关闭导航" },
-    page: { date: "最近 28 天", available: "Available", candidate: "Candidate · 概念预览", install: "复制 dry-run", copied: "已复制", details: "功能组合" },
+    page: { available: "Available", candidate: "Candidate · 概念预览", install: "复制 dry-run", copied: "已复制", details: "功能组合" },
     common: { filter: "筛选", columns: "列", selected: "0 行已选择", previous: "上一页", next: "下一页", export: "导出", viewAll: "查看全部" },
     catalog: { title: "Dashboard 功能目录", description: "按功能组合、状态和交付边界选择 Dashboard。", status: "状态", modules: "功能组合", boundary: "交付边界", action: "查看" },
     workflow: { title: "Agent 交付流程", description: "从需求到 Proof 的可检查交付链。", steps: [["Understand", "识别技术栈、业务目标和数据边界。"], ["Match", "只从 Available Recipe 中生成安装计划。"], ["Install", "先 dry-run，再写入可编辑源码。"], ["Bind", "通过单一 Data Adapter 映射项目数据。"], ["Prove", "验证类型、构建、四态、响应式与可访问性。"]] },
@@ -417,7 +418,7 @@ export const siteText = {
   en: {
     nav: { dashboards: "Dashboards", agentKit: "Agent Kit", catalog: "Capability catalog", workflow: "Delivery rail", github: "GitHub" },
     header: { search: "Search pages and actions…", command: "Command palette", language: "切换为中文", theme: "Toggle theme", menu: "Open navigation", close: "Close navigation" },
-    page: { date: "Last 28 days", available: "Available", candidate: "Candidate · Concept preview", install: "Copy dry-run", copied: "Copied", details: "Capability set" },
+    page: { available: "Available", candidate: "Candidate · Concept preview", install: "Copy dry-run", copied: "Copied", details: "Capability set" },
     common: { filter: "Filter", columns: "Columns", selected: "0 row(s) selected", previous: "Previous", next: "Next", export: "Export", viewAll: "View all" },
     catalog: { title: "Dashboard capability catalog", description: "Choose a dashboard by capability set, status, and delivery boundary.", status: "Status", modules: "Capability set", boundary: "Delivery boundary", action: "View" },
     workflow: { title: "Agent delivery rail", description: "An inspectable path from request to proof.", steps: [["Understand", "Identify the stack, business goal, and data boundary."], ["Match", "Create install plans from Available recipes only."], ["Install", "Dry-run before writing editable source."], ["Bind", "Map project data through one Data Adapter."], ["Prove", "Verify type, build, four states, responsive behavior, and a11y."]] },
