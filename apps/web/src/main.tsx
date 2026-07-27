@@ -12,6 +12,7 @@ import {
 import { App } from "./App"
 import { applyInitialPreferences } from "./preferences"
 import "./styles.css"
+import "./home.css"
 
 applyInitialPreferences()
 

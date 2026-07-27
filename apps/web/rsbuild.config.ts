@@ -6,11 +6,11 @@ const assetPrefix = process.env.PUBLIC_BASE_PATH ?? "/"
 export default defineConfig({
   plugins: [pluginReact()],
   html: {
-    title: "Shadcn Agent Kit — From request to proof",
+    title: "Shadcn Agent Kit — Dashboard recipes for coding agents",
     meta: {
       description:
-        "Independent agent workflow for shadcn-compatible dashboard recipes. Install editable source, connect data, and verify React UI delivery.",
-      "theme-color": "#0b0d12",
+        "Choose a dashboard by capability, install editable source, connect real data, and verify the result.",
+      "theme-color": "#eef2f5",
     },
   },
   tools: {

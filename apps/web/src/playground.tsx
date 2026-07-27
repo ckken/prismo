@@ -143,6 +143,7 @@ function Playground() {
         static: "本站只提供命令和源码上下文，不能直接修改你的本地项目。",
         availablePreview: "代表性交互预览：真实可安装源码以 Code 页签中的 Registry 为准，本预览不执行 Registry 源码。",
         candidatePreview: "确定性概念预览：该 Candidate 尚不可安装，也不会生成 Registry URL。",
+        candidateSkillNote: "下方命令只安装通用 Agent Skill，不会安装当前 Candidate Dashboard。",
         retry: "重新加载",
       }
     : {
@@ -161,6 +162,7 @@ function Playground() {
         static: "This site provides commands and source context; it cannot modify your local project.",
         availablePreview: "Representative interactive preview. The Registry in Code is the source of truth; this preview does not execute that source.",
         candidatePreview: "Deterministic concept preview. This Candidate is not installable and has no Registry URL.",
+        candidateSkillNote: "The command below installs the generic Agent Skill only. It does not install this Candidate Dashboard.",
         retry: "Retry",
       }
 
@@ -304,6 +306,7 @@ function Playground() {
           {tab === "agent" ? (
             <div className="pg-agent" role="tabpanel">
               <h2>{text.agent}</h2>
+              {!available ? <p className="pg-preview-note">{text.candidateSkillNote}</p> : null}
               <div className="pg-command">
                 <code>{skillCommand}</code>
                 <ClipboardButton value={skillCommand} label="Copy one-click Skill install command" />

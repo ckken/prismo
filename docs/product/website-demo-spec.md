@@ -1,4 +1,4 @@
-# 官网与 Demo 规范
+# 官网与 Dashboard Catalog 规范
 
 ## 目标
 
@@ -8,12 +8,19 @@
 
 | 区域 | 任务 | 关键证据 |
 |---|---|---|
-| Hero | 建立定位 | 主张、Agent plan、无黑盒 runtime |
-| Workflow | 解释协议 | Understand、Match、Install、Bind、Prove |
-| Showcase | 让用户操作 | 三场景、四态、Contract 路径 |
-| Recipes | 划定当前与扩展 | Dashboard Available；Sites/Apps Candidate |
-| Proof | 说明验收 | Type、Build、Contract、States、Responsive、A11y |
-| Get started | 最短接入 | 真实 Registry URL 与复制命令 |
+| App shell | 建立产品感 | 固定侧栏、搜索、主题、语言、资源入口 |
+| Hero | 建立定位 | 按功能组合选择 Dashboard、现有技术栈、确定性预览 |
+| Summary | 给出规模 | Dashboard 数量、Available 数量、四态、响应式断点 |
+| Catalog | 对比场景 | 六个 Dashboard 的功能组合、适用场景与交付状态 |
+| Selected Dashboard | 展示细节 | 当前组合、确定性预览、状态边界、Playground 入口 |
+| Delivery rail | 解释协议 | Understand、Match、Install、Bind、Prove |
+| Get started | 最短接入 | 仅 Available 展示真实 Registry URL 与 dry-run 命令 |
+
+## 视觉原则
+
+- 使用管理后台式产品壳：固定分组侧栏、紧凑工具栏、细边框、低阴影和中性画布。
+- 首页首先展示 Dashboard 的功能组合，不按截图或装饰风格分类。
+- 桌面以多列信息密度为主；移动端侧栏改为可关闭、可聚焦管理的抽屉，内容保持单列。
 
 ## 静态运行边界
 
