@@ -407,17 +407,17 @@ export const dashboards: DashboardDefinition[] = [
 
 export const siteText = {
   zh: {
-    nav: { dashboards: "Dashboards", agentKit: "Agent Kit", catalog: "功能目录", workflow: "交付流程", playground: "Playground", github: "GitHub" },
+    nav: { dashboards: "Dashboards", agentKit: "Agent Kit", catalog: "功能目录", workflow: "交付流程", github: "GitHub" },
     header: { search: "搜索页面与操作…", command: "命令面板", language: "Switch to English", theme: "切换主题", menu: "打开导航", close: "关闭导航" },
-    page: { date: "最近 28 天", available: "Available", candidate: "Candidate · 概念预览", install: "复制 dry-run", copied: "已复制", playground: "打开 Playground", details: "功能组合" },
+    page: { date: "最近 28 天", available: "Available", candidate: "Candidate · 概念预览", install: "复制 dry-run", copied: "已复制", details: "功能组合" },
     common: { filter: "筛选", columns: "列", selected: "0 行已选择", previous: "上一页", next: "下一页", export: "导出", viewAll: "查看全部" },
     catalog: { title: "Dashboard 功能目录", description: "按功能组合、状态和交付边界选择 Dashboard。", status: "状态", modules: "功能组合", boundary: "交付边界", action: "查看" },
     workflow: { title: "Agent 交付流程", description: "从需求到 Proof 的可检查交付链。", steps: [["Understand", "识别技术栈、业务目标和数据边界。"], ["Match", "只从 Available Recipe 中生成安装计划。"], ["Install", "先 dry-run，再写入可编辑源码。"], ["Bind", "通过单一 Data Adapter 映射项目数据。"], ["Prove", "验证类型、构建、四态、响应式与可访问性。"]] },
   },
   en: {
-    nav: { dashboards: "Dashboards", agentKit: "Agent Kit", catalog: "Capability catalog", workflow: "Delivery rail", playground: "Playground", github: "GitHub" },
+    nav: { dashboards: "Dashboards", agentKit: "Agent Kit", catalog: "Capability catalog", workflow: "Delivery rail", github: "GitHub" },
     header: { search: "Search pages and actions…", command: "Command palette", language: "切换为中文", theme: "Toggle theme", menu: "Open navigation", close: "Close navigation" },
-    page: { date: "Last 28 days", available: "Available", candidate: "Candidate · Concept preview", install: "Copy dry-run", copied: "Copied", playground: "Open Playground", details: "Capability set" },
+    page: { date: "Last 28 days", available: "Available", candidate: "Candidate · Concept preview", install: "Copy dry-run", copied: "Copied", details: "Capability set" },
     common: { filter: "Filter", columns: "Columns", selected: "0 row(s) selected", previous: "Previous", next: "Next", export: "Export", viewAll: "View all" },
     catalog: { title: "Dashboard capability catalog", description: "Choose a dashboard by capability set, status, and delivery boundary.", status: "Status", modules: "Capability set", boundary: "Delivery boundary", action: "View" },
     workflow: { title: "Agent delivery rail", description: "An inspectable path from request to proof.", steps: [["Understand", "Identify the stack, business goal, and data boundary."], ["Match", "Create install plans from Available recipes only."], ["Install", "Dry-run before writing editable source."], ["Bind", "Map project data through one Data Adapter."], ["Prove", "Verify type, build, four states, responsive behavior, and a11y."]] },

@@ -13,21 +13,16 @@ import {
   ArrowRight,
   ArrowUp,
   BarChart3,
-  Boxes,
   Check,
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
   CircleDollarSign,
   Clipboard,
-  Code2,
   Command,
-  ExternalLink,
   FileCheck2,
-  Github,
   Languages,
   LayoutDashboard,
-  Menu,
   Moon,
   MoreHorizontal,
   PackageCheck,
@@ -36,12 +31,24 @@ import {
   ShoppingBag,
   Sun,
   Users,
-  Workflow,
-  X,
   type LucideIcon,
 } from "lucide-react"
-import { Link, Outlet, useNavigate } from "@tanstack/react-router"
-import { LogoMark } from "./components/logo"
+import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router"
+import { AppSidebar } from "./components/app-sidebar"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "./components/ui/breadcrumb"
+import { Separator } from "./components/ui/separator"
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "./components/ui/sidebar"
 import {
   dashboards,
   localize,
@@ -101,51 +108,6 @@ function StatusBadge({ status, locale }: { status: DashboardDefinition["status"]
       {status === "available" ? <CheckCircle2 size={12} /> : <span />}
       {status === "available" ? t.available : t.candidate}
     </span>
-  )
-}
-
-function DashboardNavigation({ onNavigate }: { onNavigate?: () => void }) {
-  const { locale } = useSiteContext()
-  const t = siteText[locale]
-
-  return (
-    <nav className="kit-nav" aria-label={t.nav.dashboards}>
-      <div className="kit-nav-group">
-        <span>{t.nav.dashboards}</span>
-        {dashboards.map((dashboard) => {
-          const Icon = dashboardIcons[dashboard.id]
-          return (
-            <Link
-              key={dashboard.id}
-              to="/dashboard/$dashboardId"
-              params={{ dashboardId: dashboard.id }}
-              activeOptions={{ exact: true }}
-              activeProps={{ className: "active" }}
-              onClick={onNavigate}
-            >
-              <Icon size={17} />
-              <strong>{localize(dashboard.title, locale)}</strong>
-              <small className={dashboard.status}>{dashboard.status === "available" ? "A" : "C"}</small>
-            </Link>
-          )
-        })}
-      </div>
-      <div className="kit-nav-group">
-        <span>{t.nav.agentKit}</span>
-        <Link to="/catalog" activeProps={{ className: "active" }} onClick={onNavigate}>
-          <Boxes size={17} /><strong>{t.nav.catalog}</strong>
-        </Link>
-        <Link to="/workflow" activeProps={{ className: "active" }} onClick={onNavigate}>
-          <Workflow size={17} /><strong>{t.nav.workflow}</strong>
-        </Link>
-        <a href={joinBase("playground/")} onClick={onNavigate}>
-          <Code2 size={17} /><strong>{t.nav.playground}</strong><ExternalLink size={13} />
-        </a>
-        <a href={__PUBLIC_REPOSITORY_URL__} target="_blank" rel="noreferrer" onClick={onNavigate}>
-          <Github size={17} /><strong>{t.nav.github}</strong><ExternalLink size={13} />
-        </a>
-      </div>
-    </nav>
   )
 }
 
@@ -240,16 +202,43 @@ function CommandPalette({ open, onClose }: { open: boolean; onClose: () => void 
   )
 }
 
+function RouteBreadcrumb() {
+  const { locale } = useSiteContext()
+  const pathname = useRouterState({ select: (state) => state.location.pathname })
+  const t = siteText[locale]
+  const dashboard = dashboards.find((item) => pathname.includes(`/dashboard/${item.id}`))
+  const current = dashboard
+    ? localize(dashboard.title, locale)
+    : pathname.includes("/catalog")
+      ? t.nav.catalog
+      : t.nav.workflow
+  const section = dashboard ? t.nav.dashboards : t.nav.agentKit
+
+  return (
+    <Breadcrumb className="kit-breadcrumb">
+      <BreadcrumbList>
+        <BreadcrumbItem className="hidden sm:inline-flex">
+          <BreadcrumbLink asChild>
+            {dashboard ? (
+              <Link to="/dashboard/$dashboardId" params={{ dashboardId: "default" }}>{section}</Link>
+            ) : (
+              <Link to="/catalog">{section}</Link>
+            )}
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator className="hidden sm:block" />
+        <BreadcrumbItem>
+          <BreadcrumbPage>{current}</BreadcrumbPage>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
+  )
+}
+
 export function DashboardLayout() {
   const [locale, setLocaleState] = useState<Locale>(() => getInitialLocale())
   const [theme, setThemeState] = useState<Theme>(() => getInitialTheme())
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const [compactNavigation, setCompactNavigation] = useState(() => window.matchMedia("(max-width: 767px)").matches)
   const [commandOpen, setCommandOpen] = useState(false)
-  const [userOpen, setUserOpen] = useState(false)
-  const menuButtonRef = useRef<HTMLButtonElement>(null)
-  const sidebarCloseRef = useRef<HTMLButtonElement>(null)
-  const sidebarRef = useRef<HTMLElement>(null)
   const commandButtonRef = useRef<HTMLButtonElement>(null)
   const t = siteText[locale]
 
@@ -261,11 +250,6 @@ export function DashboardLayout() {
   function setTheme(themeValue: Theme) {
     saveThemeOverride(themeValue)
     setThemeState(themeValue)
-  }
-
-  function closeMobileMenu(returnFocus = true) {
-    setMobileOpen(false)
-    if (returnFocus) window.requestAnimationFrame(() => menuButtonRef.current?.focus())
   }
 
   useEffect(() => {
@@ -289,17 +273,6 @@ export function DashboardLayout() {
   }, [])
 
   useEffect(() => {
-    const compact = window.matchMedia("(max-width: 767px)")
-    const handleChange = () => {
-      setCompactNavigation(compact.matches)
-      if (!compact.matches) setMobileOpen(false)
-    }
-    handleChange()
-    compact.addEventListener("change", handleChange)
-    return () => compact.removeEventListener("change", handleChange)
-  }, [])
-
-  useEffect(() => {
     const handleKeys = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLocaleLowerCase() === "k") {
         event.preventDefault()
@@ -310,77 +283,23 @@ export function DashboardLayout() {
     return () => window.removeEventListener("keydown", handleKeys)
   }, [])
 
-  useEffect(() => {
-    if (!compactNavigation || !mobileOpen) return
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = "hidden"
-    window.requestAnimationFrame(() => sidebarCloseRef.current?.focus())
-    const handleKeys = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        event.preventDefault()
-        closeMobileMenu()
-        return
-      }
-      if (event.key !== "Tab" || !sidebarRef.current) return
-      const focusable = Array.from(sidebarRef.current.querySelectorAll<HTMLElement>("a[href], button:not([disabled])"))
-        .filter((element) => element.getClientRects().length > 0)
-      const first = focusable[0]
-      const last = focusable.at(-1)
-      if (!first || !last) return
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault()
-        last.focus()
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault()
-        first.focus()
-      }
-    }
-    window.addEventListener("keydown", handleKeys)
-    return () => {
-      document.body.style.overflow = previousOverflow
-      window.removeEventListener("keydown", handleKeys)
-    }
-  }, [compactNavigation, mobileOpen])
-
   const contextValue = useMemo(() => ({ locale, theme, setLocale, setTheme }), [locale, theme])
 
   return (
     <SiteContext.Provider value={contextValue}>
-      <div className="kit-shell">
-        <aside
-          ref={sidebarRef}
-          className={`kit-sidebar ${mobileOpen ? "open" : ""}`}
-          aria-label={t.nav.dashboards}
-          aria-hidden={compactNavigation && !mobileOpen ? true : undefined}
-          aria-modal={compactNavigation && mobileOpen ? true : undefined}
-          inert={compactNavigation && !mobileOpen ? true : undefined}
-          role={compactNavigation ? "dialog" : undefined}
-        >
-          <div className="kit-sidebar-brand">
-            <Link to="/dashboard/$dashboardId" params={{ dashboardId: "default" }} aria-label="Shadcn Agent Kit">
-              <LogoMark />
-            </Link>
-            <button ref={sidebarCloseRef} type="button" onClick={() => closeMobileMenu()} aria-label={t.header.close}>
-              <X size={17} />
-            </button>
-          </div>
-          <DashboardNavigation onNavigate={() => compactNavigation && closeMobileMenu(false)} />
-          <div className="kit-sidebar-proof">
-            <span><ShieldCheck size={17} /></span>
-            <div><strong>From request to proof.</strong><small>1 Available · 5 Candidate</small></div>
-          </div>
-        </aside>
-
-        {compactNavigation && mobileOpen ? (
-          <button className="kit-sidebar-backdrop" type="button" onClick={() => closeMobileMenu()} aria-label={t.header.close} />
-        ) : null}
-
-        <div className="kit-main">
+      <SidebarProvider className="kit-sidebar-layout">
+        <AppSidebar
+          locale={locale}
+          theme={theme}
+          onLocaleChange={() => setLocale(locale === "zh" ? "en" : "zh")}
+          onThemeChange={() => setTheme(theme === "light" ? "dark" : "light")}
+        />
+        <SidebarInset className="kit-main">
           <header className="kit-header">
             <div className="kit-header-start">
-              <button ref={menuButtonRef} className="kit-mobile-menu" type="button" onClick={() => setMobileOpen(true)} aria-label={t.header.menu}>
-                <Menu size={18} />
-              </button>
+              <SidebarTrigger aria-label={t.header.menu} />
+              <Separator className="kit-header-separator" orientation="vertical" />
+              <RouteBreadcrumb />
               <button ref={commandButtonRef} className="kit-search-trigger" type="button" onClick={() => setCommandOpen(true)}>
                 <Search size={17} />
                 <span>{t.header.search}</span>
@@ -394,28 +313,15 @@ export function DashboardLayout() {
               <button type="button" onClick={() => setTheme(theme === "light" ? "dark" : "light")} aria-label={t.header.theme} title={t.header.theme}>
                 {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
               </button>
-              <div className="kit-user-menu">
-                <button type="button" aria-haspopup="menu" aria-expanded={userOpen} onClick={() => setUserOpen((value) => !value)}>
-                  <span>AK</span>
-                </button>
-                {userOpen ? (
-                  <div role="menu">
-                    <strong>Shadcn Agent Kit</strong>
-                    <small>shadcn-compatible recipes</small>
-                    <a role="menuitem" href={joinBase("playground/")}>{t.nav.playground}<ExternalLink size={13} /></a>
-                    <a role="menuitem" href={__PUBLIC_REPOSITORY_URL__} target="_blank" rel="noreferrer">{t.nav.github}<ExternalLink size={13} /></a>
-                  </div>
-                ) : null}
-              </div>
             </div>
           </header>
-          <main className="kit-page"><Outlet /></main>
-        </div>
+          <div className="kit-page"><Outlet /></div>
+        </SidebarInset>
         <CommandPalette open={commandOpen} onClose={() => {
           setCommandOpen(false)
           window.requestAnimationFrame(() => commandButtonRef.current?.focus())
         }} />
-      </div>
+      </SidebarProvider>
     </SiteContext.Provider>
   )
 }
@@ -458,11 +364,7 @@ function PageHeader({ dashboard }: { dashboard: DashboardDefinition }) {
             {copied ? <Check size={16} /> : <Clipboard size={16} />}
             {copied ? t.page.copied : t.page.install}
           </button>
-        ) : (
-          <a className="kit-primary-action" href={`${joinBase("playground/")}?block=${dashboard.id}`}>
-            <Code2 size={16} />{t.page.playground}
-          </a>
-        )}
+        ) : null}
       </div>
     </header>
   )
@@ -693,7 +595,7 @@ export function DashboardPage({ dashboardId }: { dashboardId: DashboardId }) {
   const dashboard = dashboards.find((item) => item.id === dashboardId) ?? dashboards[0]
 
   useEffect(() => {
-    document.title = `${localize(dashboard.title, locale)} — Shadcn Agent Kit`
+    document.title = `${localize(dashboard.title, locale)} — shadcnagent`
     document.querySelector<HTMLMetaElement>('meta[name="description"]')?.setAttribute("content", localize(dashboard.description, locale))
   }, [dashboard, locale])
 
@@ -711,7 +613,7 @@ export function DashboardPage({ dashboardId }: { dashboardId: DashboardId }) {
 export function CatalogPage() {
   const { locale } = useSiteContext()
   const t = siteText[locale]
-  useEffect(() => { document.title = `${t.catalog.title} — Shadcn Agent Kit` }, [t.catalog.title])
+  useEffect(() => { document.title = `${t.catalog.title} — shadcnagent` }, [t.catalog.title])
   return (
     <>
       <header className="kit-page-header kit-simple-header"><div><h1>{t.catalog.title}</h1><p>{t.catalog.description}</p></div></header>
@@ -737,7 +639,7 @@ export function CatalogPage() {
 export function WorkflowPage() {
   const { locale } = useSiteContext()
   const t = siteText[locale]
-  useEffect(() => { document.title = `${t.workflow.title} — Shadcn Agent Kit` }, [t.workflow.title])
+  useEffect(() => { document.title = `${t.workflow.title} — shadcnagent` }, [t.workflow.title])
   return (
     <>
       <header className="kit-page-header kit-simple-header"><div><h1>{t.workflow.title}</h1><p>{t.workflow.description}</p></div></header>

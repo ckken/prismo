@@ -38,8 +38,8 @@ jobs:
           test -f apps/web/dist/dashboard/finance/index.html
           test -f apps/web/dist/catalog/index.html
           test -f apps/web/dist/workflow/index.html
-          test -f apps/web/dist/playground/index.html
           test -f apps/web/dist/404.html
+          test ! -e apps/web/dist/playground/index.html
       - run: bun run skill:validate
       - run: bun run proof:install
       - uses: actions/configure-pages@v5

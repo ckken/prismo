@@ -2,8 +2,10 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "jsx": "react-jsx",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     "types": ["@rsbuild/core/types"]
   },
   "include": ["src", "rsbuild.config.ts"]
 }
-

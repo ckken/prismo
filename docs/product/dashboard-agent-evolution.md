@@ -37,14 +37,14 @@ flowchart LR
 - 可由 Skills CLI 一键安装的独立 Skill bundle，以及 Inspect → Select → Preview → Install → Adapt → Proof 流程。
 - `dashboard-agent inspect / plan` 可从独立 Skill 目录运行，不依赖仓库内部路径。
 - Registry build、真实 shadcn dry-run/add、TypeScript 和 Rsbuild Fixture proof。
-- 独立 Blocks Playground：Available Recipe 的真实源码与命令、Candidate 边界、四态和三档响应式预览。
+- 基于 `sidebar-07` 的路由化官网：展示六个 Dashboard 功能组合、Candidate 边界与唯一 Available Recipe 的 dry-run 入口。
 
 当前主要缺口：
 
 - CLI 仍只有只读 `inspect / plan`，尚未实现 revision-safe `apply / verify`。
 - `verify-install` 只检查文件存在，尚未产生浏览器、交互、响应式、无障碍和视觉证据。
 - 只有一个整页 Recipe，缺少可组合 Slice、Adapter scaffold 与 route integration。
-- Playground 的交互预览与可安装 Registry 仍是两套渲染实现，需要继续收敛到同一 Recipe runtime。
+- 官网是确定性 Catalog，不承担已安装 Recipe runtime；浏览器级 Recipe Proof 仍需在统一验证链中补齐。
 - 安装组件默认使用 demo fixture 和 success 状态，尚未强制区分“演示可见”与“真实数据已接入”。
 - CLI 尚未发布为独立版本化 package；MCP 也没有统一 core 可以复用。
 

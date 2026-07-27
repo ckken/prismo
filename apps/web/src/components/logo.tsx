@@ -1,6 +1,6 @@
 export function LogoMark({ compact = false }: { compact?: boolean }) {
   return (
-    <span className="brand-lockup" aria-label="Shadcn Agent Kit">
+    <span className="brand-lockup" aria-label="shadcnagent">
       <svg className="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
         <path d="M8 7h13l4 4v14H8z" />
         <path d="M12 13h9M12 18h6" />
@@ -14,4 +14,3 @@ export function LogoMark({ compact = false }: { compact?: boolean }) {
     </span>
   )
 }
-
