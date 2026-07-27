@@ -9,9 +9,9 @@
 | 内容 | 状态 | 说明 |
 |---|---|---|
 | `dashboard-agent inspect / plan` | Available | workspace-aware 项目识别、DashboardSpec、Recipe 决策与 dry-run argv |
-| 品牌官网与 Showcase | Available | 三个确定性场景预览、四种数据状态、深浅主题 |
+| 品牌官网与 Playground | Available | 独立 Blocks 工作台、真实源码、安装命令、三档视口与四种数据状态 |
 | `dashboard-overview-01` | Available | KPI、TanStack Table、Zod Contract、四态 |
-| `shadcn-agent-kit` Skill | Available | Inspect → Select → Preview → Install → Adapt → Proof |
+| `shadcn-agent-kit` Skill | Available | 一键安装、独立 CLI bundle、Inspect → Select → Preview → Install → Adapt → Proof |
 | Sales / Commerce / Agent Ops | Candidate | 只做概念预览，不提供安装命令 |
 | Sites / Apps | Candidate | 后续按真实需求滚动拉入 |
 
@@ -30,6 +30,11 @@
 bun install
 bun run dev
 ```
+
+本地入口：
+
+- 官网：`http://localhost:3000/`
+- Playground：`http://localhost:3000/playground/`
 
 完整校验：
 
@@ -53,23 +58,35 @@ bunx --bun shadcn@4.14.1 add \
 
 ## Agent 接入
 
-先生成只读机器计划：
+在目标 shadcn 项目目录执行一条命令，将 Skill 安装给 Codex：
 
 ```bash
-bun run dashboard-agent plan \
+npx skills add ckken/shadcnagent \
+  --skill shadcn-agent-kit \
+  -a codex \
+  -y
+```
+
+它会把 Skill 复制到当前项目的 `.agents/skills/shadcn-agent-kit/`。其中的
+`scripts/dashboard-agent.js` 是独立 bundle，不依赖本仓库源码。
+
+随后直接向 Agent 描述业务目标：
+
+```text
+用 Shadcn Agent Kit 给这个项目增加经营总览：3 个 KPI、趋势图、服务端分页表格。
+先 inspect 和 plan，展示 shadcn dry-run；确认边界后安装、接入 Data Adapter 并运行 Proof。
+```
+
+也可以直接调用安装后的只读 CLI：
+
+```bash
+bun .agents/skills/shadcn-agent-kit/scripts/dashboard-agent.js plan \
   --cwd . \
   --request "增加经营总览：3 个 KPI、趋势图、服务端分页表格" \
   --json
 ```
 
 CLI 会自动定位单一 shadcn workspace，以固定版本 `shadcn info --json` 读取项目配置，并输出 `DashboardSpec + ProjectProfile + RecipeDecision + InstallPlan`。多个 workspace、只有通用词的请求、Candidate 场景和越界能力都会停止猜测，不产生安装计划。
-
-将 [Skill](skills/shadcn-agent-kit/SKILL.md) 提供给 Codex 或兼容的 Coding Agent 后，也可以直接描述业务目标，例如：
-
-```text
-用 Shadcn Agent Kit 给这个项目增加经营总览：3 个 KPI、状态表格、
-loading/empty/error 状态。先给 dry-run，确认后安装并运行 Proof。
-```
 
 Agent 只需要在目标项目写少量路由挂载和 Data Adapter；Recipe 内部承担 UI、状态和 Contract。详细边界见 [Agent integration](docs/product/agent-integration.md)。
 

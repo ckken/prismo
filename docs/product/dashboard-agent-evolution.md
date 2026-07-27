@@ -34,20 +34,19 @@ flowchart LR
 
 - 一个公开可安装的 `dashboard-overview-01`。
 - L2 受控表格、KPI、趋势图、Zod Contract 和四种显式状态。
-- Skill 形式的 Inspect → Select → Preview → Install → Adapt → Proof 流程。
+- 可由 Skills CLI 一键安装的独立 Skill bundle，以及 Inspect → Select → Preview → Install → Adapt → Proof 流程。
+- `dashboard-agent inspect / plan` 可从独立 Skill 目录运行，不依赖仓库内部路径。
 - Registry build、真实 shadcn dry-run/add、TypeScript 和 Rsbuild Fixture proof。
-- 官网与 Candidate 场景预览。
+- 独立 Blocks Playground：Available Recipe 的真实源码与命令、Candidate 边界、四态和三档响应式预览。
 
 当前主要缺口：
 
-- 项目识别脚本不能正确处理 monorepo 根目录，也重复实现了 `shadcn info --json` 已有能力。
-- 关键词选择会因通用词 `dashboard` 把 Agent Ops 等未支持领域误选为 Available Recipe。
-- Catalog 分散在文档、选择脚本和 Registry build 中，容易漂移。
+- CLI 仍只有只读 `inspect / plan`，尚未实现 revision-safe `apply / verify`。
 - `verify-install` 只检查文件存在，尚未产生浏览器、交互、响应式、无障碍和视觉证据。
 - 只有一个整页 Recipe，缺少可组合 Slice、Adapter scaffold 与 route integration。
-- 官网 Showcase 与可安装 Recipe 是两套实现，Candidate 预览仍会露出 Available Recipe 的复制命令。
+- Playground 的交互预览与可安装 Registry 仍是两套渲染实现，需要继续收敛到同一 Recipe runtime。
 - 安装组件默认使用 demo fixture 和 success 状态，尚未强制区分“演示可见”与“真实数据已接入”。
-- 暂无稳定的 agent-facing CLI package；MCP 也没有统一 core 可以复用。
+- CLI 尚未发布为独立版本化 package；MCP 也没有统一 core 可以复用。
 
 ## 目标态的最短交付路径（Phase 1）
 

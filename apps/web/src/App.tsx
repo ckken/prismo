@@ -207,6 +207,7 @@ export function App() {
           <a href="#showcase" onClick={() => setMobileOpen(false)}>{t.nav.showcase}</a>
           <a href="#recipes" onClick={() => setMobileOpen(false)}>{t.nav.recipes}</a>
           <a href="#skill" onClick={() => setMobileOpen(false)}>{t.nav.skill}</a>
+          <a href={joinBase("playground/")} onClick={() => setMobileOpen(false)}>{t.nav.playground}</a>
         </nav>
         <div className="header-actions">
           <button className="icon-button locale-button" type="button" onClick={toggleLocale} aria-label={t.aria.switchLanguage}>
@@ -234,8 +235,15 @@ export function App() {
             <div className="hero-actions">
               <a className="button primary" href="#showcase">{t.hero.primaryAction} <ArrowRight size={16} /></a>
               <a className="button secondary" href="#skill">{t.hero.secondaryAction} <ChevronRight size={16} /></a>
+              <a className="button secondary" href={joinBase("playground/?mode=agent")}>{t.hero.playgroundAction} <ArrowRight size={16} /></a>
             </div>
             <div className="hero-footnote"><ShieldCheck size={15} /> {t.hero.footnote}</div>
+            <div className="agent-quickstart" id="agent-quickstart">
+              <strong>{t.agentQuickstart.title}</strong>
+              <code>npx skills add ckken/shadcnagent --skill shadcn-agent-kit -a codex -y</code>
+              <span>{t.agentQuickstart.steps.join(" → ")}</span>
+              <a href={joinBase("playground/?mode=agent")}>{t.agentQuickstart.open}</a>
+            </div>
           </div>
           <div className="hero-console" aria-label={t.aria.agentPreview}>
             <div className="console-bar"><span /><span /><span /><code>agent-plan.json</code></div>

@@ -2,6 +2,7 @@ import { resolve } from "node:path"
 
 const skillDir = resolve(process.argv[2] ?? "skills/shadcn-agent-kit")
 const skillFile = Bun.file(resolve(skillDir, "SKILL.md"))
+const bundleFile = Bun.file(resolve(skillDir, "scripts/dashboard-agent.js"))
 
 if (!await skillFile.exists()) throw new Error("SKILL.md not found")
 
@@ -28,5 +29,11 @@ if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(frontmatter.name)) throw new Error("Name 
 if (frontmatter.name.length > 64) throw new Error("Name exceeds 64 characters")
 if (frontmatter.description.length > 1024) throw new Error("Description exceeds 1024 characters")
 if (/[<>]/.test(frontmatter.description)) throw new Error("Description cannot contain angle brackets")
+
+if (!await bundleFile.exists()) throw new Error("Bundled dashboard-agent script not found")
+const bundle = await bundleFile.text()
+if (!bundle.startsWith("#!/usr/bin/env bun\n")) throw new Error("Bundled dashboard-agent script must be a Bun executable")
+if (bundle.includes("sourceMappingURL")) throw new Error("Bundled dashboard-agent script must not include a sourcemap")
+if (bundle.includes(resolve("packages/dashboard-agent"))) throw new Error("Bundled dashboard-agent script must not reference repository source paths")
 
 console.log("Skill is valid!")

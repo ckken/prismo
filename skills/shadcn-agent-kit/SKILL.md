@@ -12,13 +12,14 @@ This is an independent community project. It is not affiliated with, endorsed by
 ## Workflow
 
 1. Inspect the target before choosing a recipe.
-   - From the Shadcn Agent Kit repository root, run `bun run dashboard-agent inspect --cwd <project-dir>`.
+   - Locate this installed Skill directory (the directory containing this `SKILL.md`), then run `bun <skill-dir>/scripts/dashboard-agent.js inspect --cwd <project-dir>`.
+   - The bundled script is self-contained: do not invoke repository scripts or import repository source files.
    - The CLI locates a single shadcn workspace and uses fixed `shadcn info --json` output as the project truth source.
    - If multiple `components.json` files exist, pass the exact workspace; never guess.
    - Also read the target `AGENTS.md`, router, scripts, and existing UI conventions.
    - Do not switch the target package manager or replace established configuration.
 2. Create a machine-readable plan.
-   - Run `bun run dashboard-agent plan --cwd <project-dir> --request '<request>' --json`.
+   - Run `bun <skill-dir>/scripts/dashboard-agent.js plan --cwd <project-dir> --request '<request>' --json`.
    - Review `DashboardSpec`, `ProjectProfile`, `RecipeDecision`, `InstallPlan`, and unresolved fields.
    - Exit code `3` means clarification or rejection is required; do not work around it.
    - Candidate entries are explanatory only. Never generate an install command for them.
@@ -33,7 +34,7 @@ This is an independent community project. It is not affiliated with, endorsed by
    - Read [data-adapters.md](references/data-adapters.md) and place project-specific mapping behind one source adapter.
    - For tables, read [table-boundaries.md](references/table-boundaries.md) and choose L0, L1, or L2 explicitly.
 5. Produce proof.
-   - Run `bun scripts/verify-install.ts <project-dir> [component-path]`.
+   - Run `bun <skill-dir>/scripts/verify-install.ts <project-dir> [component-path]`.
    - Also run the target's relevant typecheck, tests, and production build.
    - Verify success, loading, empty, and contract-error states plus 375, 768, and 1440 widths.
    - Report passed, failed, and unverified checks separately. Never infer production or accessibility success from a build alone.

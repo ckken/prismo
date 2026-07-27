@@ -16,7 +16,8 @@
     "dashboard-agent": "bun packages/dashboard-agent/src/cli.ts",
     "check": "bun run typecheck && bun run test && bun run build",
     "registry:build": "bun scripts/build-registry.ts",
-    "skill:validate": "bun scripts/validate-skill.ts skills/shadcn-agent-kit",
+    "skill:build": "bun scripts/build-skill.ts skills/shadcn-agent-kit",
+    "skill:validate": "bun run skill:build && bun scripts/validate-skill.ts skills/shadcn-agent-kit",
     "proof:install": "bun run registry:build && bun scripts/proof-install.ts"
   },
   "devDependencies": {

@@ -13,6 +13,11 @@ export default defineConfig({
       "theme-color": "#0b0d12",
     },
   },
+  tools: {
+    htmlPlugin: (config, { entryName }) => {
+      if (entryName === "playground") config.filename = "playground/index.html"
+    },
+  },
   output: {
     assetPrefix,
     distPath: { root: "dist" },
@@ -20,6 +25,7 @@ export default defineConfig({
   source: {
     entry: {
       index: "./src/main.tsx",
+      playground: "./src/playground.tsx",
     },
     define: {
       __PUBLIC_BASE_PATH__: JSON.stringify(assetPrefix),

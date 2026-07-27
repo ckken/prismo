@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "shadcn-agent-kit",
-  "homepage": "https://github.com",
+  "homepage": "https://github.com/ckken/shadcnagent",
   "items": [
     {
       "$schema": "https://ui.shadcn.com/schema/registry-item.json",

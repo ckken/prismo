@@ -2,7 +2,35 @@
 
 ## 接入方式
 
-Agent 加载仓库内的 `skills/shadcn-agent-kit/`。首发以 Codex + Bun + Rsbuild Fixture 完成验证；其他宿主必须跑同一矩阵后才宣称支持。
+在目标 shadcn 项目根目录一键安装：
+
+```bash
+npx skills add ckken/shadcnagent \
+  --skill shadcn-agent-kit \
+  -a codex \
+  -y
+```
+
+命令将 Skill 复制到 `.agents/skills/shadcn-agent-kit/`。Skill 内置独立
+`scripts/dashboard-agent.js`，离开 Shadcn Agent Kit 仓库也能运行 `inspect` 和
+`plan`；不会引用仓库内部 `packages/` 路径。首发以 Codex + Bun + Rsbuild Fixture
+完成验证，其他宿主必须跑同一矩阵后才宣称支持。
+
+安装后可直接给 Agent 请求：
+
+```text
+用 Shadcn Agent Kit 增加经营总览：3 个 KPI、趋势图和服务端分页表格。
+先 inspect 和 plan，展示 dry-run 与文件影响；确认后再安装、接入数据并给出 Proof。
+```
+
+需要人工查看机器计划时：
+
+```bash
+bun .agents/skills/shadcn-agent-kit/scripts/dashboard-agent.js plan \
+  --cwd . \
+  --request "增加经营总览：3 个 KPI、趋势图、服务端分页表格" \
+  --json
+```
 
 | 阶段 | Agent 行为 | 确定性产物 |
 |---|---|---|
@@ -14,6 +42,9 @@ Agent 加载仓库内的 `skills/shadcn-agent-kit/`。首发以 Codex + Bun + Rs
 | Proof | 类型、构建、四态、响应式 | `ProofReport` |
 
 通用 shadcn 项目识别、Registry 搜索和安装交给固定版本的官方 CLI；本项目只维护 DashboardSpec、领域选择、Adapter 和 Proof。
+
+当前 CLI 只负责只读 `inspect / plan`。安装、路由接入和 Proof 由 Coding Agent 按
+Skill 工作流执行；尚未实现的 `dashboard-agent apply / verify` 不作为可用命令宣传。
 
 ## 最少项目侧代码
 

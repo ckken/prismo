@@ -33,6 +33,7 @@ export const copy = {
       showcase: "Showcase",
       recipes: "Recipes",
       skill: "Skill",
+      playground: "Playground",
     },
     hero: {
       eyebrow: "Independent toolkit for shadcn-compatible React projects",
@@ -43,7 +44,13 @@ export const copy = {
         "Give your coding agent a dashboard request. It selects an installable recipe, keeps the source in your project, connects your data, and verifies the result.",
       primaryAction: "Explore showcase",
       secondaryAction: "Read the skill",
+      playgroundAction: "Open Playground",
       footnote: "No black-box UI runtime. No silent overwrite.",
+    },
+    agentQuickstart: {
+      title: "Agent quickstart · one command to connect",
+      steps: ["Install Skill", "Describe the request", "Inspect → plan → dry-run → apply / verify"],
+      open: "Open the interactive Playground",
     },
     console: {
       command: "$ shadcn-agent inspect",
@@ -52,7 +59,7 @@ export const copy = {
       match: "RECIPE MATCH",
       matchValue: "dashboard-overview-01",
       dryRun: "DRY RUN",
-      dryRunValue: "5 files · 0 conflicts",
+      dryRunValue: "13 files · 0 conflicts",
       proof: "PROOF",
       proofValue: "4 passed · 1 planned",
       note: "Simulated agent plan · deterministic demo",
@@ -259,6 +266,7 @@ export const copy = {
       showcase: "场景演示",
       recipes: "Recipes",
       skill: "Skill",
+      playground: "工作台",
     },
     hero: {
       eyebrow: "适用于 shadcn React 项目的独立工具包",
@@ -268,7 +276,13 @@ export const copy = {
       description: "把 Dashboard 需求交给 Coding Agent：选择 Recipe、安装源码、接入数据并完成验证。",
       primaryAction: "查看场景演示",
       secondaryAction: "阅读 Skill",
+      playgroundAction: "打开工作台",
       footnote: "源码留在项目，安装前可预览，不会静默覆盖。",
+    },
+    agentQuickstart: {
+      title: "Agent 快速接入 · 一条命令即可开始",
+      steps: ["安装 Skill", "描述需求", "检查 → 规划 → dry-run → 应用 / 验证"],
+      open: "打开交互式工作台",
     },
     console: {
       command: "$ shadcn-agent inspect",
@@ -277,7 +291,7 @@ export const copy = {
       match: "匹配 RECIPE",
       matchValue: "dashboard-overview-01",
       dryRun: "变更预览",
-      dryRunValue: "5 个文件 · 0 个冲突",
+      dryRunValue: "13 个文件 · 0 个冲突",
       proof: "验证",
       proofValue: "4 项通过 · 1 项待办",
       note: "Agent 交付计划演示 · 结果可复现",

@@ -8,7 +8,7 @@ const outputDir = resolve(root, "apps/web/public/r")
 const schemaSourceDir = resolve(root, "packages/dashboard-agent/schemas")
 const schemaOutputDir = resolve(root, "apps/web/public/schemas")
 const source = await Bun.file(sourcePath).text()
-const homepage = process.env.PUBLIC_REPOSITORY_URL ?? "https://github.com"
+const homepage = process.env.PUBLIC_REPOSITORY_URL ?? "https://github.com/ckken/shadcnagent"
 
 const item = {
   $schema: "https://ui.shadcn.com/schema/registry-item.json",

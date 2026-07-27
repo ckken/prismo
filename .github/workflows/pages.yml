@@ -28,6 +28,7 @@ jobs:
           bun-version: 1.3.14
       - run: bun install --frozen-lockfile
       - run: bun run check
+      - run: test -f apps/web/dist/playground/index.html
       - run: bun run skill:validate
       - run: bun run proof:install
       - uses: actions/configure-pages@v5
