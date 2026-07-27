@@ -7,9 +7,11 @@ import {
   createRoute,
   createRouter,
   Outlet,
+  redirect,
   RouterProvider,
 } from "@tanstack/react-router"
-import { App } from "./App"
+import { CatalogPage, DashboardLayout, DashboardPage, WorkflowPage } from "./App"
+import { isDashboardId, type DashboardId } from "./dashboard-site-data"
 import { applyInitialPreferences } from "./preferences"
 import "./styles.css"
 import "./home.css"
@@ -17,12 +19,48 @@ import "./home.css"
 applyInitialPreferences()
 
 const rootRoute = createRootRoute({ component: () => <Outlet /> })
+const dashboardLayoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  id: "dashboard-layout",
+  component: DashboardLayout,
+})
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/",
-  component: App,
+  beforeLoad: () => {
+    throw redirect({ to: "/dashboard/$dashboardId", params: { dashboardId: "default" } })
+  },
 })
-const routeTree = rootRoute.addChildren([indexRoute])
+const dashboardRoute = createRoute({
+  getParentRoute: () => dashboardLayoutRoute,
+  path: "/dashboard/$dashboardId",
+  beforeLoad: ({ params }) => {
+    if (!isDashboardId(params.dashboardId)) {
+      throw redirect({ to: "/dashboard/$dashboardId", params: { dashboardId: "default" } })
+    }
+  },
+  component: DashboardRoute,
+})
+const catalogRoute = createRoute({
+  getParentRoute: () => dashboardLayoutRoute,
+  path: "/catalog",
+  component: CatalogPage,
+})
+const workflowRoute = createRoute({
+  getParentRoute: () => dashboardLayoutRoute,
+  path: "/workflow",
+  component: WorkflowPage,
+})
+
+function DashboardRoute() {
+  const { dashboardId } = dashboardRoute.useParams()
+  return <DashboardPage dashboardId={dashboardId as DashboardId} />
+}
+
+const routeTree = rootRoute.addChildren([
+  indexRoute,
+  dashboardLayoutRoute.addChildren([dashboardRoute, catalogRoute, workflowRoute]),
+])
 const router = createRouter({
   routeTree,
   history: createBrowserHistory(),

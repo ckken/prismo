@@ -12,7 +12,7 @@
 | 品牌官网与 Playground | Available | 独立 Blocks 工作台、真实源码、安装命令、三档视口与四种数据状态 |
 | `dashboard-overview-01` | Available | KPI、TanStack Table、Zod Contract、四态 |
 | `shadcn-agent-kit` Skill | Available | 一键安装、独立 CLI bundle、Inspect → Select → Preview → Install → Adapt → Proof |
-| Sales / Commerce / Agent Ops | Candidate | 只做概念预览，不提供安装命令 |
+| Sales / Commerce / Agent Ops / CRM / Finance | Candidate | 只做概念预览，不提供安装命令 |
 | Sites / Apps | Candidate | 后续按真实需求滚动拉入 |
 
 ## 技术基线

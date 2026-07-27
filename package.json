@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "dev": "bun run registry:build && bun --cwd apps/web dev",
-    "build": "bun run registry:build && bun --cwd apps/web build",
+    "build": "bun run registry:build && bun --cwd apps/web build && bun scripts/build-static-routes.ts",
     "typecheck": "bun --cwd apps/web typecheck && bunx tsc -p tsconfig.scripts.json --noEmit",
     "test": "bun run registry:build && bun test",
     "dashboard-agent": "bun packages/dashboard-agent/src/cli.ts",

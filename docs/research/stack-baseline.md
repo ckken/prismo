@@ -8,7 +8,7 @@
 | Type | TypeScript `7.0.2` | `tsc --noEmit`，不依赖 Compiler API |
 | UI runtime | React / React DOM `19.2.8` | 应用运行时 |
 | Build | Rsbuild `2.1.8` + React plugin `2.1.0` | 官网与 Fixture 构建 |
-| Routing | TanStack Router `1.170.18` | 根路由使用 Pages basepath，页面分区使用锚点 |
+| Routing | TanStack Router `1.170.18` | Browser History + Pages basepath；Dashboard、Catalog、Workflow 使用真实路由 |
 | Server state | TanStack Query `5.101.4` | 数据请求与缓存 seam |
 | Table | TanStack Table `8.21.3` | Headless 表格状态 |
 | Contract | Zod `4.4.3` | 运行时数据校验 |

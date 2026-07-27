@@ -28,7 +28,18 @@ jobs:
           bun-version: 1.3.14
       - run: bun install --frozen-lockfile
       - run: bun run check
-      - run: test -f apps/web/dist/playground/index.html
+      - name: Verify static route entries
+        run: |
+          test -f apps/web/dist/dashboard/default/index.html
+          test -f apps/web/dist/dashboard/sales/index.html
+          test -f apps/web/dist/dashboard/commerce/index.html
+          test -f apps/web/dist/dashboard/agent-ops/index.html
+          test -f apps/web/dist/dashboard/crm/index.html
+          test -f apps/web/dist/dashboard/finance/index.html
+          test -f apps/web/dist/catalog/index.html
+          test -f apps/web/dist/workflow/index.html
+          test -f apps/web/dist/playground/index.html
+          test -f apps/web/dist/404.html
       - run: bun run skill:validate
       - run: bun run proof:install
       - uses: actions/configure-pages@v5
