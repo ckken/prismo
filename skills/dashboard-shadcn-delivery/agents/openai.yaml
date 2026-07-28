@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dashboard Shadcn Delivery"
+  short_description: "Deliver verified production dashboards in shadcn-compatible apps"
+  default_prompt: "Use $dashboard-shadcn-delivery to add this dashboard while preserving the project stack, defining the data contract, and verifying all UI states."

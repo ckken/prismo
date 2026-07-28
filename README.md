@@ -12,6 +12,7 @@
 | 路由化品牌官网 | Available | `sidebar-07` 布局、六个 Dashboard 功能组合、确定性 Mock 数据与时间区间筛选 |
 | `dashboard-overview-01` | Available | KPI、TanStack Table、Zod Contract、四态 |
 | `shadcn-agent-kit` Skill | Available | 一键安装、独立 CLI bundle、Inspect → Select → Preview → Install → Adapt → Proof |
+| `dashboard-shadcn-delivery` Skill | Available | 从数据契约到四态与响应式验收的生产 Dashboard 交付流程 |
 | Sales / Commerce / Agent Ops / CRM / Finance | Candidate | 只做概念预览，不提供安装命令 |
 | Sites / Apps | Candidate | 后续按真实需求滚动拉入 |
 
@@ -86,6 +87,19 @@ bun .agents/skills/shadcn-agent-kit/scripts/dashboard-agent.js plan \
 ```
 
 CLI 会自动定位单一 shadcn workspace，以固定版本 `shadcn info --json` 读取项目配置，并输出 `DashboardSpec + ProjectProfile + RecipeDecision + InstallPlan`。多个 workspace、只有通用词的请求、Candidate 场景和越界能力都会停止猜测，不产生安装计划。
+
+### 从既有项目交付生产 Dashboard
+
+当项目已有后端、认证、路由和 shadcn-compatible 组件时，安装不依赖本仓库 Recipe 的交付 Skill：
+
+```bash
+npx skills add ckken/shadcnagent \
+  --skill dashboard-shadcn-delivery \
+  -a codex \
+  -y
+```
+
+它会保留目标项目的技术栈，要求先定义前后端读模型和授权边界，再实现筛选、KPI、图表、表格和加载/空/错误/成功四态；最后以类型检查、构建和 375/768/1440 宽度验证交付。它不包含、也不会要求复制任何私有业务数据。
 
 Agent 只需要在目标项目写少量路由挂载和 Data Adapter；Recipe 内部承担 UI、状态和 Contract。详细边界见 [Agent integration](docs/product/agent-integration.md)。
 
