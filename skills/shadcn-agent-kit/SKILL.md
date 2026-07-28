@@ -1,11 +1,11 @@
 ---
 name: shadcn-agent-kit
-description: Plan and deliver a dashboard through the shadcnagent CLI, an available shadcn-compatible recipe, one typed data adapter, and explicit verification evidence. Use for dashboard requests that need minimal project-side code and a reviewable Registry install.
+description: Plan and deliver a dashboard through the Prismo CLI, an available shadcn-compatible recipe, one typed data adapter, and explicit verification evidence. Use for dashboard requests that need minimal project-side code and a reviewable Registry install.
 ---
 
-# shadcnagent CLI Skill
+# Prismo CLI Skill
 
-Use the local shadcnagent CLI to turn a dashboard request into an inspectable install plan and proof report. The CLI is the execution boundary; this Skill supplies workflow and safety guidance only. Install editable source only after the user reviews the dry-run.
+Use the local Prismo CLI to turn a dashboard request into an inspectable install plan and proof report. The CLI is the execution boundary; this Skill supplies workflow and safety guidance only. Install editable source only after the user reviews the dry-run. The directory name remains `shadcn-agent-kit` only as a migration alias.
 
 This is an independent community project. It is not affiliated with, endorsed by, or sponsored by shadcn or shadcn/ui. The shadcn name describes compatibility only.
 

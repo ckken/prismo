@@ -6,11 +6,11 @@ const assetPrefix = process.env.PUBLIC_BASE_PATH ?? "/"
 export default defineConfig({
   plugins: [pluginReact()],
   html: {
-    title: "shadcnagent — Dashboard recipes for coding agents",
+    title: "Prismo — verifiable UI delivery for coding agents",
     meta: {
       description:
-        "Choose a dashboard by capability, install editable source, connect real data, and verify the result.",
-      "theme-color": "#fafafa",
+        "Turn intent into reviewable, editable UI source with a local CLI and proof boundary.",
+      "theme-color": "#6542ec",
     },
   },
   output: {

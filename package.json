@@ -1,5 +1,5 @@
 {
-  "name": "shadcnagent",
+  "name": "prismo",
   "version": "0.1.0-alpha.0",
   "private": true,
   "type": "module",
@@ -13,6 +13,7 @@
     "build": "bun run registry:build && bun --cwd apps/web build && bun scripts/build-static-routes.ts",
     "typecheck": "bun --cwd apps/web typecheck && bunx tsc -p tsconfig.scripts.json --noEmit",
     "test": "bun run registry:build && bun test",
+    "prismo": "bun packages/dashboard-agent/src/cli.ts",
     "shadcnagent": "bun packages/dashboard-agent/src/cli.ts",
     "dashboard-agent": "bun packages/dashboard-agent/src/cli.ts",
     "check": "bun run typecheck && bun run test && bun run build",

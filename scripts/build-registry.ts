@@ -8,7 +8,7 @@ const outputDir = resolve(root, "apps/web/public/r")
 const schemaSourceDir = resolve(root, "packages/dashboard-agent/schemas")
 const schemaOutputDir = resolve(root, "apps/web/public/schemas")
 const source = await Bun.file(sourcePath).text()
-const homepage = process.env.PUBLIC_REPOSITORY_URL ?? "https://github.com/ckken/shadcnagent"
+const homepage = process.env.PUBLIC_REPOSITORY_URL ?? "https://github.com/ckken/prismo"
 
 const item = {
   $schema: "https://ui.shadcn.com/schema/registry-item.json",
@@ -27,7 +27,7 @@ const item = {
     },
   ],
   meta: {
-    project: "shadcnagent",
+    project: "prismo",
     status: dashboardOverviewRecipe.status.toLowerCase(),
     tableLevel: dashboardOverviewRecipe.tableLevel,
     states: [...dashboardOverviewRecipe.states],
@@ -37,7 +37,7 @@ const item = {
 
 const registry = {
   $schema: "https://ui.shadcn.com/schema/registry.json",
-  name: "shadcnagent",
+  name: "prismo",
   homepage,
   items: [item],
 }

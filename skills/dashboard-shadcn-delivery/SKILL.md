@@ -18,7 +18,7 @@ description: Deliver a production dashboard in an existing shadcn-compatible app
 bunx skills add shadcn/ui
 
 # 再安装本项目的 Dashboard 交付流程：
-npx skills add ckken/shadcnagent --skill dashboard-shadcn-delivery -a codex -y
+npx skills add ckken/prismo --skill dashboard-shadcn-delivery -a codex -y
 ```
 
 - 官方 Skill 是 **组件项目事实来源**：框架、Tailwind 版本、aliases、base library、图标库、已安装组件和解析路径均以其 `shadcn info --json` 结果为准。

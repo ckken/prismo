@@ -1,9 +1,10 @@
 {
-  "name": "@shadcnagent/cli",
+  "name": "@prismo/cli",
   "version": "0.1.0-alpha.0",
   "private": true,
   "type": "module",
   "bin": {
+    "prismo": "./src/cli.ts",
     "shadcnagent": "./src/cli.ts",
     "dashboard-agent": "./src/cli.ts"
   }

@@ -4,7 +4,7 @@
 
 ### Issue tracker
 
-Prismo planning and long-running decisions live in GitHub Issues for `ckken/shadcnagent`. See `docs/agents/issue-tracker.md`.
+Prismo planning and long-running decisions live in GitHub Issues for `ckken/prismo`. See `docs/agents/issue-tracker.md`.
 
 ### Domain docs
 

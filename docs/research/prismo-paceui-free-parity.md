@@ -4,7 +4,7 @@
 
 ## 结论
 
-Prismo 不应复刻 PaceUI 的托管 MCP 或 IDE 插件路径。其等价物是一个本地、可审查的交付链：Coding Agent 理解请求后调用 `shadcnagent`，由 CLI 输出机器计划；Agent 审查计划、以官方 shadcn 工具安装可编辑源码、补齐 Adapter 与路由，最后以真实路由和 `ProofReport` 验收。这样保留“从意图到可用 UI”的结果，同时遵守「CLI 是唯一执行控制面、不得建设 Prismo MCP」的已接受决策。
+Prismo 不应复刻 PaceUI 的托管 MCP 或 IDE 插件路径。其等价物是一个本地、可审查的交付链：Coding Agent 理解请求后调用 `Prismo`，由 CLI 输出机器计划；Agent 审查计划、以官方 shadcn 工具安装可编辑源码、补齐 Adapter 与路由，最后以真实路由和 `ProofReport` 验收。这样保留“从意图到可用 UI”的结果，同时遵守「CLI 是唯一执行控制面、不得建设 Prismo MCP」的已接受决策。
 
 用户已将 PaceUI 的全部非商业功能确认为 Prismo 的长期目标。当前 Dashboard 限制、未实现的 `apply / verify`、以及缺少通用 Templates / Starter 都是实现缺口，不是产品范围排除；目标边界见 [Prismo free-parity boundary](../product/prismo-free-parity-boundary.md)。
 
@@ -12,7 +12,7 @@ Prismo 不应复刻 PaceUI 的托管 MCP 或 IDE 插件路径。其等价物是�
 
 | PaceUI 非商业能力 | 第一方证据 | CLI-first Prismo 等价物 | 当前状态 / 边界 |
 | --- | --- | --- | --- |
-| 用自然语言或参考图生成 UI，并比较不同设计变体 | [MCP](https://paceui.com/mcp) 说明 Prompt/Image-to-Code 与多变体 | Agent 将业务请求交给 `shadcnagent plan`，得到 `ProjectProfile + DashboardSpec + RecipeDecision + InstallPlan`；不确定项写入 `unresolved`，由人或 Agent 选择，而非把模型首稿直接写入项目。 | `inspect`、`plan` 可用；这不是任意页面生成器，当前只覆盖可用 Dashboard Recipe。 |
+| 用自然语言或参考图生成 UI，并比较不同设计变体 | [MCP](https://paceui.com/mcp) 说明 Prompt/Image-to-Code 与多变体 | Agent 将业务请求交给 `prismo plan`，得到 `ProjectProfile + DashboardSpec + RecipeDecision + InstallPlan`；不确定项写入 `unresolved`，由人或 Agent 选择，而非把模型首稿直接写入项目。 | `inspect`、`plan` 可用；这不是任意页面生成器，当前只覆盖可用 Dashboard Recipe。 |
 | 在 IDE 中把选中的 UI 直接落入活动代码文件 | [MCP onboarding](https://paceui.com/mcp/onboarding) 列出 IDE/CLI 客户端；[MCP](https://paceui.com/mcp) 声称直接写入代码库 | 不接入 IDE/MCP server。Agent 在目标项目运行本地 CLI，先审查 dry-run；再通过官方 `shadcn` Registry 安装 editable source，并只在项目侧挂载 route、实现单一 Data Adapter。 | `apply` 是已接受但尚未 Available 的目标；现阶段可展示精确 dry-run argv，不能宣传一键写入已交付。 |
 | 可直接整合的、按 Dashboard / Marketing / Apps / Layouts 分类的模块化 Blocks | [Blocks](https://paceui.com/blocks) | 版本化 shadcn-compatible Registry Recipe，提供可编辑源码、Contract 与 fixture；CLI 仅选择与项目/请求相容的 **Available** Recipe。 | `dashboard-overview-01` 可用，含 KPI、图表、表格和四态；其余业务域仍为 Candidate，不生成安装计划。 |
 | 基础与动画组件（例如 AI UI、文本/按钮/卡片动效） | [Components](https://paceui.com/components) | 通用组件发现和安装委托官方 shadcn CLI/Skill；Prismo 聚焦 DashboardSpec、领域 Recipe、数据 Adapter 和 Proof，不复制通用组件目录。 | 不是 PaceUI 动效组件库的逐项替代；需要的视觉组件由目标项目按 shadcn 生态选择，并纳入项目验收。 |
@@ -25,7 +25,7 @@ Prismo 不应复刻 PaceUI 的托管 MCP 或 IDE 插件路径。其等价物是�
 PaceUI 的交互闭环是「IDE chat → MCP → 生成多个候选 → 选择 → 写入活动文件」。Prismo 的闭环应为：
 
 ```text
-业务请求 → Coding Agent → shadcnagent inspect / plan → 可复核计划与 dry-run
+业务请求 → Coding Agent → prismo inspect / plan → 可复核计划与 dry-run
         →（写入授权后，v1 target）官方 shadcn 安装 → Adapter + route mount
         → verify → 真实 HTTP route + ProofReport
 ```

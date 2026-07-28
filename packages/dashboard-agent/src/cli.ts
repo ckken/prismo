@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 import { createHydratedPlan, DashboardAgentError, inspectProject } from "./core.ts"
 
-const help = `shadcnagent <command> [options]
+const help = `prismo <command> [options]
 
 Commands:
   inspect [--cwd <dir>]                         Inspect a project with shadcn@4.14.1 info.

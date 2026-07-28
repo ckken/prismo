@@ -1,4 +1,4 @@
-# shadcnagent 产品定位
+# Prismo 产品定位
 
 ## 一句话
 
@@ -6,11 +6,11 @@
 
 | 项目 | 定义 |
 |---|---|
-| 品牌 | `shadcnagent` |
-| 主张 | From request to proof. |
-| 主入口 | 本地 `shadcnagent` CLI |
-| 仓库 | `shadcnagent` |
-| Registry namespace | `@shadcnagent` |
+| 品牌 | `Prismo` |
+| 主张 | From intent to proof. |
+| 主入口 | 本地 `prismo` CLI |
+| 仓库 | `prismo` |
+| Registry namespace | `@prismo` |
 | Agent Skill | 可选使用说明与兼容分发，不是运行时 |
 | 当前切入点 | Dashboard；长期目标覆盖 Prompt/Image、Variants、Blocks、Components、Templates、Full-page 与 Starter |
 | 协议决策 | 不建设自有 MCP Server |
@@ -42,4 +42,4 @@ Skill、`AGENTS.md` 和官网只能帮助 Agent 发现和理解 CLI，不能复�
 
 ## 品牌边界
 
-本项目为独立社区项目，只说明与 shadcn 生态兼容。名称、图形和配色不复制 shadcn 官方品牌资产，不使用 `@shadcn` 官方感命名空间。
+本项目为独立社区项目，只说明与 shadcn 生态兼容。名称、图形和配色不复制 PaceUI、shadcn 或其他竞品资产，不使用 `@shadcn` 官方感命名空间。旧 `shadcnagent` 命令只作为迁移兼容别名。

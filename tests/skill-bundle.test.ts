@@ -29,7 +29,7 @@ describe("shadcn-agent-kit standalone bundle", () => {
 
     const help = runSkill(skillDir, ["--help"])
     expect(help.exitCode).toBe(0)
-    expect(new TextDecoder().decode(help.stdout)).toContain("shadcnagent <command>")
+    expect(new TextDecoder().decode(help.stdout)).toContain("prismo <command>")
 
     const project = join(root, "project")
     mkdirSync(project)

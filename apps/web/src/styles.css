@@ -150,25 +150,53 @@ a:focus-visible {
 .brand-mark {
   width: 24px;
   height: 24px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.6;
+  overflow: visible;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
-.brand-mark .brand-check {
-  stroke: currentColor;
-  stroke-width: 2.3;
+.brand-mark .prismo-plane {
+  stroke: rgb(255 255 255 / 42%);
+  stroke-width: .9;
+}
+
+.brand-mark .prismo-plane-violet {
+  fill: url(#prismo-violet);
+}
+
+.brand-mark .prismo-plane-cyan {
+  fill: url(#prismo-cyan);
+}
+
+.brand-mark .prismo-plane-coral {
+  fill: url(#prismo-coral);
+}
+
+.brand-mark .prismo-seam {
+  fill: none;
+  stroke: rgb(255 255 255 / 65%);
+  stroke-width: .8;
 }
 
 .brand-name {
+  display: grid;
+  gap: 1px;
   font-size: 14px;
   letter-spacing: -.01em;
 }
 
 .brand-name strong {
   font-weight: 750;
+  letter-spacing: -.04em;
+}
+
+.brand-name em {
+  color: var(--muted-foreground);
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
 }
 
 @media (prefers-reduced-motion: reduce) {

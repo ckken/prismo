@@ -244,7 +244,7 @@ export function createPlan(cwd: string, request: string): DashboardPlan {
     ? createInstallPlan(projectProfile.packageManager, projectDir)
     : null
   const nextActions = installPlan
-    ? ["Review the dry-run command; shadcnagent has not executed it.", "Resolve the route and data-source contract before apply."]
+    ? ["Review the dry-run command; Prismo has not executed it.", "Resolve the route and data-source contract before apply."]
     : projectProfile.packageManager === "unknown" && recipeDecision.status === "selected"
       ? ["Confirm the target package manager before creating an install plan."]
       : recipeDecision.status === "clarify"

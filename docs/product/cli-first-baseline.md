@@ -1,4 +1,4 @@
-# shadcnagent CLI-first 基准线
+# Prismo CLI-first 基准线
 
 状态：Accepted
 
@@ -8,7 +8,7 @@
 
 ## 决策
 
-`shadcnagent` 是面向 Coding Agent 的本地 CLI，不建设自有 MCP Server、远程 Agent
+`Prismo` 是面向 Coding Agent 的本地 CLI，不建设自有 MCP Server、远程 Agent
 编排器或托管 UI runtime。
 
 CLI 是唯一可执行控制面；Core、Registry、Contract 和 Proof 是产品真相源。Agent
@@ -48,7 +48,7 @@ Skill、`AGENTS.md` 和官网只负责发现、说明和展示，不能复制 CL
 flowchart LR
   U["业务请求"] --> A["Coding Agent"]
   G["AGENTS.md / optional Skill"] --> A
-  A --> C["shadcnagent CLI"]
+  A --> C["Prismo CLI"]
   C --> D["Dashboard Agent Core"]
   D --> S["DashboardSpec / Recipe decision"]
   D --> R["shadcn-compatible Registry"]
@@ -74,14 +74,13 @@ flowchart LR
 
 ## CLI 契约
 
-公共命令名统一为 `shadcnagent`。`dashboard-agent` 在迁移期只作为兼容别名，不再作为
-公共品牌。
+公共命令名统一为 `prismo`。`Prismo` 与 `dashboard-agent` 在迁移期只作为兼容别名，不再作为公共品牌。
 
 ### v0：当前可用
 
 ```bash
-shadcnagent inspect --cwd <project> --json
-shadcnagent plan --cwd <project> --request <text> --json
+prismo inspect --cwd <project> --json
+prismo plan --cwd <project> --request <text> --json
 ```
 
 - `inspect`：只读识别单一 shadcn workspace，并读取固定版本的
@@ -94,9 +93,9 @@ shadcnagent plan --cwd <project> --request <text> --json
 以下命令是 Accepted target，在实现和门禁完成前不得标记为 Available：
 
 ```bash
-shadcnagent preview --plan <plan-file> --json
-shadcnagent apply --plan <plan-file> --json
-shadcnagent verify --plan <plan-file> --url <route> --json
+prismo preview --plan <plan-file> --json
+prismo apply --plan <plan-file> --json
+prismo verify --plan <plan-file> --url <route> --json
 ```
 
 - `preview`：执行精确的 shadcn dry-run，解析文件、依赖和冲突，写入版本化 plan。
@@ -117,7 +116,7 @@ CLI 负责确定性执行，Coding Agent 负责：
 - 输出不得包含凭据、Token、私有 URL、原始业务底表或直接个人信息。
 - 未知值进入 `unresolved`，不得用 fixture 或猜测伪装为生产数据。
 - CLI 不自动提交、推送、部署或修改数据库。
-- 生成文件默认位于 `.shadcnagent/`，目标项目应将运行产物加入忽略列表；是否提交
+- 生成文件默认位于 `.prismo/`，目标项目应将运行产物加入忽略列表；是否提交
   plan 或 proof 由目标项目决定。
 
 ### 退出码基准
@@ -209,7 +208,7 @@ v1 `apply / verify` 发布还必须增加：
 
 ## 明确不做
 
-- 不建设或发布 shadcnagent MCP Server。
+- 不建设或发布 Prismo MCP Server。
 - 不建设远程 Agent 编排器或必需的云端 UI runtime。
 - 不训练、代理或绑定特定大模型。
 - 不把任意 JSX 文本作为核心机器协议。

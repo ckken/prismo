@@ -1,6 +1,6 @@
 # Issue tracker: GitHub
 
-Prismo planning, handoff regressions, and long-running decisions live in GitHub Issues for `ckken/shadcnagent`. Use the `gh` CLI from this checkout.
+Prismo planning, handoff regressions, and long-running decisions live in GitHub Issues for `ckken/prismo`. Use the `gh` CLI from this checkout.
 
 ## Conventions
 

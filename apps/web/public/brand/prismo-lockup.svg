@@ -1,0 +1,13 @@
+<svg width="512" height="128" viewBox="0 0 512 128" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Prismo — Local UI delivery">
+  <defs>
+    <linearGradient id="violet" x1="20" y1="20" x2="100" y2="100" gradientUnits="userSpaceOnUse"><stop stop-color="#9B87FF"/><stop offset="1" stop-color="#5B35E5"/></linearGradient>
+    <linearGradient id="cyan" x1="64" y1="20" x2="110" y2="88" gradientUnits="userSpaceOnUse"><stop stop-color="#74F1FF"/><stop offset="1" stop-color="#178CFF"/></linearGradient>
+    <linearGradient id="coral" x1="42" y1="68" x2="94" y2="110" gradientUnits="userSpaceOnUse"><stop stop-color="#FFB19A"/><stop offset="1" stop-color="#FF5E7D"/></linearGradient>
+  </defs>
+  <path d="M22 46 62 21v80L22 76Z" fill="url(#violet)" stroke="rgba(255,255,255,.42)" stroke-width="3"/>
+  <path d="m64 21 40 25v31L64 101Z" fill="url(#cyan)" stroke="rgba(255,255,255,.42)" stroke-width="3"/>
+  <path d="m22 76 40 25 42-25-42 30Z" fill="url(#coral)" stroke="rgba(255,255,255,.42)" stroke-width="3"/>
+  <path d="M62 21v80M22 76l40 25 42-25" stroke="rgba(255,255,255,.65)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="140" y="62" fill="#171426" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="52" font-weight="750" letter-spacing="-2">Prismo</text>
+  <text x="142" y="91" fill="#6B6680" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="700" letter-spacing="2.1">LOCAL UI DELIVERY</text>
+</svg>

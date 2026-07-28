@@ -25,7 +25,7 @@
 
 - 官网 Shell 使用 `npx shadcn@latest add sidebar-07` 生成的 SidebarProvider、Sidebar、SidebarInset 和移动 Sheet。
 - Dashboard 页头使用 shadcn `Popover + Calendar` 时间区间组件，提供最近 7 / 28 / 90 天、最近 1 年与自定义起止日期。
-- 参考 shadcn UI Kit 的信息密度和组合方式，但保持 shadcnagent 的品牌、Recipe 状态和真实交付边界。
+- 参考 shadcn UI Kit 的信息密度和组合方式，但保持 Prismo 的品牌、Recipe 状态和真实交付边界。
 - 每个路由先展示该 Dashboard 的功能组合，再展示与场景匹配的卡片、趋势、列表和表格。
 - 桌面 Sidebar 可折叠为图标栏；移动端使用 `sidebar-07` 的 Sheet 抽屉，内容保持单列。
 
