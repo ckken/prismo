@@ -4,7 +4,7 @@ import { join, resolve } from "node:path"
 import { dashboardOverviewRecipe, SHADCN_CLI_VERSION } from "../packages/dashboard-agent/src/catalog.ts"
 
 const root = resolve(import.meta.dir, "..")
-const fixture = await mkdtemp(join(tmpdir(), "shadcn-agent-kit-proof-"))
+const fixture = await mkdtemp(join(tmpdir(), "agenic-agent-kit-proof-"))
 const registryItem = await Bun.file(resolve(root, `apps/web/public/r/${dashboardOverviewRecipe.id}.json`)).text()
 
 async function write(path: string, content: string) {
@@ -34,7 +34,7 @@ const server = Bun.serve({
 try {
   await Promise.all([
     write("package.json", `${JSON.stringify({
-      name: "shadcn-agent-kit-proof",
+      name: "agenic-agent-kit-proof",
       private: true,
       type: "module",
       packageManager: "bun@1.3.14",

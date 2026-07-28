@@ -6,11 +6,11 @@ const assetPrefix = process.env.PUBLIC_BASE_PATH ?? "/"
 export default defineConfig({
   plugins: [pluginReact()],
   html: {
-    title: "Prismo — verifiable UI delivery for coding agents",
+    title: "Agenic — agent-first UI delivery with proof",
     meta: {
       description:
-        "Turn intent into reviewable, editable UI source with a local CLI and proof boundary.",
-      "theme-color": "#6542ec",
+        "Turn intent into an agent-ready UI delivery plan, editable source, and verifiable proof.",
+      "theme-color": "#111827",
     },
   },
   output: {

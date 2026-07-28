@@ -51,10 +51,10 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarFallback className="rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">P</AvatarFallback>
+                <AvatarFallback className="rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">A</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">Prismo</span>
+                <span className="truncate font-semibold">Agenic</span>
                 <span className="truncate text-xs">1 Available · 5 Candidate</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />

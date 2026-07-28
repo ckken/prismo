@@ -1,5 +1,5 @@
 {
-  "name": "prismo",
+  "name": "agenic",
   "version": "0.1.0-alpha.0",
   "private": true,
   "type": "module",
@@ -13,13 +13,14 @@
     "build": "bun run registry:build && bun --cwd apps/web build && bun scripts/build-static-routes.ts",
     "typecheck": "bun --cwd apps/web typecheck && bunx tsc -p tsconfig.scripts.json --noEmit",
     "test": "bun run registry:build && bun test",
+    "agenic": "bun packages/dashboard-agent/src/cli.ts",
     "prismo": "bun packages/dashboard-agent/src/cli.ts",
     "shadcnagent": "bun packages/dashboard-agent/src/cli.ts",
     "dashboard-agent": "bun packages/dashboard-agent/src/cli.ts",
     "check": "bun run typecheck && bun run test && bun run build",
     "registry:build": "bun scripts/build-registry.ts",
-    "skill:build": "bun scripts/build-skill.ts skills/shadcn-agent-kit",
-    "skill:validate": "bun run skill:build && bun scripts/validate-skill.ts skills/shadcn-agent-kit",
+    "skill:build": "bun scripts/build-skill.ts skills/agenic-agent-kit",
+    "skill:validate": "bun run skill:build && bun scripts/validate-skill.ts skills/agenic-agent-kit",
     "proof:install": "bun run registry:build && bun scripts/proof-install.ts",
     "handoff:verify": "bun scripts/verify-handoff.ts"
   },

@@ -1,7 +1,7 @@
 import type { RecipeCatalogEntry } from "./contracts.ts"
 
 export const SHADCN_CLI_VERSION = "4.14.1"
-export const PUBLIC_REGISTRY_BASE_URL = "https://ckken.github.io/prismo/r"
+export const PUBLIC_REGISTRY_BASE_URL = "https://ckken.github.io/agenic/r"
 
 export const dashboardOverviewRecipe = {
   id: "dashboard-overview-01",

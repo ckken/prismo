@@ -13,12 +13,14 @@
 | Table | TanStack Table `8.21.3` | Headless 表格状态 |
 | Contract | Zod `4.4.3` | 运行时数据校验 |
 | Styling | Tailwind CSS `4.3.3` | CSS-first 配置 |
+| UI upstream | HeroUI React / Styles `3.2.2` | Agenic 官网与未来 Renderer 的上游 UI 基础 |
 | Registry CLI | shadcn `4.14.1` | dry-run 与安装 |
 
 ## 固定原则
 
 - `packageManager` 与 CI 固定 Bun `1.3.14`。
 - TypeScript 只承诺 CLI `tsc --noEmit`，不调用不稳定 Compiler API。
-- shadcn/ui 作为源码组件和 Registry 协议，不作为应用框架。
+- HeroUI 是版本固定的上游 UI 依赖；Agenic 不 fork 其实现、不使用其 Pro 内容，也不将其 MCP server 作为产品控制面。
+- shadcn/ui 保留为当前 Dashboard vertical 的源码组件和 Registry 协议，不作为 Agenic 的唯一应用框架。
 - GitHub Pages 项目页设置 `PUBLIC_BASE_PATH=/<repo>/`。
 - Registry 构建产物必须包含 `dist/r/<recipe>.json`。

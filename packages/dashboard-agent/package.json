@@ -1,9 +1,10 @@
 {
-  "name": "@prismo/cli",
+  "name": "@agenic/cli",
   "version": "0.1.0-alpha.0",
   "private": true,
   "type": "module",
   "bin": {
+    "agenic": "./src/cli.ts",
     "prismo": "./src/cli.ts",
     "shadcnagent": "./src/cli.ts",
     "dashboard-agent": "./src/cli.ts"

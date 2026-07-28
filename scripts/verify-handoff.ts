@@ -65,7 +65,7 @@ const scenarios: Scenario[] = [
 
 const report = {
   schemaVersion: "1",
-  kind: "PrismoHandoffAudit",
+  kind: "AgenicHandoffAudit",
   auditedAt: new Date().toISOString(),
   deliveryStatus: "incomplete",
   currentCliBoundary: ["inspect", "plan"],

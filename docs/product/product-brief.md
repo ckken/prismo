@@ -1,45 +1,49 @@
-# Prismo 产品定位
+# Agenic 产品定位
 
 ## 一句话
 
-把 Coding Agent 收到的 Web 需求，转换成可选择、可安装、可接数据、可验证的 shadcn-compatible 源码交付。
+把 Coding Agent 收到的 Web UI 需求，转换成可选择、可交付、可接数据、可验证并可交接的开源 UI 成果。
 
 | 项目 | 定义 |
 |---|---|
-| 品牌 | `Prismo` |
+| 品牌 | `Agenic` |
 | 主张 | From intent to proof. |
-| 主入口 | 本地 `prismo` CLI |
-| 仓库 | `prismo` |
-| Registry namespace | `@prismo` |
-| Agent Skill | 可选使用说明与兼容分发，不是运行时 |
-| 当前切入点 | Dashboard；长期目标覆盖 Prompt/Image、Variants、Blocks、Components、Templates、Full-page 与 Starter |
+| 主入口 | 本地 `agenic` CLI |
+| 仓库 | `agenic` |
+| Package namespace | `@agenic` |
+| UI 上游 | HeroUI v3（固定版本依赖） |
+| 当前切入点 | Dashboard；长期覆盖 Prompt/Image、Variants、Blocks、Components、Templates、Full-page 与 Starter |
 | 协议决策 | 不建设自有 MCP Server |
 
 ## 为谁解决什么
 
-目标用户是使用 Codex 等 Coding Agent 的开发者和小团队。常见问题不是缺 UI，而是 Agent 每次从零拼页面、数据边界混乱、复杂表格被低估、完成后缺少证据。
+目标用户是使用 Codex 等 Coding Agent 的开发者和小团队。常见问题不是缺 UI 原语，而是 Agent 每次从零拼页面、忽略项目约束和数据边界，并在没有真实路由证据时宣称完成。
 
-产品目标对齐免费 UI 交付的完整功能边界，但以本地 CLI 替代 MCP 接入。完整范围和声明纪律见 [Prismo free-parity boundary](prismo-free-parity-boundary.md)。
+Agenic 将稳定部分沉淀为六层：
 
-本项目把稳定部分沉淀为五层：
+1. **Intent + ProjectProfile**：请求和目标项目的可审查输入。
+2. **Spec**：把需求、未决项与交付边界变成机器协议；Dashboard 是首个垂直场景。
+3. **Agenic CLI**：唯一控制面，负责确定性识别、计划、应用与验证。
+4. **Renderer + Recipe**：HeroUI 是上游 UI 基础；Agenic Recipe 是可编辑的页面组合和领域交付单元。
+5. **Contract + Adapter**：业务字段只在一处映射，页面不直接消费原始接口。
+6. **Proof + Handoff**：真实路由证据、未验证项与可恢复的执行状态。
 
-1. DashboardSpec：把请求转换为可验证的机器协议。
-2. CLI：唯一执行控制面，负责确定性识别、计划、应用与验证。
-3. Registry：交付版本化、editable React source。
-4. Contract + Adapter：业务字段只在一处映射。
-5. Proof：区分通过、失败和未验证项。
+完整范围与声明纪律见 [Agenic free-parity boundary](agenic-free-parity-boundary.md)；架构选择见 [ADR 0001](../adr/0001-agenic-hero-ui-upstream.md)。
 
-Skill、`AGENTS.md` 和官网只能帮助 Agent 发现和理解 CLI，不能复制 CLI Core 的选择、
-写入或验证实现。完整基准见 [CLI-first 基准线](cli-first-baseline.md)。
+## 角色边界
 
-## 使用边界
+- **HeroUI** 提供开源、可访问的 UI 原语、主题与交互基础。
+- **Agenic** 提供 Agent-first 交付协议、CLI、Recipe、数据适配、验证、Proof 与 Handoff。
+- **Coding Agent** 理解自然语言、暴露真实未决项、审查计划，并在授权后调用 CLI。
+- **官网与 Skill** 只用于发现、说明和预览，不能复制 CLI Core 的选择、写入或验证实现。
 
-- 适合 KPI、趋势、筛选、普通管理表格和常见后台状态。
-- shadcn/ui 不负责服务端数据能力；TanStack Table 只负责 headless 状态。
-- 权限、审计、导出任务、跨页选择、虚拟化由应用或后端实现。
-- 类 Excel 编辑、公式、冻结区、海量单元格协同使用专业 Data Grid。
-- Candidate 不可安装，也不能展示假 Proof。
+## 当前能力与诚实边界
 
-## 品牌边界
+- `dashboard-overview-01` 是唯一 Available Recipe。
+- Sales、Commerce、Agent Ops、CRM、Finance 仍是 Candidate；不能显示安装命令或完成态 Proof。
+- 当前 CLI 的 `inspect / plan` 仍覆盖现有 shadcn-compatible Dashboard 供应链；HeroUI Renderer 的端到端 `apply / verify` 在真实路由 Proof 前是 Target。
+- Agent-first 不等于托管 Agent、不等于 MCP Server，也不等于绕过用户授权。
 
-本项目为独立社区项目，只说明与 shadcn 生态兼容。名称、图形和配色不复制任何参考产品资产，不使用 `@shadcn` 官方感命名空间。旧 `shadcnagent` 命令只作为迁移兼容别名。
+## 开源与品牌边界
+
+Agenic 是免费开源项目，不提供价格、订阅、额度、License、试用或付费计划行为。HeroUI 是 Apache-2.0 上游依赖：不复制其名称、视觉资产、文档图形或 Pro 内容，不把其 MCP server 伪装为 Agenic 功能。`prismo`、`shadcnagent` 与 `dashboard-agent` 仅保留为命令兼容别名。

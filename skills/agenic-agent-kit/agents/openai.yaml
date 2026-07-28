@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agenic CLI"
+  short_description: "Install and verify shadcn-compatible web recipes"
+  default_prompt: "Use the Agenic CLI to inspect this project, choose an available recipe, preview changes, and verify the installation."

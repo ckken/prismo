@@ -21,15 +21,15 @@ function runSkill(skillDir: string, args: string[], env: Record<string, string |
 
 afterEach(() => directories.splice(0).forEach((directory) => rmSync(directory, { recursive: true, force: true })))
 
-describe("shadcn-agent-kit standalone bundle", () => {
+describe("agenic-agent-kit standalone bundle", () => {
   test("runs after the skill directory is copied outside the repository", async () => {
     const root = fixture()
     const skillDir = join(root, "installed-skill")
-    cpSync(join(import.meta.dir, "../skills/shadcn-agent-kit"), skillDir, { recursive: true })
+    cpSync(join(import.meta.dir, "../skills/agenic-agent-kit"), skillDir, { recursive: true })
 
     const help = runSkill(skillDir, ["--help"])
     expect(help.exitCode).toBe(0)
-    expect(new TextDecoder().decode(help.stdout)).toContain("prismo <command>")
+    expect(new TextDecoder().decode(help.stdout)).toContain("agenic <command>")
 
     const project = join(root, "project")
     mkdirSync(project)

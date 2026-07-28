@@ -1,6 +1,6 @@
 # Issue tracker: GitHub
 
-Prismo planning, handoff regressions, and long-running decisions live in GitHub Issues for `ckken/prismo`. Use the `gh` CLI from this checkout.
+Agenic planning, handoff regressions, and long-running decisions live in GitHub Issues for `ckken/agenic`. Use the `gh` CLI from this checkout.
 
 ## Conventions
 
@@ -24,4 +24,4 @@ Pull requests are not a request surface.
 
 ## Scheduled handoff regressions
 
-The `Prismo Handoff Audit` workflow may create or update only the open issue labelled `prismo:handoff-regression` when its verifier itself fails. It never changes code, commits, or deploys.
+The `Agenic Handoff Audit` workflow may create or update only the open issue labelled `agenic:handoff-regression` when its verifier itself fails. It never changes code, commits, or deploys.

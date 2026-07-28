@@ -1,8 +1,8 @@
-# Prismo handoff acceptance boundary
+# Agenic handoff acceptance boundary
 
 ## Purpose
 
-Prismo is complete only when a second Coding Agent or a new session can resume a request from recorded state and produce the same evidence-backed outcome. A prior agent writing files is not completion.
+Agenic is complete only when a second Coding Agent or a new session can resume a request from recorded state and produce the same evidence-backed outcome. A prior agent writing files is not completion.
 
 ## State model
 
@@ -11,7 +11,7 @@ intake → inspected → planned → selected → previewed → applied → adap
                               ↘ blocked / stale / conflict / failed
 ```
 
-The future CLI stores one immutable handoff record at `.prismo/handoffs/<handoff-id>/`. Each record contains the request, project fingerprint, DashboardSpec, Variant selection, plan revision, file-impact summary, ApplyReceipt, route evidence, and ProofReport.
+The future CLI stores one immutable handoff record at `.agenic/handoffs/<handoff-id>/`. Each record contains the request, project fingerprint, DashboardSpec, Variant selection, plan revision, file-impact summary, ApplyReceipt, route evidence, and ProofReport.
 
 `complete` requires every applicable gate below. `unverified` is never equivalent to `complete`.
 
@@ -40,6 +40,6 @@ The future CLI stores one immutable handoff record at `.prismo/handoffs/<handoff
 
 ## Scheduled audit policy
 
-The daily scheduled audit verifies the CLI's currently implemented capability in fresh processes and emits a JSON report. Until `preview`, `apply`, and `verify` are implemented, its report must state `deliveryStatus: incomplete`; a green workflow only means the auditor ran correctly, not that Prismo has completed end-to-end delivery.
+The daily scheduled audit verifies the CLI's currently implemented capability in fresh processes and emits a JSON report. Until `preview`, `apply`, and `verify` are implemented, its report must state `deliveryStatus: incomplete`; a green workflow only means the auditor ran correctly, not that Agenic has completed end-to-end delivery.
 
 The audit may read the checkout, install dependencies, create temporary files, and upload an artifact. It must not modify tracked source, create commits, push, deploy, or claim completion beyond the available CLI boundary.

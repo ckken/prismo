@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://ckken.github.io/prismo/schemas/dashboard-plan.v1.schema.json",
+  "$id": "https://ckken.github.io/agenic/schemas/dashboard-plan.v1.schema.json",
   "title": "DashboardPlan v1",
   "type": "object",
   "additionalProperties": false,

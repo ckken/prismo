@@ -1,8 +1,8 @@
-# Prismo Dashboard CLI 演进方案
+# Agenic Dashboard CLI 演进方案
 
 ## 产品定义
 
-`Prismo` 是一个可被 Codex、Claude Code、Cursor 等 Coding Agent 调用的本地
+`Agenic` 是一个可被 Codex、Claude Code、Cursor 等 Coding Agent 调用的本地
 Dashboard CLI，不是新的基础模型，也不建设自有 MCP Server。
 
 它由五层组成：
@@ -17,7 +17,7 @@ Dashboard CLI，不是新的基础模型，也不建设自有 MCP Server。
 flowchart LR
   A["业务请求"] --> B["Host Coding Agent"]
   G["AGENTS.md / 项目约束"] --> B
-  B --> C["Prismo CLI"]
+  B --> C["Agenic CLI"]
   C --> D["Dashboard Agent Core"]
   D --> E["shadcn info / CLI"]
   D --> F["DashboardSpec + Recipe Catalog"]
@@ -36,7 +36,7 @@ flowchart LR
 - 一个公开可安装的 `dashboard-overview-01`。
 - L2 受控表格、KPI、趋势图、Zod Contract 和四种显式状态。
 - 可由 Skills CLI 一键安装的可选 Skill bundle，以及 Inspect → Select → Preview → Install → Adapt → Proof 流程说明。
-- `prismo inspect / plan` 可从仓库运行；兼容 Skill bundle 不依赖仓库内部路径。
+- `agenic inspect / plan` 可从仓库运行；兼容 Skill bundle 不依赖仓库内部路径。
 - Registry build、真实 shadcn dry-run/add、TypeScript 和 Rsbuild Fixture proof。
 - 基于 `sidebar-07` 的路由化官网：展示六个 Dashboard 功能组合、Candidate 边界与唯一 Available Recipe 的 dry-run 入口。
 
@@ -60,7 +60,7 @@ Accepted 的产品、协议、安全与发布边界见
 支持范围内的目标调用只有两轮：
 
 ```bash
-prismo plan \
+agenic plan \
   --cwd . \
   --request "增加经营总览：3 个 KPI、趋势图、服务端分页表格" \
   --json
@@ -69,9 +69,9 @@ prismo plan \
 Agent 审查 plan 后执行：
 
 ```bash
-prismo preview --plan .prismo/plans/<plan-id>.json --json
-prismo apply --plan .prismo/plans/<plan-id>.json --json
-prismo verify --plan .prismo/plans/<plan-id>.json --url /dashboard --json
+agenic preview --plan .agenic/plans/<plan-id>.json --json
+agenic apply --plan .agenic/plans/<plan-id>.json --json
+agenic verify --plan .agenic/plans/<plan-id>.json --url /dashboard --json
 ```
 
 `plan` 必须一次返回：
@@ -131,7 +131,7 @@ prismo verify --plan .prismo/plans/<plan-id>.json --url /dashboard --json
 
 目标：消除误选和项目误判，让 Agent 一条命令得到可靠计划。
 
-- 建立 `@prismo/cli`，公共 bin 为 `Prismo`。
+- 建立 `@agenic/cli`，公共 bin 为 `Agenic`。
 - `inspect` 自动定位单一 shadcn workspace；多 workspace 明确拒绝猜测。
 - 项目真相源切换到固定版本的 `shadcn info --json`。
 - `plan` 输出 DashboardSpec v1、RecipeDecision 和只读 dry-run argv。
@@ -144,7 +144,7 @@ prismo verify --plan .prismo/plans/<plan-id>.json --url /dashboard --json
 
 目标：支持范围内从需求到可运行页面不超过两次 Agent 决策。
 
-- `preview` 执行 shadcn dry-run，并保存 `.prismo/plans/<plan-id>.json`。
+- `preview` 执行 shadcn dry-run，并保存 `.agenic/plans/<plan-id>.json`。
 - `apply` 校验 plan revision、project fingerprint 和文件摘要后安装；未知文件冲突立即停下。
 - 提供 REST / fixture Adapter scaffold 和常见 router mount。
 - 将 demo fixture 改成显式 opt-in，生产接入缺少数据时不得呈现为 success。
@@ -169,7 +169,7 @@ prismo verify --plan .prismo/plans/<plan-id>.json --url /dashboard --json
 
 目标：让不同 Coding Agent 宿主直接调用同一版本化 CLI。
 
-- 发布带 `Prismo` bin 的独立 CLI package。
+- 发布带 `Agenic` bin 的独立 CLI package。
 - 可选 Skill 和 `AGENTS.md` 只描述使用策略，依赖同版本 CLI contract。
 - 为声明支持的宿主运行相同 fixture 和真实路由验收。
 - 支持 Registry namespace / private Registry；认证由 shadcn 配置承载。
@@ -195,6 +195,6 @@ prismo verify --plan .prismo/plans/<plan-id>.json --url /dashboard --json
 
 - 不训练或绑定特定大模型。
 - 不复制 shadcn 的通用 project info、registry search 或 install 实现。
-- 不建设 Prismo MCP Server、云端编排器或必需的托管 UI runtime。
+- 不建设 Agenic MCP Server、云端编排器或必需的托管 UI runtime。
 - 不让模型直接输出任意 JSX 作为核心协议。
 - 不为没有真实需求和 eval 的场景批量制造 Recipe。

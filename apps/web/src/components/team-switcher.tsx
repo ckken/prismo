@@ -14,7 +14,7 @@ export function TeamSwitcher({ locale }: { locale: Locale }) {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton size="lg" asChild tooltip="Prismo">
+        <SidebarMenuButton size="lg" asChild tooltip="Agenic">
           <Link
             to="/dashboard/$dashboardId"
             params={{ dashboardId: "default" }}
@@ -24,7 +24,7 @@ export function TeamSwitcher({ locale }: { locale: Locale }) {
               <LogoMark compact />
             </span>
             <span className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold">Prismo</span>
+              <span className="truncate font-semibold">Agenic</span>
               <span className="truncate text-xs">{locale === "zh" ? "可验证 UI 交付" : "Verifiable UI delivery"}</span>
             </span>
           </Link>

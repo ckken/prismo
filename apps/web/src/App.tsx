@@ -611,7 +611,7 @@ export function DashboardPage({ dashboardId }: { dashboardId: DashboardId }) {
   )
 
   useEffect(() => {
-    document.title = `${localize(dashboard.title, locale)} — Prismo`
+    document.title = `${localize(dashboard.title, locale)} — Agenic`
     document.querySelector<HTMLMetaElement>('meta[name="description"]')?.setAttribute("content", localize(dashboard.description, locale))
   }, [dashboard, locale])
 
@@ -629,7 +629,7 @@ export function DashboardPage({ dashboardId }: { dashboardId: DashboardId }) {
 export function CatalogPage() {
   const { locale } = useSiteContext()
   const t = siteText[locale]
-  useEffect(() => { document.title = `${t.catalog.title} — Prismo` }, [t.catalog.title])
+  useEffect(() => { document.title = `${t.catalog.title} — Agenic` }, [t.catalog.title])
   return (
     <>
       <header className="kit-page-header kit-simple-header"><div><h1>{t.catalog.title}</h1><p>{t.catalog.description}</p></div></header>
@@ -655,7 +655,7 @@ export function CatalogPage() {
 export function WorkflowPage() {
   const { locale } = useSiteContext()
   const t = siteText[locale]
-  useEffect(() => { document.title = `${t.workflow.title} — Prismo` }, [t.workflow.title])
+  useEffect(() => { document.title = `${t.workflow.title} — Agenic` }, [t.workflow.title])
   return (
     <>
       <header className="kit-page-header kit-simple-header"><div><h1>{t.workflow.title}</h1><p>{t.workflow.description}</p></div></header>

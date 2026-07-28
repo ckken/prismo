@@ -11,6 +11,7 @@ import {
   RouterProvider,
 } from "@tanstack/react-router"
 import { CatalogPage, DashboardLayout, DashboardPage, WorkflowPage } from "./App"
+import { AgenicHomePage } from "./agenic-home"
 import { isDashboardId, type DashboardId } from "./dashboard-site-data"
 import { applyInitialPreferences } from "./preferences"
 import "./styles.css"
@@ -27,9 +28,7 @@ const dashboardLayoutRoute = createRoute({
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/",
-  beforeLoad: () => {
-    throw redirect({ to: "/dashboard/$dashboardId", params: { dashboardId: "default" } })
-  },
+  component: AgenicHomePage,
 })
 const dashboardRoute = createRoute({
   getParentRoute: () => dashboardLayoutRoute,

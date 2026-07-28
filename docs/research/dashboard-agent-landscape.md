@@ -17,7 +17,7 @@
 | AI SDK Generative UI | 产品运行时把 typed tool result 映射为受控 React UI | 生成后源码的维护性、安装和工程验收 |
 | AGENTS.md / Agent Skills | 项目约束与按需加载的领域工作流 | 可执行动作和机器门禁 |
 
-因此，`Prismo` 的差异化不应是“更多漂亮 Block”，而应是：
+因此，`Agenic` 的差异化不应是“更多漂亮 Block”，而应是：
 
 1. 用机器可读的 `DashboardSpec` 表达业务意图、组件、数据模式与未决项。
 2. 用有能力标签和兼容矩阵的 Recipe Catalog 做可解释选择。
@@ -33,7 +33,7 @@
 
 2026-07-27 实时检查 `shadcn@latest` 为 `4.15.0`；仓库本轮仍保留已跑完安装 Proof 的 `4.14.1`，后续升级必须重新通过同一 Fixture 门禁。
 
-`Prismo` 只补充 Dashboard 特有层：
+`Agenic` 只补充 Dashboard 特有层：
 
 - 请求结构化与最少澄清。
 - Recipe 能力匹配和 Candidate 拒绝。

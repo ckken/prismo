@@ -30,6 +30,7 @@ jobs:
       - run: bun run check
       - name: Verify static route entries
         run: |
+          test -f apps/web/dist/index.html
           test -f apps/web/dist/dashboard/default/index.html
           test -f apps/web/dist/dashboard/sales/index.html
           test -f apps/web/dist/dashboard/commerce/index.html

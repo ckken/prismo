@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises"
 import { dirname, resolve } from "node:path"
 
-const skillDir = resolve(process.argv[2] ?? "skills/shadcn-agent-kit")
+const skillDir = resolve(process.argv[2] ?? "skills/agenic-agent-kit")
 const outfile = resolve(skillDir, "scripts/dashboard-agent.js")
 
 await mkdir(dirname(outfile), { recursive: true })

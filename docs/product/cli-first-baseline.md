@@ -1,4 +1,4 @@
-# Prismo CLI-first 基准线
+# Agenic CLI-first 基准线
 
 状态：Accepted
 
@@ -8,7 +8,7 @@
 
 ## 决策
 
-`Prismo` 是面向 Coding Agent 的本地 CLI，不建设自有 MCP Server、远程 Agent
+`Agenic` 是面向 Coding Agent 的本地 CLI，不建设自有 MCP Server、远程 Agent
 编排器或托管 UI runtime。
 
 CLI 是唯一可执行控制面；Core、Registry、Contract 和 Proof 是产品真相源。Agent
@@ -24,7 +24,7 @@ Skill、`AGENTS.md` 和官网只负责发现、说明和展示，不能复制 CL
 
 ## 用户与完成边界
 
-首要用户是在现有 React + shadcn-compatible 项目中工作的 Coding Agent 和开发者。
+首要用户是在现有 React 项目中工作的 Coding Agent 和开发者。当前已验证的 Dashboard 供应链仍要求 shadcn-compatible 项目；HeroUI Renderer 在端到端 Proof 前属于 Target。
 首个完整场景是：
 
 ```text
@@ -48,12 +48,14 @@ Skill、`AGENTS.md` 和官网只负责发现、说明和展示，不能复制 CL
 flowchart LR
   U["业务请求"] --> A["Coding Agent"]
   G["AGENTS.md / optional Skill"] --> A
-  A --> C["Prismo CLI"]
+  A --> C["Agenic CLI"]
   C --> D["Dashboard Agent Core"]
   D --> S["DashboardSpec / Recipe decision"]
-  D --> R["shadcn-compatible Registry"]
+  D --> H["HeroUI v3 upstream"]
+  D --> R["Agenic Recipe catalog"]
   D --> P["Plan / Apply / Verify"]
-  R --> T["Editable source + Contract + Fixture"]
+  H --> T["Editable Recipe composition + Contract + Fixture"]
+  R --> T
   T --> X["Target project: Adapter + Route"]
   P --> X
   X --> E["ProofReport"]
@@ -74,13 +76,13 @@ flowchart LR
 
 ## CLI 契约
 
-公共命令名统一为 `prismo`。`Prismo` 与 `dashboard-agent` 在迁移期只作为兼容别名，不再作为公共品牌。
+公共命令名统一为 `agenic`。`prismo`、`shadcnagent` 与 `dashboard-agent` 在迁移期只作为兼容别名，不再作为公共品牌。
 
 ### v0：当前可用
 
 ```bash
-prismo inspect --cwd <project> --json
-prismo plan --cwd <project> --request <text> --json
+agenic inspect --cwd <project> --json
+agenic plan --cwd <project> --request <text> --json
 ```
 
 - `inspect`：只读识别单一 shadcn workspace，并读取固定版本的
@@ -93,12 +95,12 @@ prismo plan --cwd <project> --request <text> --json
 以下命令是 Accepted target，在实现和门禁完成前不得标记为 Available：
 
 ```bash
-prismo preview --plan <plan-file> --json
-prismo apply --plan <plan-file> --json
-prismo verify --plan <plan-file> --url <route> --json
+agenic preview --plan <plan-file> --json
+agenic apply --plan <plan-file> --json
+agenic verify --plan <plan-file> --url <route> --json
 ```
 
-- `preview`：执行精确的 shadcn dry-run，解析文件、依赖和冲突，写入版本化 plan。
+- `preview`：对当前 shadcn-compatible vertical 执行精确 dry-run；HeroUI Renderer 则解析其锁定的上游依赖、Agenic Recipe 文件和冲突，并写入版本化 plan。
 - `apply`：校验 plan revision、目标 workspace 和文件摘要后安装源码；未知冲突立即停止。
 - `verify`：运行目标项目门禁、Contract/四态检查和真实路由验收，输出 Proof。
 
@@ -116,7 +118,7 @@ CLI 负责确定性执行，Coding Agent 负责：
 - 输出不得包含凭据、Token、私有 URL、原始业务底表或直接个人信息。
 - 未知值进入 `unresolved`，不得用 fixture 或猜测伪装为生产数据。
 - CLI 不自动提交、推送、部署或修改数据库。
-- 生成文件默认位于 `.prismo/`，目标项目应将运行产物加入忽略列表；是否提交
+- 生成文件默认位于 `.agenic/`，目标项目应将运行产物加入忽略列表；是否提交
   plan 或 proof 由目标项目决定。
 
 ### 退出码基准
@@ -208,11 +210,11 @@ v1 `apply / verify` 发布还必须增加：
 
 ## 明确不做
 
-- 不建设或发布 Prismo MCP Server。
+- 不建设或发布 Agenic MCP Server。
 - 不建设远程 Agent 编排器或必需的云端 UI runtime。
 - 不训练、代理或绑定特定大模型。
 - 不把任意 JSX 文本作为核心机器协议。
-- 不复制 shadcn CLI 的通用组件发现与安装实现。
+- 不复制上游 UI 库的品牌、Pro 内容或通用组件发现/安装实现。
 - 不在既有项目中擅自替换认证、权限、审计、导出任务、数据库写入或专业 Data Grid；Starter 能力在其独立纵向切片中提供可选模块，支付与商业计费除外。
 - 不把 Candidate、概念预览或 Mock 数据表述为可安装生产能力。
 - 不为扩充 Catalog 批量制造缺少真实需求和 Proof 的 Recipe。
@@ -225,4 +227,4 @@ v1 `apply / verify` 发布还必须增加：
 Inspect → Plan → Preview → Apply → Adapt → Route → Verify → Proof
 ```
 
-在该链路通过真实目标项目验收之前，不引入第二执行控制面；后续 Blocks、Components、Templates、Full-page、Image 与 Starter 按 [Prismo free-parity boundary](prismo-free-parity-boundary.md) 的顺序推进。
+在该链路通过真实目标项目验收之前，不引入第二执行控制面；后续 Blocks、Components、Templates、Full-page、Image 与 Starter 按 [Agenic free-parity boundary](agenic-free-parity-boundary.md) 的顺序推进。

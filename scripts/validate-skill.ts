@@ -1,6 +1,6 @@
 import { resolve } from "node:path"
 
-const skillDir = resolve(process.argv[2] ?? "skills/shadcn-agent-kit")
+const skillDir = resolve(process.argv[2] ?? "skills/agenic-agent-kit")
 const skillFile = Bun.file(resolve(skillDir, "SKILL.md"))
 const bundleFile = Bun.file(resolve(skillDir, "scripts/dashboard-agent.js"))
 

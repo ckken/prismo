@@ -10,7 +10,7 @@
 
 | 工作流 | 交付 | 完成门槛 |
 |---|---|---|
-| CLI | `prismo inspect/plan` | 单 workspace 自动定位，多 workspace 不猜 |
+| CLI | `agenic inspect/plan` | 单 workspace 自动定位，多 workspace 不猜 |
 | Project truth | 固定版本 `shadcn info --json` | framework/base/alias/Tailwind 可复核 |
 | Decision | DashboardSpec v1 + 能力评分 | 通用词不误选，Candidate 只解释不安装 |
 | Plan | 只读 dry-run argv + adapter seam | 不写目标项目，输出可机器消费 |

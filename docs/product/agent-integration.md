@@ -2,11 +2,11 @@
 
 ## 接入方式
 
-`prismo` CLI 是唯一执行入口。仓库开发和当前验证使用：
+`agenic` CLI 是唯一执行入口。仓库开发和当前验证使用：
 
 ```bash
-bun run prismo inspect --cwd <project> --json
-bun run prismo plan \
+bun run agenic inspect --cwd <project> --json
+bun run agenic plan \
   --cwd <project> \
   --request "增加经营总览：3 个 KPI、趋势图和服务端分页表格" \
   --json
@@ -16,13 +16,13 @@ CLI 尚未发布为独立版本化 package，不能给出虚构的外部安装�
 `preview / apply / verify` 和发布矩阵前，外部 Agent 可以选择安装兼容 Skill bundle：
 
 ```bash
-npx skills add ckken/prismo \
-  --skill shadcn-agent-kit \
+npx skills add ckken/agenic \
+  --skill agenic-agent-kit \
   -a codex \
   -y
 ```
 
-命令将 Skill 复制到 `.agents/skills/shadcn-agent-kit/`。Skill 内置兼容 CLI bundle
+命令将 Skill 复制到 `.agents/skills/agenic-agent-kit/`。Skill 内置兼容 CLI bundle
 `scripts/dashboard-agent.js`，离开仓库也能运行 `inspect` 和 `plan`；不会引用仓库
 内部 `packages/` 路径。Skill 只负责使用流程和安全策略，不得实现另一套项目识别、
 Recipe 选择或 Proof 逻辑。
@@ -32,14 +32,14 @@ Recipe 选择或 Proof 逻辑。
 安装后可直接给 Agent 请求：
 
 ```text
-用 Prismo 增加经营总览：3 个 KPI、趋势图和服务端分页表格。
+用 Agenic 增加经营总览：3 个 KPI、趋势图和服务端分页表格。
 先 inspect 和 plan，展示 dry-run 与文件影响；确认后再安装、接入数据并给出 Proof。
 ```
 
 需要人工查看机器计划时：
 
 ```bash
-bun .agents/skills/shadcn-agent-kit/scripts/dashboard-agent.js plan \
+bun .agents/skills/agenic-agent-kit/scripts/dashboard-agent.js plan \
   --cwd . \
   --request "增加经营总览：3 个 KPI、趋势图、服务端分页表格" \
   --json
@@ -54,10 +54,10 @@ bun .agents/skills/shadcn-agent-kit/scripts/dashboard-agent.js plan \
 | Adapt | 业务字段映射到 Contract | 一个 Data Source / Adapter |
 | Proof | 类型、构建、四态、响应式 | `ProofReport` |
 
-通用 shadcn 项目识别、Registry 搜索和安装交给固定版本的官方 CLI；本项目只维护 DashboardSpec、领域选择、Adapter 和 Proof。
+当前 Dashboard vertical 的通用 shadcn 项目识别、Registry 搜索和安装交给固定版本的官方 CLI；Agenic 维护 DashboardSpec、领域选择、Adapter 和 Proof。HeroUI 是 Agenic 的上游 UI 基础，不是另一个 CLI 或 MCP 控制面。
 
 当前 CLI 只负责只读 `inspect / plan`。安装、路由接入和 Proof 仍由 Coding Agent 按
-plan 执行；尚未实现的 `prismo preview / apply / verify` 不作为可用命令宣传。
+plan 执行；尚未实现的 `agenic preview / apply / verify` 不作为可用命令宣传。
 Accepted 的完整命令、退出码、schema 和门禁见
 [CLI-first 基准线](cli-first-baseline.md)。
 
@@ -108,6 +108,6 @@ Fixture 与 REST Adapter 使用同一 Contract 测试。网络错误、权限错
 
 - Candidate 不能生成安装 URL。
 - 未经授权不覆盖未知文件，不提交、不推送、不部署。
-- 不建设或依赖 Prismo MCP Server；Agent 通过本地 CLI 执行。
+- 不建设或依赖 Agenic MCP Server；Agent 通过本地 CLI 执行。
 - Build 通过不等于 Contract、交互、无障碍或生产验收通过。
 - Proof 必须分别记录 passed、failed、unverified。
