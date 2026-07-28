@@ -20,9 +20,11 @@ boundary, route evidence, handoff record, and ProofReport.
 
 ## Current capability
 
-`dashboard-overview-01` is the only Available Recipe. It is the first vertical
-that must close the full handoff and Proof path. Other listed scenarios remain
-Candidate or Target and must not show installation or completion claims.
+`dashboard-overview-01` is the only Available Recipe. Its live Demo is rendered
+with HeroUI primitives; its current installable Registry source remains the
+shadcn-compatible baseline until the HeroUI Renderer closes apply/verify and
+handoff Proof. Other listed scenarios remain Candidate or Target and must not
+show installation or completion claims.
 
 ## Naming
 

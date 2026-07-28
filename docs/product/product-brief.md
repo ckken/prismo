@@ -41,7 +41,7 @@ Agenic 将稳定部分沉淀为六层：
 
 - `dashboard-overview-01` 是唯一 Available Recipe。
 - Sales、Commerce、Agent Ops、CRM、Finance 仍是 Candidate；不能显示安装命令或完成态 Proof。
-- 当前 CLI 的 `inspect / plan` 仍覆盖现有 shadcn-compatible Dashboard 供应链；HeroUI Renderer 的端到端 `apply / verify` 在真实路由 Proof 前是 Target。
+- 当前 Dashboard Demo 以 HeroUI primitives 渲染；CLI 的 `inspect / plan` 和可安装 Registry source 仍覆盖 shadcn-compatible 供应链。HeroUI Renderer 的端到端 `apply / verify` 在真实目标项目 Proof 前是 Target。
 - Agent-first 不等于托管 Agent、不等于 MCP Server，也不等于绕过用户授权。
 
 ## 开源与品牌边界

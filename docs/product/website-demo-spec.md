@@ -24,7 +24,7 @@ Dashboard 身份由路径表达；查询参数只保留给页面筛选等局部�
 
 ## 视觉原则
 
-- 官网首页使用 HeroUI v3 的上游交互与样式基础；Dashboard Demo 保留已验证的 shadcn-compatible SidebarProvider、Sidebar、SidebarInset 和移动 Sheet，直至 HeroUI Renderer 通过端到端 Proof。
+- 官网首页和 Dashboard Demo 使用 HeroUI v3 的上游交互与样式基础；Dashboard Demo 的侧栏、操作、状态、卡片、进度和数据区不依赖旧 shadcn Shell。可安装 Registry source 仍是已验证的 shadcn-compatible vertical，直至 HeroUI Renderer 通过端到端 Proof。
 - Dashboard 页头使用 shadcn `Popover + Calendar` 时间区间组件，提供最近 7 / 28 / 90 天、最近 1 年与自定义起止日期。
 - 参考 shadcn UI Kit 的信息密度和组合方式，但保持 Agenic 的品牌、Recipe 状态和真实交付边界。
 - 每个路由先展示该 Dashboard 的功能组合，再展示与场景匹配的卡片、趋势、列表和表格。

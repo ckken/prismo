@@ -29,9 +29,10 @@ selection behind an Agenic renderer boundary before multiple renderers exist.
 
 - Public claims say "editable Recipe composition", not that every UI primitive
   is dependency-free source.
-- The existing shadcn-compatible Dashboard path remains the current Available
-  vertical while HeroUI-based rendering is established; do not claim a completed
-  cross-framework migration before a real route and Proof pass.
+- The live Dashboard Demo uses HeroUI primitives. The installable
+  shadcn-compatible Registry source remains the current Available delivery
+  baseline; do not claim a completed HeroUI apply/verify migration before a
+  real target route and Proof pass.
 - Apache-2.0 notices apply to the upstream dependency. Third-party notices are
   maintained in the repository.
 - Agenic remains CLI-first and does not add pricing, subscriptions, quotas,

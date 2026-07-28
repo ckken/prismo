@@ -10,8 +10,9 @@ import {
   redirect,
   RouterProvider,
 } from "@tanstack/react-router"
-import { CatalogPage, DashboardLayout, DashboardPage, WorkflowPage } from "./App"
+import { CatalogPage, DashboardLayout, WorkflowPage } from "./App"
 import { AgenicHomePage } from "./agenic-home"
+import { HeroDashboardPage } from "./hero-dashboard"
 import { isDashboardId, type DashboardId } from "./dashboard-site-data"
 import { applyInitialPreferences } from "./preferences"
 import "./styles.css"
@@ -20,9 +21,9 @@ import "./home.css"
 applyInitialPreferences()
 
 const rootRoute = createRootRoute({ component: () => <Outlet /> })
-const dashboardLayoutRoute = createRoute({
+const contentLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
-  id: "dashboard-layout",
+  id: "content-layout",
   component: DashboardLayout,
 })
 const indexRoute = createRoute({
@@ -31,34 +32,35 @@ const indexRoute = createRoute({
   component: AgenicHomePage,
 })
 const dashboardRoute = createRoute({
-  getParentRoute: () => dashboardLayoutRoute,
+  getParentRoute: () => rootRoute,
   path: "/dashboard/$dashboardId",
   beforeLoad: ({ params }) => {
     if (!isDashboardId(params.dashboardId)) {
       throw redirect({ to: "/dashboard/$dashboardId", params: { dashboardId: "default" } })
     }
   },
-  component: DashboardRoute,
+  component: HeroDashboardRoute,
 })
 const catalogRoute = createRoute({
-  getParentRoute: () => dashboardLayoutRoute,
+  getParentRoute: () => contentLayoutRoute,
   path: "/catalog",
   component: CatalogPage,
 })
 const workflowRoute = createRoute({
-  getParentRoute: () => dashboardLayoutRoute,
+  getParentRoute: () => contentLayoutRoute,
   path: "/workflow",
   component: WorkflowPage,
 })
 
-function DashboardRoute() {
+function HeroDashboardRoute() {
   const { dashboardId } = dashboardRoute.useParams()
-  return <DashboardPage dashboardId={dashboardId as DashboardId} />
+  return <HeroDashboardPage dashboardId={dashboardId as DashboardId} />
 }
 
 const routeTree = rootRoute.addChildren([
   indexRoute,
-  dashboardLayoutRoute.addChildren([dashboardRoute, catalogRoute, workflowRoute]),
+  dashboardRoute,
+  contentLayoutRoute.addChildren([catalogRoute, workflowRoute]),
 ])
 const router = createRouter({
   routeTree,
