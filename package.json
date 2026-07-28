@@ -19,7 +19,8 @@
     "registry:build": "bun scripts/build-registry.ts",
     "skill:build": "bun scripts/build-skill.ts skills/shadcn-agent-kit",
     "skill:validate": "bun run skill:build && bun scripts/validate-skill.ts skills/shadcn-agent-kit",
-    "proof:install": "bun run registry:build && bun scripts/proof-install.ts"
+    "proof:install": "bun run registry:build && bun scripts/proof-install.ts",
+    "handoff:verify": "bun scripts/verify-handoff.ts"
   },
   "devDependencies": {
     "@types/bun": "1.3.4",

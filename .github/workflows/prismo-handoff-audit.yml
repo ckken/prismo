@@ -1,0 +1,54 @@
+name: Prismo Handoff Audit
+
+on:
+  schedule:
+    # 09:30 Asia/Shanghai (UTC+8)
+    - cron: "30 1 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: prismo-handoff-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+      - run: bun install --frozen-lockfile
+      - name: Run handoff audit
+        id: handoff
+        continue-on-error: true
+        run: |
+          mkdir -p artifacts
+          bun run handoff:verify | tee artifacts/prismo-handoff-report.json
+      - name: Upload handoff report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: prismo-handoff-report
+          path: artifacts/prismo-handoff-report.json
+          if-no-files-found: error
+      - name: Create or update a handoff regression issue
+        if: steps.handoff.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          issue_number="$(gh issue list --state open --label prismo:handoff-regression --json number --jq '.[0].number')"
+          body="The scheduled Prismo handoff auditor failed. See ${RUN_URL} and its prismo-handoff-report artifact. No source changes were made by the workflow."
+          if [ -n "${issue_number}" ]; then
+            gh issue comment "${issue_number}" --body "${body}"
+          else
+            gh issue create --title "Prismo handoff audit regression" --label prismo:handoff-regression --body "${body}"
+          fi
+      - name: Fail when the auditor itself fails
+        if: steps.handoff.outcome == 'failure'
+        run: exit 1
