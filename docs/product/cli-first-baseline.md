@@ -16,7 +16,7 @@ Skill、`AGENTS.md` 和官网只负责发现、说明和展示，不能复制 CL
 
 一句话定位：
 
-> 把 Dashboard 需求转换成可审查、可安装、可接数据、可验证的 shadcn-compatible 源码交付。
+> 把 Web UI 需求转换成可审查、可选择、可安装、可接数据、可验证的 editable source 交付。
 
 主张保持：
 
@@ -214,7 +214,7 @@ v1 `apply / verify` 发布还必须增加：
 - 不训练、代理或绑定特定大模型。
 - 不把任意 JSX 文本作为核心机器协议。
 - 不复制 shadcn CLI 的通用组件发现与安装实现。
-- 不自动实现认证、权限、审计、导出任务、数据库写入或专业 Data Grid。
+- 不在既有项目中擅自替换认证、权限、审计、导出任务、数据库写入或专业 Data Grid；Starter 能力在其独立纵向切片中提供可选模块，支付与商业计费除外。
 - 不把 Candidate、概念预览或 Mock 数据表述为可安装生产能力。
 - 不为扩充 Catalog 批量制造缺少真实需求和 Proof 的 Recipe。
 
@@ -226,4 +226,4 @@ v1 `apply / verify` 发布还必须增加：
 Inspect → Plan → Preview → Apply → Adapt → Route → Verify → Proof
 ```
 
-在该链路通过真实目标项目验收之前，不扩展新的业务 Recipe 或第二执行控制面。
+在该链路通过真实目标项目验收之前，不引入第二执行控制面；后续 Blocks、Components、Templates、Full-page、Image 与 Starter 按 [Prismo free-parity boundary](prismo-free-parity-boundary.md) 的顺序推进。
