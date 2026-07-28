@@ -27,7 +27,7 @@ const item = {
     },
   ],
   meta: {
-    project: "Shadcn Agent Kit",
+    project: "shadcnagent",
     status: dashboardOverviewRecipe.status.toLowerCase(),
     tableLevel: dashboardOverviewRecipe.tableLevel,
     states: [...dashboardOverviewRecipe.states],
@@ -37,7 +37,7 @@ const item = {
 
 const registry = {
   $schema: "https://ui.shadcn.com/schema/registry.json",
-  name: "shadcn-agent-kit",
+  name: "shadcnagent",
   homepage,
   items: [item],
 }

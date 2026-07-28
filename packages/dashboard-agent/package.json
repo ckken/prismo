@@ -1,9 +1,10 @@
 {
-  "name": "@shadcnagent/dashboard-agent",
+  "name": "@shadcnagent/cli",
   "version": "0.1.0-alpha.0",
   "private": true,
   "type": "module",
   "bin": {
+    "shadcnagent": "./src/cli.ts",
     "dashboard-agent": "./src/cli.ts"
   }
 }

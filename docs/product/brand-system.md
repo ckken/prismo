@@ -1,11 +1,12 @@
-# Shadcn Agent Kit 品牌系统
+# shadcnagent 品牌系统
 
 ## 核心表达
 
-- 名称：Shadcn Agent Kit
+- 名称：`shadcnagent`
 - 主张：From request to proof.
 - 性格：克制、可审计、开发者工具感
-- 叙事：Request → Match → Install → Bind → Proof
+- 叙事：Inspect → Plan → Apply → Bind → Verify → Proof
+- 产品入口：本地 CLI
 
 ## 视觉
 
@@ -26,4 +27,5 @@ Logo 使用独立的“源码文档 + 校验”图形，不使用 shadcn 官方 
 - Available 才显示安装命令和完成态 Proof。
 - Candidate 只显示用途、边界和缺失项。
 - 模拟内容标明 `Simulated agent plan · deterministic demo`。
+- 未实现或未通过发布门禁的 CLI 命令必须标记为 Target，不使用 Available。
 - 所有公开页面保留独立社区项目免责声明。

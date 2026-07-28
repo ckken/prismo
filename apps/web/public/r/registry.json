@@ -1,6 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
-  "name": "shadcn-agent-kit",
+  "name": "shadcnagent",
   "homepage": "https://github.com/ckken/shadcnagent",
   "items": [
     {
@@ -35,7 +35,7 @@
         }
       ],
       "meta": {
-        "project": "Shadcn Agent Kit",
+        "project": "shadcnagent",
         "status": "available",
         "tableLevel": "L2",
         "states": [

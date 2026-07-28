@@ -1,8 +1,19 @@
-# Agent 接入与最少代码原则
+# CLI 接入与最少代码原则
 
 ## 接入方式
 
-在目标 shadcn 项目根目录一键安装：
+`shadcnagent` CLI 是唯一执行入口。仓库开发和当前验证使用：
+
+```bash
+bun run shadcnagent inspect --cwd <project> --json
+bun run shadcnagent plan \
+  --cwd <project> \
+  --request "增加经营总览：3 个 KPI、趋势图和服务端分页表格" \
+  --json
+```
+
+CLI 尚未发布为独立版本化 package，不能给出虚构的外部安装命令。在完成
+`preview / apply / verify` 和发布矩阵前，外部 Agent 可以选择安装兼容 Skill bundle：
 
 ```bash
 npx skills add ckken/shadcnagent \
@@ -11,15 +22,17 @@ npx skills add ckken/shadcnagent \
   -y
 ```
 
-命令将 Skill 复制到 `.agents/skills/shadcn-agent-kit/`。Skill 内置独立
-`scripts/dashboard-agent.js`，离开 Shadcn Agent Kit 仓库也能运行 `inspect` 和
-`plan`；不会引用仓库内部 `packages/` 路径。首发以 Codex + Bun + Rsbuild Fixture
-完成验证，其他宿主必须跑同一矩阵后才宣称支持。
+命令将 Skill 复制到 `.agents/skills/shadcn-agent-kit/`。Skill 内置兼容 CLI bundle
+`scripts/dashboard-agent.js`，离开仓库也能运行 `inspect` 和 `plan`；不会引用仓库
+内部 `packages/` 路径。Skill 只负责使用流程和安全策略，不得实现另一套项目识别、
+Recipe 选择或 Proof 逻辑。
+
+当前以 Codex + Bun + Rsbuild Fixture 完成验证，其他宿主必须跑同一矩阵后才宣称支持。
 
 安装后可直接给 Agent 请求：
 
 ```text
-用 Shadcn Agent Kit 增加经营总览：3 个 KPI、趋势图和服务端分页表格。
+用 shadcnagent 增加经营总览：3 个 KPI、趋势图和服务端分页表格。
 先 inspect 和 plan，展示 dry-run 与文件影响；确认后再安装、接入数据并给出 Proof。
 ```
 
@@ -43,8 +56,10 @@ bun .agents/skills/shadcn-agent-kit/scripts/dashboard-agent.js plan \
 
 通用 shadcn 项目识别、Registry 搜索和安装交给固定版本的官方 CLI；本项目只维护 DashboardSpec、领域选择、Adapter 和 Proof。
 
-当前 CLI 只负责只读 `inspect / plan`。安装、路由接入和 Proof 由 Coding Agent 按
-Skill 工作流执行；尚未实现的 `dashboard-agent apply / verify` 不作为可用命令宣传。
+当前 CLI 只负责只读 `inspect / plan`。安装、路由接入和 Proof 仍由 Coding Agent 按
+plan 执行；尚未实现的 `shadcnagent preview / apply / verify` 不作为可用命令宣传。
+Accepted 的完整命令、退出码、schema 和门禁见
+[CLI-first 基准线](cli-first-baseline.md)。
 
 ## 最少项目侧代码
 
@@ -93,5 +108,6 @@ Fixture 与 REST Adapter 使用同一 Contract 测试。网络错误、权限错
 
 - Candidate 不能生成安装 URL。
 - 未经授权不覆盖未知文件，不提交、不推送、不部署。
+- 不建设或依赖 shadcnagent MCP Server；Agent 通过本地 CLI 执行。
 - Build 通过不等于 Contract、交互、无障碍或生产验收通过。
 - Proof 必须分别记录 passed、failed、unverified。

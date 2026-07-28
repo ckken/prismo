@@ -1,14 +1,15 @@
-# Dashboard Agent 演进方案
+# shadcnagent Dashboard CLI 演进方案
 
 ## 产品定义
 
-Dashboard Agent 是一个可被 Codex、Claude Code、Cursor 等 Coding Agent 调用的 Dashboard 专家能力包，不是新的基础模型。
+`shadcnagent` 是一个可被 Codex、Claude Code、Cursor 等 Coding Agent 调用的本地
+Dashboard CLI，不是新的基础模型，也不建设自有 MCP Server。
 
 它由五层组成：
 
 1. `DashboardSpec`：把自然语言需求压缩为机器可读的业务意图、组件、数据模式和未决项。
-2. Skill：规定 Inspect → Plan → Preview → Apply → Adapt → Verify → Repair 的领域工作流。
-3. CLI Core：执行确定性项目识别、Recipe 选择、安装计划和验证。
+2. CLI：唯一执行控制面，负责 Inspect → Plan → Preview → Apply → Verify。
+3. Core：执行确定性项目识别、Recipe 选择、安装计划和验证。
 4. Registry：提供版本化、可编辑的源码 Slice、Contract、Fixture 与元数据。
 5. Proof / Eval：输出可复核的功能、数据、响应式、无障碍和视觉证据。
 
@@ -16,8 +17,8 @@ Dashboard Agent 是一个可被 Codex、Claude Code、Cursor 等 Coding Agent �
 flowchart LR
   A["业务请求"] --> B["Host Coding Agent"]
   G["AGENTS.md / 项目约束"] --> B
-  B --> C["Dashboard Skill"]
-  C --> D["dashboard-agent CLI Core"]
+  B --> C["shadcnagent CLI"]
+  C --> D["Dashboard Agent Core"]
   D --> E["shadcn info / CLI"]
   D --> F["DashboardSpec + Recipe Catalog"]
   F --> H["shadcn-compatible Registry"]
@@ -25,7 +26,7 @@ flowchart LR
   I --> J["Data Adapter / Route integration"]
   J --> K["Proof runner"]
   K --> L["ProofReport"]
-  M["Optional MCP adapter"] --> D
+  N["Optional Skill: usage policy only"] -.-> C
 ```
 
 ## 当前基线
@@ -34,8 +35,8 @@ flowchart LR
 
 - 一个公开可安装的 `dashboard-overview-01`。
 - L2 受控表格、KPI、趋势图、Zod Contract 和四种显式状态。
-- 可由 Skills CLI 一键安装的独立 Skill bundle，以及 Inspect → Select → Preview → Install → Adapt → Proof 流程。
-- `dashboard-agent inspect / plan` 可从独立 Skill 目录运行，不依赖仓库内部路径。
+- 可由 Skills CLI 一键安装的可选 Skill bundle，以及 Inspect → Select → Preview → Install → Adapt → Proof 流程说明。
+- `shadcnagent inspect / plan` 可从仓库运行；兼容 Skill bundle 不依赖仓库内部路径。
 - Registry build、真实 shadcn dry-run/add、TypeScript 和 Rsbuild Fixture proof。
 - 基于 `sidebar-07` 的路由化官网：展示六个 Dashboard 功能组合、Candidate 边界与唯一 Available Recipe 的 dry-run 入口。
 
@@ -46,16 +47,20 @@ flowchart LR
 - 只有一个整页 Recipe，缺少可组合 Slice、Adapter scaffold 与 route integration。
 - 官网是确定性 Catalog，不承担已安装 Recipe runtime；浏览器级 Recipe Proof 仍需在统一验证链中补齐。
 - 安装组件默认使用 demo fixture 和 success 状态，尚未强制区分“演示可见”与“真实数据已接入”。
-- CLI 尚未发布为独立版本化 package；MCP 也没有统一 core 可以复用。
+- CLI 尚未发布为独立版本化 package。
+
+Accepted 的产品、协议、安全与发布边界见
+[CLI-first 基准线](cli-first-baseline.md)；本文只描述演进顺序。
 
 ## 目标态的最短交付路径（Phase 1）
 
-当前 Phase 0 只实现 `inspect` 和 `plan`。以下是 Phase 1 的目标调用，不应在 `apply` 和 `verify` 落地前作为可用命令宣传。
+当前已完成 Phase 0 的 `inspect` 和 `plan`。以下是 Phase 1 的目标调用，不应在
+`preview`、`apply` 和 `verify` 落地前作为可用命令宣传。
 
 支持范围内的目标调用只有两轮：
 
 ```bash
-dashboard-agent plan \
+shadcnagent plan \
   --cwd . \
   --request "增加经营总览：3 个 KPI、趋势图、服务端分页表格" \
   --json
@@ -64,8 +69,9 @@ dashboard-agent plan \
 Agent 审查 plan 后执行：
 
 ```bash
-dashboard-agent apply --plan .dashboard/plan.json --yes
-dashboard-agent verify --cwd . --json
+shadcnagent preview --plan .shadcnagent/plans/<plan-id>.json --json
+shadcnagent apply --plan .shadcnagent/plans/<plan-id>.json --json
+shadcnagent verify --plan .shadcnagent/plans/<plan-id>.json --url /dashboard --json
 ```
 
 `plan` 必须一次返回：
@@ -121,29 +127,30 @@ dashboard-agent verify --cwd . --json
 
 ## 分阶段推进
 
-### Phase 0：Agent-readable Plan（本轮）
+### Phase 0：Agent-readable Plan（Completed）
 
-目标：先消除误选和项目误判，让 Agent 一条命令得到可靠计划。
+目标：消除误选和项目误判，让 Agent 一条命令得到可靠计划。
 
-- 建立 `@shadcnagent/dashboard-agent` CLI。
+- 建立 `@shadcnagent/cli`，公共 bin 为 `shadcnagent`。
 - `inspect` 自动定位单一 shadcn workspace；多 workspace 明确拒绝猜测。
 - 项目真相源切换到固定版本的 `shadcn info --json`。
 - `plan` 输出 DashboardSpec v1、RecipeDecision 和只读 dry-run argv。
 - 为 monorepo、Candidate 冲突和安装命令增加确定性测试。
 - 修正文档中 L0/L2 漂移。
 
-完成门槛：目标 fixture、当前 monorepo、Agent Ops 误选回归全部通过，根 `check` 保持绿色。
+完成状态：目标 fixture、当前 monorepo、Agent Ops 误选回归和根 `check` 已通过。
 
 ### Phase 1：One-command Delivery
 
 目标：支持范围内从需求到可运行页面不超过两次 Agent 决策。
 
-- `preview` 执行 shadcn dry-run 并保存 `.dashboard/plan.json`。
-- `apply` 校验 plan revision 后安装；未知文件冲突立即停下。
+- `preview` 执行 shadcn dry-run，并保存 `.shadcnagent/plans/<plan-id>.json`。
+- `apply` 校验 plan revision、project fingerprint 和文件摘要后安装；未知文件冲突立即停下。
 - 提供 REST / fixture Adapter scaffold 和常见 router mount。
 - 将 demo fixture 改成显式 opt-in，生产接入缺少数据时不得呈现为 success。
 - `verify` 执行项目命令、Contract 和四态测试，生成标准 ProofReport。
-- 每次运行保存 changed / untouched / manual verification report。
+- 每次运行保存 ApplyReceipt、changed / untouched / conflicted 和 manual verification report。
+- `verify` 必须验收真实前端 HTTP route，不能只验证 Registry fixture 或构建。
 
 完成门槛：3 个真实目标仓库 fixture 的首次安装成功率不低于 95%，失败有明确分类且可重放。
 
@@ -158,12 +165,13 @@ dashboard-agent verify --cwd . --json
 
 完成门槛：组合结果保持单一数据映射点，无重复 layout/runtime，eval 可阻止错误 Recipe 发布。
 
-### Phase 3：Host Integration
+### Phase 3：CLI Distribution
 
-目标：让不同 Agent 宿主复用同一 core。
+目标：让不同 Coding Agent 宿主直接调用同一版本化 CLI。
 
-- 提供薄 MCP：`dashboard.inspect`、`dashboard.resolve`、`dashboard.preview`、`dashboard.verify`。
-- 发布独立 Skill，依赖同版本 CLI contract。
+- 发布带 `shadcnagent` bin 的独立 CLI package。
+- 可选 Skill 和 `AGENTS.md` 只描述使用策略，依赖同版本 CLI contract。
+- 为声明支持的宿主运行相同 fixture 和真实路由验收。
 - 支持 Registry namespace / private Registry；认证由 shadcn 配置承载。
 - 可选接入 v0 做视觉探索，结果仍需回到本地 plan 和 proof。
 
@@ -187,6 +195,6 @@ dashboard-agent verify --cwd . --json
 
 - 不训练或绑定特定大模型。
 - 不复制 shadcn 的通用 project info、registry search 或 install 实现。
-- 不在第一阶段引入 MCP Server、云端编排器或托管 UI runtime。
+- 不建设 shadcnagent MCP Server、云端编排器或必需的托管 UI runtime。
 - 不让模型直接输出任意 JSX 作为核心协议。
 - 不为没有真实需求和 eval 的场景批量制造 Recipe。

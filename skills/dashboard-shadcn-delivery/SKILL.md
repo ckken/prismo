@@ -23,7 +23,7 @@ npx skills add ckken/shadcnagent --skill dashboard-shadcn-delivery -a codex -y
 
 - 官方 Skill 是 **组件项目事实来源**：框架、Tailwind 版本、aliases、base library、图标库、已安装组件和解析路径均以其 `shadcn info --json` 结果为准。
 - 本 Skill 是 **Dashboard 领域事实来源**：DashboardSpec、数据契约、授权边界、查询状态、表格等级、四态和验收证据。
-- 添加或替换原语前，先让官方 Skill 使用 `shadcn search`、`shadcn docs` 或 MCP 查证当前 API，再预览 `shadcn add --dry-run`。不要将本 Skill 中列出的原语名当作跨版本 API 保证。
+- 添加或替换原语前，先让官方 Skill 使用 `shadcn search` 或 `shadcn docs` 查证当前 API，再预览 `shadcn add --dry-run`。不要将本 Skill 中列出的原语名当作跨版本 API 保证。
 - 若项目还没有 `components.json`，先停止 Dashboard 组件改造，按官方 `shadcn init` 流程取得用户确认；数据契约和页面结构分析可继续保持只读。
 
 ## 先界定交付边界

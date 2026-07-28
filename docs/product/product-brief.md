@@ -1,4 +1,4 @@
-# Shadcn Agent Kit 产品定位
+# shadcnagent 产品定位
 
 ## 一句话
 
@@ -6,13 +6,14 @@
 
 | 项目 | 定义 |
 |---|---|
-| 品牌 | Shadcn Agent Kit |
+| 品牌 | `shadcnagent` |
 | 主张 | From request to proof. |
-| 仓库 | `shadcn-agent-kit` |
+| 主入口 | 本地 `shadcnagent` CLI |
+| 仓库 | `shadcnagent` |
 | Registry namespace | `@shadcnagent` |
-| Agent Skill | `shadcn-agent-kit` |
+| Agent Skill | 可选使用说明与兼容分发，不是运行时 |
 | 当前切入点 | Dashboard Recipe |
-| 扩展方向 | Sites、Apps，按真实需求滚动进入 |
+| 协议决策 | 不建设自有 MCP Server |
 
 ## 为谁解决什么
 
@@ -21,10 +22,13 @@
 本项目把稳定部分沉淀为五层：
 
 1. DashboardSpec：把请求转换为可验证的机器协议。
-2. Skill：约束领域判断和交付步骤。
-3. CLI + Registry：确定性识别、选择并安装 editable React source。
+2. CLI：唯一执行控制面，负责确定性识别、计划、应用与验证。
+3. Registry：交付版本化、editable React source。
 4. Contract + Adapter：业务字段只在一处映射。
 5. Proof：区分通过、失败和未验证项。
+
+Skill、`AGENTS.md` 和官网只能帮助 Agent 发现和理解 CLI，不能复制 CLI Core 的选择、
+写入或验证实现。完整基准见 [CLI-first 基准线](cli-first-baseline.md)。
 
 ## 使用边界
 

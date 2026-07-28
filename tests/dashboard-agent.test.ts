@@ -133,4 +133,26 @@ describe("dashboard-agent core", () => {
     expect(specSchema.$id).toContain("dashboard-spec.v1.schema.json")
     expect(planSchema.properties.dashboardSpec.$ref).toBe("./dashboard-spec.v1.schema.json")
   })
+
+  test("keeps shadcnagent CLI as the sole public control surface", async () => {
+    const rootManifest = await Bun.file(join(import.meta.dir, "../package.json")).json()
+    const cliManifest = await Bun.file(join(import.meta.dir, "../packages/dashboard-agent/package.json")).json()
+    const webManifest = await Bun.file(join(import.meta.dir, "../apps/web/package.json")).json()
+    const registryManifest = await Bun.file(join(import.meta.dir, "../packages/registry/package.json")).json()
+    const manifests = [rootManifest, cliManifest, webManifest, registryManifest]
+
+    expect(rootManifest.name).toBe("shadcnagent")
+    expect(rootManifest.scripts.shadcnagent).toBe("bun packages/dashboard-agent/src/cli.ts")
+    expect(cliManifest.name).toBe("@shadcnagent/cli")
+    expect(cliManifest.bin.shadcnagent).toBe("./src/cli.ts")
+    expect(cliManifest.bin["dashboard-agent"]).toBe("./src/cli.ts")
+    for (const manifest of manifests) {
+      const dependencyNames = Object.keys({ ...manifest.dependencies, ...manifest.devDependencies })
+      expect(dependencyNames.some((name) => name.includes("modelcontextprotocol"))).toBe(false)
+    }
+
+    const cli = Bun.spawnSync(["bun", join(import.meta.dir, "../packages/dashboard-agent/src/cli.ts"), "--help"])
+    expect(cli.exitCode).toBe(0)
+    expect(cli.stdout.toString()).toStartWith("shadcnagent <command>")
+  })
 })

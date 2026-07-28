@@ -302,7 +302,7 @@ function createPlan(cwd, request) {
   const dashboardSpec = makeSpec(request);
   const recipeDecision = selectRecipe(request, dashboardSpec);
   const installPlan = recipeDecision.status === "selected" && projectProfile.packageManager !== "unknown" ? createInstallPlan(projectProfile.packageManager, projectDir) : null;
-  const nextActions = installPlan ? ["Review the dry-run command; dashboard-agent has not executed it.", "Resolve the route and data-source contract before apply."] : projectProfile.packageManager === "unknown" && recipeDecision.status === "selected" ? ["Confirm the target package manager before creating an install plan."] : recipeDecision.status === "clarify" ? ["Clarify the dashboard intent and required metric/table widgets."] : ["Use an Available recipe or reduce capabilities to its documented boundary."];
+  const nextActions = installPlan ? ["Review the dry-run command; shadcnagent has not executed it.", "Resolve the route and data-source contract before apply."] : projectProfile.packageManager === "unknown" && recipeDecision.status === "selected" ? ["Confirm the target package manager before creating an install plan."] : recipeDecision.status === "clarify" ? ["Clarify the dashboard intent and required metric/table widgets."] : ["Use an Available recipe or reduce capabilities to its documented boundary."];
   return {
     dashboardSpec,
     projectProfile,
@@ -338,7 +338,7 @@ async function createHydratedPlan(cwd, request) {
 }
 
 // packages/dashboard-agent/src/cli.ts
-var help = `dashboard-agent <command> [options]
+var help = `shadcnagent <command> [options]
 
 Commands:
   inspect [--cwd <dir>]                         Inspect a project with shadcn@4.14.1 info.

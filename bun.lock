@@ -10,7 +10,7 @@
       },
     },
     "apps/web": {
-      "name": "@shadcn-agent-kit/web",
+      "name": "@shadcnagent/web",
       "version": "0.1.0-alpha.0",
       "dependencies": {
         "@radix-ui/react-avatar": "1.2.6",
@@ -45,9 +45,10 @@
       },
     },
     "packages/dashboard-agent": {
-      "name": "@shadcnagent/dashboard-agent",
+      "name": "@shadcnagent/cli",
       "version": "0.1.0-alpha.0",
       "bin": {
+        "shadcnagent": "./src/cli.ts",
         "dashboard-agent": "./src/cli.ts",
       },
     },
@@ -187,11 +188,11 @@
 
     "@rspack/plugin-react-refresh": ["@rspack/plugin-react-refresh@2.0.2", "", { "peerDependencies": { "@rspack/core": "^2.0.0", "react-refresh": ">=0.10.0 <1.0.0" }, "optionalPeers": ["@rspack/core"] }, "sha512-dGNZiCxQxgAUI9sah7gd8u+O7OJZRCmqtEJNDOd8xW5RqcieC86F7p5qcShyw6onH5pKf57evpr2VjGbaFGkZg=="],
 
-    "@shadcn-agent-kit/web": ["@shadcn-agent-kit/web@workspace:apps/web"],
-
-    "@shadcnagent/dashboard-agent": ["@shadcnagent/dashboard-agent@workspace:packages/dashboard-agent"],
+    "@shadcnagent/cli": ["@shadcnagent/cli@workspace:packages/dashboard-agent"],
 
     "@shadcnagent/registry": ["@shadcnagent/registry@workspace:packages/registry"],
+
+    "@shadcnagent/web": ["@shadcnagent/web@workspace:apps/web"],
 
     "@swc/helpers": ["@swc/helpers@0.5.23", "", { "dependencies": { "tslib": "^2.8.0" } }, "sha512-5lSsMOTXURePglDfvuAQUqkGek9Hg2kksOYay2m0+XR++b2NWYL/4sWyuvVBIs8oKnJaxkdi9whaL/sqN13afw=="],
 
