@@ -150,32 +150,8 @@ a:focus-visible {
 .brand-mark {
   width: 24px;
   height: 24px;
-  overflow: visible;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.brand-mark .prismo-plane {
-  stroke: rgb(255 255 255 / 42%);
-  stroke-width: .9;
-}
-
-.brand-mark .prismo-plane-violet {
-  fill: url(#prismo-violet);
-}
-
-.brand-mark .prismo-plane-cyan {
-  fill: url(#prismo-cyan);
-}
-
-.brand-mark .prismo-plane-coral {
-  fill: url(#prismo-coral);
-}
-
-.brand-mark .prismo-seam {
-  fill: none;
-  stroke: rgb(255 255 255 / 65%);
-  stroke-width: .8;
+  display: block;
+  object-fit: contain;
 }
 
 .brand-name {

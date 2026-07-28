@@ -1,4 +1,5 @@
 <p align="center">
+  <img src="apps/web/public/brand/prismo-logo-v2.png" width="104" alt="Prismo prism mark" /><br />
   <img src="apps/web/public/brand/prismo-lockup.svg" width="360" alt="Prismo — Local UI delivery" />
 </p>
 
@@ -58,6 +59,7 @@ Intent / Image → Prismo CLI → 3+ Variants → Select / refine
 
 - [Prismo mark SVG](apps/web/public/brand/prismo-mark.svg)
 - [Prismo lockup SVG](apps/web/public/brand/prismo-lockup.svg)
+- [Prismo imagegen raster mark](apps/web/public/brand/prismo-logo-v2.png)
 - [Brand system](docs/product/brand-system.md)
 
 The mark is an original three-plane prism: shared contract in the center, differentiated directions around it, and a visible path from intent to proof. It deliberately does not reproduce another product's branding.

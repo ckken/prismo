@@ -19,7 +19,7 @@ Logo 是一个由紫、蓝、珊瑚三块透明平面组成的折射棱镜：
 - 中轴表示固定 Contract；折射后的方向表示选择、应用和验证前的明确状态。
 - 它不复刻任何参考产品的图形资产。最小尺寸为 20px；小于该尺寸仅使用单色 `P` 后备标记。
 
-Web 可直接使用 [标记 SVG](../../apps/web/public/brand/prismo-mark.svg) 或 [横向锁定 SVG](../../apps/web/public/brand/prismo-lockup.svg)。两者为源码资产，不依赖图片服务。
+Web 当前使用 [imagegen 栅格标记](../../apps/web/public/brand/prismo-logo-v2.png)；它由绿色抠图底去背后以 RGBA PNG 保存，并裁切为适合小尺寸呈现的方形母版。[标记 SVG](../../apps/web/public/brand/prismo-mark.svg) 与 [横向锁定 SVG](../../apps/web/public/brand/prismo-lockup.svg) 保留为可编辑的兼容资产。所有资产均随源码发布，不依赖图片服务。
 
 ## Web tokens
 
