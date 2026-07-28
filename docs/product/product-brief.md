@@ -19,7 +19,7 @@
 
 目标用户是使用 Codex 等 Coding Agent 的开发者和小团队。常见问题不是缺 UI，而是 Agent 每次从零拼页面、数据边界混乱、复杂表格被低估、完成后缺少证据。
 
-产品目标对齐 PaceUI 的非商业能力，但以本地 CLI 替代 MCP 接入。完整范围和声明纪律见 [Prismo free-parity boundary](prismo-free-parity-boundary.md)。
+产品目标对齐免费 UI 交付的完整功能边界，但以本地 CLI 替代 MCP 接入。完整范围和声明纪律见 [Prismo free-parity boundary](prismo-free-parity-boundary.md)。
 
 本项目把稳定部分沉淀为五层：
 
@@ -42,4 +42,4 @@ Skill、`AGENTS.md` 和官网只能帮助 Agent 发现和理解 CLI，不能复�
 
 ## 品牌边界
 
-本项目为独立社区项目，只说明与 shadcn 生态兼容。名称、图形和配色不复制 PaceUI、shadcn 或其他竞品资产，不使用 `@shadcn` 官方感命名空间。旧 `shadcnagent` 命令只作为迁移兼容别名。
+本项目为独立社区项目，只说明与 shadcn 生态兼容。名称、图形和配色不复制任何参考产品资产，不使用 `@shadcn` 官方感命名空间。旧 `shadcnagent` 命令只作为迁移兼容别名。

@@ -2,18 +2,18 @@
 
 状态：Accepted
 
-本决策将 Prismo 的长期功能边界对齐到 PaceUI 公开展示的非商业体验。它定义的是**产品目标**，不把尚未实现的能力误写成当前 Available。
+本决策将 Prismo 的长期功能边界定义为完整的免费 UI 交付体验。它定义的是**产品目标**，不把尚未实现的能力误写成当前 Available。
 
 ## 结果承诺
 
-Prismo 的目标不是复刻 PaceUI 的 MCP 协议、托管服务或 IDE 插件，而是在本地 CLI 中交付相同的用户结果：从文字或参考图出发，得到可比较的 UI 方向，选择并迭代其中一个，将可编辑源码安全地交付到当前项目，并在 handoff 后以真实运行证据判断是否完成。
+Prismo 的目标不是复刻任何参考产品的远程协议、托管服务或 IDE 插件，而是在本地 CLI 中交付完整的用户结果：从文字或参考图出发，得到可比较的 UI 方向，选择并迭代其中一个，将可编辑源码安全地交付到当前项目，并在 handoff 后以真实运行证据判断是否完成。
 
 ```text
 Prompt / Image → Prismo CLI → 3+ Variants → Select / Refine
                → Preview → Apply → Current codebase → Verify / Handoff Proof
 ```
 
-MCP 只是 PaceUI 的接入方式；Prismo 的等价接入方式是 Coding Agent 在目标项目中直接调用本地 CLI。不得以“不做 MCP”为理由删除同等的功能结果。
+MCP 只是某些产品的接入方式；Prismo 的接入方式是 Coding Agent 在目标项目中直接调用本地 CLI。不得以“不做 MCP”为理由删除同等的功能结果。
 
 ## 对齐范围
 
@@ -32,7 +32,7 @@ MCP 只是 PaceUI 的接入方式；Prismo 的等价接入方式是 Coding Agent
 | Full-page | 端到端生成一个响应式页面并交付源码 | 每页具备 loading / empty / error / success 或适用的状态矩阵 |
 | Starter | 新项目可选择的基础应用骨架 | 覆盖 UI、认证、数据、邮件、AI、存储、文档与 SEO 的可选模块；支付和商业计费除外 |
 
-全功能矩阵及一手证据见 [PaceUI 非商业能力研究](../research/prismo-paceui-free-parity.md)。
+此表是 Prismo 已接受的完整免费功能清单；它独立于任何外部产品、品牌或服务。
 
 ## 非商业排除
 

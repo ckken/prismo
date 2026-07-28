@@ -4,7 +4,7 @@
 
 <p align="center"><strong>From intent to proof.</strong><br />A local, CLI-first UI delivery system for Coding Agents.</p>
 
-Prismo aligns with the non-commercial user outcome shown by PaceUI—turn an intent or reference image into comparable UI directions, select one, deliver editable source, and prove the result—without copying its MCP transport, hosted runtime, visual assets, or paid-plan behavior.
+Prismo targets a complete free UI-delivery outcome: turn an intent or reference image into comparable UI directions, select one, deliver editable source, and prove the result. It does not copy another product's transport, hosted runtime, visual assets, or paid-plan behavior.
 
 The CLI is the sole execution control plane. Skills and the website help an agent discover, review, and preview Prismo; they never replace its deterministic project inspection, plan, or proof boundary.
 
@@ -60,7 +60,7 @@ Intent / Image → Prismo CLI → 3+ Variants → Select / refine
 - [Prismo lockup SVG](apps/web/public/brand/prismo-lockup.svg)
 - [Brand system](docs/product/brand-system.md)
 
-The mark is an original three-plane prism: shared contract in the center, differentiated directions around it, and a visible path from intent to proof. It deliberately does not reproduce PaceUI or shadcn branding.
+The mark is an original three-plane prism: shared contract in the center, differentiated directions around it, and a visible path from intent to proof. It deliberately does not reproduce another product's branding.
 
 ## Migration from shadcnagent
 
@@ -79,4 +79,4 @@ The daily 09:30 Asia/Shanghai [Prismo Handoff Audit](.github/workflows/prismo-ha
 
 ## License and independence
 
-[MIT](LICENSE). Prismo is an independent community project. It is not affiliated with, endorsed by, or sponsored by PaceUI, shadcn, or shadcn/ui. Those names are used only to describe interoperability or a comparison boundary.
+[MIT](LICENSE). Prismo is an independent community project. It is not affiliated with, endorsed by, or sponsored by any reference product. Third-party names, when technically necessary, are used only to describe interoperability.

@@ -17,7 +17,7 @@ Logo 是一个由紫、蓝、珊瑚三块透明平面组成的折射棱镜：
 
 - 三个平面表示同一请求下可比较的 Variant，而不是只改颜色的假分支。
 - 中轴表示固定 Contract；折射后的方向表示选择、应用和验证前的明确状态。
-- 它不复刻 PaceUI、shadcn 或其他产品的图形资产。最小尺寸为 20px；小于该尺寸仅使用单色 `P` 后备标记。
+- 它不复刻任何参考产品的图形资产。最小尺寸为 20px；小于该尺寸仅使用单色 `P` 后备标记。
 
 Web 可直接使用 [标记 SVG](../../apps/web/public/brand/prismo-mark.svg) 或 [横向锁定 SVG](../../apps/web/public/brand/prismo-lockup.svg)。两者为源码资产，不依赖图片服务。
 
@@ -37,6 +37,6 @@ Web 可直接使用 [标记 SVG](../../apps/web/public/brand/prismo-mark.svg) �
 
 - 用具体产物与 Evidence，不使用“无限”“全自动”“一键完成”等未证明承诺。
 - **Available** 才显示安装命令和完成态 Proof；**Building**、**Target**、**Candidate** 必须显式标注。
-- 竞品对齐的是非商业的用户结果，不复制它们的 MCP、视觉资产、定价或付费机制。
+- 对齐的是免费功能的用户结果，不复制参考产品的接入方式、视觉资产、定价或付费机制。
 - `shadcnagent` 和 `dashboard-agent` 仅作为迁移别名出现；所有新页面、示例和文档优先写 `Prismo` / `prismo`。
 - 所有公开页面保留独立社区项目免责声明。
