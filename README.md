@@ -93,13 +93,17 @@ CLI 会自动定位单一 shadcn workspace，以固定版本 `shadcn info --json
 当项目已有后端、认证、路由和 shadcn-compatible 组件时，安装不依赖本仓库 Recipe 的交付 Skill：
 
 ```bash
+# 先安装官方 shadcn Skill（Bun 项目示例；其他包管理器使用对应 dlx）
+bunx skills add shadcn/ui
+
+# 再安装 Dashboard 领域交付 Skill
 npx skills add ckken/shadcnagent \
   --skill dashboard-shadcn-delivery \
   -a codex \
   -y
 ```
 
-它会保留目标项目的技术栈，要求先定义前后端读模型和授权边界，再实现筛选、KPI、图表、表格和加载/空/错误/成功四态；最后以类型检查、构建和 375/768/1440 宽度验证交付。它不包含、也不会要求复制任何私有业务数据。
+官方 Skill 负责 `components.json`、`shadcn info --json`、组件发现和 CLI/API 正确性；本 Skill 保留目标项目的技术栈，要求先定义前后端读模型和授权边界，再实现筛选、KPI、图表、表格和加载/空/错误/成功四态；最后以类型检查、构建和 375/768/1440 宽度验证交付。它不包含、也不会要求复制任何私有业务数据。
 
 Agent 只需要在目标项目写少量路由挂载和 Data Adapter；Recipe 内部承担 UI、状态和 Contract。详细边界见 [Agent integration](docs/product/agent-integration.md)。
 

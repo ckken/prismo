@@ -9,9 +9,26 @@ description: Deliver a production dashboard in an existing shadcn-compatible app
 
 本 Skill 从一个已落地的 React、TanStack Query、TanStack Router、Tailwind 与 ECharts Dashboard 中提炼：认证后的品牌和日期筛选、前后端明确的读模型、单一数据适配层、开发 Mock 隔离，以及完整的加载/空/错误/成功状态。
 
+## 与官方 shadcn Skill 协作
+
+本 Skill 是官方 `shadcn/ui` Skill 的上层交付流程，不能替代它。先确保目标项目已按 [shadcn Skills 文档](https://ui.shadcn.com/docs/skills) 安装官方 Skill；它负责读取 `components.json`、执行 `shadcn info --json`、查找组件文档与安全地调用 `init`、`search`、`view`、`diff`、`add` 等 CLI 能力。
+
+```bash
+# 在目标项目中，按其包管理器使用对应的 dlx；Bun 项目示例：
+bunx skills add shadcn/ui
+
+# 再安装本项目的 Dashboard 交付流程：
+npx skills add ckken/shadcnagent --skill dashboard-shadcn-delivery -a codex -y
+```
+
+- 官方 Skill 是 **组件项目事实来源**：框架、Tailwind 版本、aliases、base library、图标库、已安装组件和解析路径均以其 `shadcn info --json` 结果为准。
+- 本 Skill 是 **Dashboard 领域事实来源**：DashboardSpec、数据契约、授权边界、查询状态、表格等级、四态和验收证据。
+- 添加或替换原语前，先让官方 Skill 使用 `shadcn search`、`shadcn docs` 或 MCP 查证当前 API，再预览 `shadcn add --dry-run`。不要将本 Skill 中列出的原语名当作跨版本 API 保证。
+- 若项目还没有 `components.json`，先停止 Dashboard 组件改造，按官方 `shadcn init` 流程取得用户确认；数据契约和页面结构分析可继续保持只读。
+
 ## 先界定交付边界
 
-1. 阅读目标项目的 `AGENTS.md`、`package.json`、`components.json`、路由、认证方式和现有 UI 原语。
+1. 阅读目标项目的 `AGENTS.md`、`package.json`、路由、认证方式和现有 UI 原语，并复用官方 Skill 的 `shadcn info --json` 结果。
    - 保持已有包管理器、构建工具、路径别名和 shadcn 配置；不要为了 Dashboard 迁移技术栈。
    - 多个 `components.json` 或多个前端工作区时，先要求用户指定挂载位置，不要猜测。
 2. 写出 DashboardSpec，并在改动前暴露未决项：受众和权限、指标定义、过滤条件、时间口径、数据延迟、表格规模、刷新方式和空数据语义。
@@ -29,7 +46,7 @@ description: Deliver a production dashboard in an existing shadcn-compatible app
    - 如果项目已有 schema 工具（如 Zod），在适配层解析运行时响应；若没有，至少对关键数组、数值和日期做防御性校验。
    - 开发 Mock 必须是显式、仅开发环境可启用的路径；生产环境不能悄悄回退到虚构数据。
 2. **让筛选状态可解释。** 将“编辑中的筛选”与“已应用查询”分开；查询键包含所有已应用的筛选值。日期范围应校验顺序和后端允许范围，切换筛选后取消或忽略过期请求。
-3. **用已有 shadcn 原语组装布局。** 优先复用 `Card`、`Button`、`Select`、`Popover`、`Calendar`、`Table`、`Skeleton`、`Alert`、`Sheet` 和既有侧边栏。缺少原语时，先使用目标项目现有的 shadcn CLI 和 Registry 预览改动；不要手工覆盖未知的生成文件。
+3. **用已有 shadcn 原语组装布局。** 优先复用官方 Skill 已识别的 `Card`、`Button`、`Select`、`Popover`、`Calendar`、`Table`、`Skeleton`、`Alert`、`Sheet` 和既有侧边栏。缺少原语时，通过官方 Skill 的组件发现与 `shadcn add --dry-run` 预览改动；不要手工覆盖未知的生成文件。
 4. **按信息层级实现。** 推荐顺序是筛选栏与数据来源提示 → KPI 卡片 → 趋势/结构图 → 排名或明细表 → 可操作结论。每个图表需要清晰标题、单位、时间口径、零值处理和同等信息的文本或表格替代；不要只依赖颜色传达趋势。
 5. **选择正确的表格等级。**
    - L0：小型只读摘要；允许响应式横向滚动。
