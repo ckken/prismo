@@ -1,6 +1,5 @@
 <p align="center">
-  <img src="apps/web/public/brand/prismo-logo-v2.png" width="104" alt="Prismo prism mark" /><br />
-  <img src="apps/web/public/brand/prismo-lockup.svg" width="360" alt="Prismo — Local UI delivery" />
+  <img src="apps/web/public/brand/prismo-logo-mono-v1.png" width="104" alt="Prismo black-and-white prism mark" />
 </p>
 
 <p align="center"><strong>From intent to proof.</strong><br />A local, CLI-first UI delivery system for Coding Agents.</p>
@@ -57,12 +56,10 @@ Intent / Image → Prismo CLI → 3+ Variants → Select / refine
 
 ## Brand assets
 
-- [Prismo mark SVG](apps/web/public/brand/prismo-mark.svg)
-- [Prismo lockup SVG](apps/web/public/brand/prismo-lockup.svg)
-- [Prismo imagegen raster mark](apps/web/public/brand/prismo-logo-v2.png)
+- [Prismo monochrome imagegen mark](apps/web/public/brand/prismo-logo-mono-v1.png)
 - [Brand system](docs/product/brand-system.md)
 
-The mark is an original three-plane prism: shared contract in the center, differentiated directions around it, and a visible path from intent to proof. It deliberately does not reproduce another product's branding.
+The mark is an original monochrome three-plane prism: shared contract in the center, differentiated directions around it, and a visible path from intent to proof. It deliberately does not reproduce another product's branding.
 
 ## Migration from shadcnagent
 

@@ -1,6 +1,6 @@
 # Prismo 品牌系统
 
-![Prismo Logo](../../apps/web/public/brand/prismo-lockup.svg)
+![Prismo Logo](../../apps/web/public/brand/prismo-logo-mono-v1.png)
 
 ## 核心表达
 
@@ -13,23 +13,22 @@
 
 ## 识别图形
 
-Logo 是一个由紫、蓝、珊瑚三块透明平面组成的折射棱镜：
+Logo 是一个由黑、白、炭灰三块平面组成的折射棱镜：
 
 - 三个平面表示同一请求下可比较的 Variant，而不是只改颜色的假分支。
 - 中轴表示固定 Contract；折射后的方向表示选择、应用和验证前的明确状态。
 - 它不复刻任何参考产品的图形资产。最小尺寸为 20px；小于该尺寸仅使用单色 `P` 后备标记。
 
-Web 当前使用 [imagegen 栅格标记](../../apps/web/public/brand/prismo-logo-v2.png)；它由绿色抠图底去背后以 RGBA PNG 保存，并裁切为适合小尺寸呈现的方形母版。[标记 SVG](../../apps/web/public/brand/prismo-mark.svg) 与 [横向锁定 SVG](../../apps/web/public/brand/prismo-lockup.svg) 保留为可编辑的兼容资产。所有资产均随源码发布，不依赖图片服务。
+Web 当前使用 [imagegen 单色栅格标记](../../apps/web/public/brand/prismo-logo-mono-v1.png)；它由绿色抠图底去背后以 RGBA PNG 保存，黑白形态在浅色和深色官网主题中均保持清晰。所有资产均随源码发布，不依赖图片服务。
 
 ## Web tokens
 
 | Token | Light | Dark | 用途 |
 |---|---|---|---|
-| `brand` | `#6542EC` | `#A995FF` | 主操作、焦点与已选择状态 |
-| `brand-strong` | `#4026B4` | `#D3C9FF` | 高对比强调 |
-| `brand-soft` | `#F1EEFF` | `#241D4A` | 低强调容器 |
-| Prism cyan | `#178CFF` | `#74F1FF` | 棱镜蓝面，只作识别层 |
-| Prism coral | `#FF5E7D` | `#FFB19A` | 棱镜珊瑚面，只作识别层 |
+| `brand` | `#18181B` | `#FAFAFA` | 主操作、已选择状态 |
+| `brand-strong` | `#09090B` | `#E4E4E7` | 高对比强调 |
+| `brand-soft` | `#F4F4F5` | `#27272A` | 低强调容器 |
+| `focus` | `#71717A` | `#D4D4D8` | 键盘焦点环 |
 
 状态色只表示验证结果，不能拿来替代品牌色。正文、按钮、焦点环和状态提示以 WCAG AA 为最低目标；自动构建通过不等于无障碍通过。
 
