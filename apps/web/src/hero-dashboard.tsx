@@ -37,6 +37,7 @@ import {
 } from "lucide-react"
 import { useNavigate } from "@tanstack/react-router"
 import { AgenicMark } from "./components/logo"
+import { FinancePreview } from "./finance-preview"
 import { dashboards, localize, type DashboardId } from "./dashboard-site-data"
 import { applyPreferences, getInitialLocale, getInitialTheme, saveLocaleOverride, saveThemeOverride, type Theme } from "./preferences"
 import type { Locale } from "./i18n"
@@ -171,6 +172,7 @@ export function HeroDashboardPage({ dashboardId }: { dashboardId: DashboardId })
   const [locale, setLocale] = useState<Locale>(() => getInitialLocale())
   const [theme, setTheme] = useState<Theme>(() => getInitialTheme())
   const [navOpen, setNavOpen] = useState(false)
+  const [showcase, setShowcase] = useState("Dashboard")
 
   useEffect(() => {
     applyPreferences(locale, theme)
@@ -183,7 +185,14 @@ export function HeroDashboardPage({ dashboardId }: { dashboardId: DashboardId })
   }
 
   return (
-    <main className="aligned-dashboard">
+    <div className="agenic-showcase">
+      <nav className="agenic-showcase-tabs" aria-label="Agenic showcase">
+        {["Components", "Dashboard", "Mail", "Chat", "Finances"].map((item) => <Button key={item} variant={showcase === item ? "secondary" : "ghost"} onPress={() => setShowcase(item)}>{item}</Button>)}
+      </nav>
+      <div className="agenic-showcase-frame">
+      {showcase === "Finances" ? <FinancePreview locale={locale} /> : showcase !== "Dashboard" ? (
+        <section className="agenic-showcase-candidate"><div><Sparkles /></div><Chip size="sm" variant="soft">Candidate showcase</Chip><h1>{showcase}</h1><p>{showcase} will be migrated after Dashboard and Finances reach the Agenic delivery boundary.</p><Button variant="primary" onPress={() => setShowcase("Dashboard")}>Back to Dashboard</Button></section>
+      ) : <main className="aligned-dashboard">
       <aside className={`aligned-sidebar ${navOpen ? "is-open" : ""}`}>
         <button className="aligned-profile" type="button" onClick={() => void navigate({ to: "/" })}><AgenicMark /><div><strong>Alex Bennett</strong><span>Agent operator</span></div></button>
         <nav aria-label="Dashboard navigation">
@@ -205,6 +214,8 @@ export function HeroDashboardPage({ dashboardId }: { dashboardId: DashboardId })
         </header>
         <div className="aligned-content">{dashboardId === "default" ? <Overview locale={locale} /> : <CandidateView dashboardId={dashboardId} locale={locale} />}</div>
       </div>
-    </main>
+      </main>}
+      </div>
+    </div>
   )
 }
