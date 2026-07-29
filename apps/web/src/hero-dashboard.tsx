@@ -37,7 +37,6 @@ import {
 } from "lucide-react"
 import { useNavigate } from "@tanstack/react-router"
 import { AgenicMark } from "./components/logo"
-import { createDefaultDashboardDateRange, createMockDashboard } from "./dashboard-mock-data"
 import { dashboards, localize, type DashboardId } from "./dashboard-site-data"
 import { applyPreferences, getInitialLocale, getInitialTheme, saveLocaleOverride, saveThemeOverride, type Theme } from "./preferences"
 import type { Locale } from "./i18n"
@@ -53,6 +52,7 @@ const employees = [
   ["#4586933", "John Smith", "john@agenic.dev", "Engineering Lead"],
   ["#4586932", "Kate Moore", "kate@agenic.dev", "Operations Lead"],
   ["#4586935", "Mike Wilson", "mike@agenic.dev", "Agent Engineer"],
+  ["#4586934", "Sara Johnson", "sara@agenic.dev", "Marketing Lead"],
 ]
 
 function PolylineChart() {
@@ -102,12 +102,29 @@ function MetricCard({ label, value, delta, down = false }: { label: string; valu
 }
 
 function Overview({ locale }: { locale: Locale }) {
-  const dashboard = useMemo(() => createMockDashboard("default", createDefaultDashboardDateRange()), [])
+  const [tab, setTab] = useState("Overview")
+  const [period, setPeriod] = useState("Monthly")
+  const [chartRange, setChartRange] = useState("Last 2 weeks")
+  const [query, setQuery] = useState("")
+  const [filtered, setFiltered] = useState(false)
+  const [descending, setDescending] = useState(false)
+  const [showWorkerType, setShowWorkerType] = useState(true)
+  const visibleEmployees = useMemo(() => {
+    const normalized = query.trim().toLowerCase()
+    const rows = employees.filter((row) =>
+      (!normalized || row.some((cell) => cell.toLowerCase().includes(normalized))) &&
+      (!filtered || row[3].includes("Lead")),
+    )
+    return descending ? [...rows].reverse() : rows
+  }, [descending, filtered, query])
+  const cycle = (current: string, values: string[]) =>
+    values[(values.indexOf(current) + 1) % values.length]
+
   return (
     <>
       <section className="aligned-toolbar">
-        <div className="aligned-tabs"><Button variant="secondary">Overview</Button><Button variant="ghost">Sales</Button><Button variant="ghost">Expenses</Button></div>
-        <div className="aligned-controls"><Button isIconOnly variant="secondary" aria-label="Refresh"><RefreshCw /></Button><Button variant="secondary"><CalendarDays />{locale === "zh" ? "月度" : "Monthly"}<ChevronDown /></Button><Button variant="primary"><Download />{locale === "zh" ? "下载" : "Download"}</Button></div>
+        <div className="aligned-tabs">{["Overview", "Sales", "Expenses"].map((item) => <Button key={item} variant={tab === item ? "secondary" : "ghost"} onPress={() => setTab(item)}>{item}</Button>)}</div>
+        <div className="aligned-controls"><Button isIconOnly variant="secondary" aria-label="Refresh" onPress={() => setChartRange("Last 2 weeks")}><RefreshCw /></Button><Button variant="secondary" onPress={() => setPeriod(cycle(period, ["Monthly", "Quarterly", "Yearly"]))}><CalendarDays />{locale === "zh" ? ({ Monthly: "月度", Quarterly: "季度", Yearly: "年度" }[period]) : period}<ChevronDown /></Button><Button variant="primary"><Download />{locale === "zh" ? "下载" : "Download"}</Button></div>
       </section>
 
       <section className="aligned-metrics" aria-label="Key metrics">
@@ -119,7 +136,7 @@ function Overview({ locale }: { locale: Locale }) {
 
       <section className="aligned-chart-grid">
         <Card className="aligned-chart-card">
-          <Card.Header><Card.Title>{locale === "zh" ? "销售表现" : "Sales Performance"}</Card.Title><Button size="sm" variant="secondary">{locale === "zh" ? "最近两周" : "Last 2 weeks"}<ChevronDown /></Button></Card.Header>
+          <Card.Header><Card.Title>{locale === "zh" ? "销售表现" : "Sales Performance"}</Card.Title><Button size="sm" variant="secondary" onPress={() => setChartRange(cycle(chartRange, ["Last week", "Last 2 weeks", "Last month", "Last 3 months"]))}>{chartRange}<ChevronDown /></Button></Card.Header>
           <Card.Content>
             <div className="aligned-chart-stats"><div><strong>$28,441</strong><b><ArrowUp />3.3%</b><span>Weekly Sales</span></div><div><strong>$4,063</strong><b><ArrowUp />3.3%</b><span>Daily Sales</span></div><div><strong>278</strong><b><ArrowUp />3.3%</b><span>Total Sales</span></div></div>
             <BarChart />
@@ -135,14 +152,15 @@ function Overview({ locale }: { locale: Locale }) {
       </section>
 
       <section className="aligned-table-section">
-        <header><h2>{locale === "zh" ? "全部成员" : "All members"} <Chip size="sm">{employees.length}</Chip></h2><div className="aligned-table-actions"><Button size="sm" variant="secondary"><Filter />Filter</Button><Button size="sm" variant="secondary"><SlidersHorizontal />Sort</Button><Button size="sm" variant="secondary"><Columns3 />Columns</Button></div><div className="aligned-table-search"><Search /><span>Search...</span></div></header>
+        <header><h2>{locale === "zh" ? "全部成员" : "All employees"} <Chip size="sm">32</Chip></h2><div className="aligned-table-actions"><Button size="sm" variant={filtered ? "primary" : "secondary"} onPress={() => setFiltered((value) => !value)}><Filter />Filter</Button><Button size="sm" variant={descending ? "primary" : "secondary"} onPress={() => setDescending((value) => !value)}><SlidersHorizontal />Sort</Button><Button size="sm" variant={showWorkerType ? "secondary" : "primary"} onPress={() => setShowWorkerType((value) => !value)}><Columns3 />Columns</Button></div><label className="aligned-table-search"><Search /><input aria-label="Search employees" placeholder="Search..." value={query} onChange={(event) => setQuery(event.target.value)} /></label></header>
         <div className="aligned-table-wrap">
           <table>
-            <thead><tr><th>Worker ID</th><th>Member</th><th>Role</th><th>Worker Type</th><th>Actions</th></tr></thead>
-            <tbody>{employees.map(([id, name, email, role], index) => <tr key={id}><td>{id}</td><td><span className={`aligned-avatar tone-${index}`}>{name.split(" ").map((part) => part[0]).join("")}</span><div><strong>{name}</strong><small>{email}</small></div></td><td>{role}</td><td>Employee</td><td><Button isIconOnly size="sm" variant="secondary" aria-label="View"><Eye /></Button><Button isIconOnly size="sm" variant="secondary" aria-label="Edit"><Pencil /></Button><Button isIconOnly size="sm" className="is-danger" aria-label="Delete"><Trash2 /></Button></td></tr>)}</tbody>
+            <thead><tr><th>Worker ID</th><th>Member</th><th>Role</th>{showWorkerType ? <th>Worker Type</th> : null}<th>Actions</th></tr></thead>
+            <tbody>{visibleEmployees.map(([id, name, email, role]) => { const index = employees.findIndex((row) => row[0] === id); return <tr key={id}><td>{id}</td><td><span className={`aligned-avatar tone-${index}`}>{name.split(" ").map((part) => part[0]).join("")}</span><div><strong>{name}</strong><small>{email}</small></div></td><td>{role}</td>{showWorkerType ? <td>Employee</td> : null}<td><Button isIconOnly size="sm" variant="secondary" aria-label="View"><Eye /></Button><Button isIconOnly size="sm" variant="secondary" aria-label="Edit"><Pencil /></Button><Button isIconOnly size="sm" className="is-danger" aria-label="Delete"><Trash2 /></Button></td></tr> })}</tbody>
           </table>
+          {visibleEmployees.length === 0 ? <div className="aligned-empty">No employees match the current filters.</div> : null}
         </div>
-        <footer><span><ShieldCheck />dashboard-overview-01 · Live Demo</span><span>{dashboard.table.rows.length} fixture rows · Proof boundary explicit</span></footer>
+        <footer><span><ShieldCheck />dashboard-overview-01 · Live Demo</span><span>{visibleEmployees.length} visible rows · Proof boundary explicit</span></footer>
       </section>
     </>
   )
