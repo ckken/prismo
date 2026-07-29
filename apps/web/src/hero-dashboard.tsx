@@ -1,72 +1,80 @@
 import { useEffect, useMemo, useState } from "react"
-import { Button, Card, Chip, ProgressBar } from "@heroui/react"
+import { Button, Card, Chip } from "@heroui/react"
 import {
-  ArrowUpRight,
+  ArrowDown,
+  ArrowUp,
+  BarChart3,
   Bell,
+  CalendarDays,
   Check,
   ChevronDown,
-  CircleDollarSign,
+  CircleHelp,
+  Columns3,
   Download,
+  Eye,
+  Filter,
   Github,
   Languages,
   LayoutDashboard,
+  ListChecks,
+  LogOut,
   Menu,
   Moon,
-  Package2,
+  MoreVertical,
+  Package,
+  Pencil,
+  RefreshCw,
   Search,
-  Settings2,
+  Settings,
   ShieldCheck,
   ShoppingBag,
+  SlidersHorizontal,
   Sparkles,
   Sun,
+  Trash2,
+  UserPlus,
   Users,
 } from "lucide-react"
 import { useNavigate } from "@tanstack/react-router"
-import { startOfDay, subDays } from "date-fns"
 import { AgenicMark } from "./components/logo"
-import {
-  createDefaultDashboardDateRange,
-  createMockDashboard,
-  getRangePeriodLabel,
-  type DashboardDateRange,
-} from "./dashboard-mock-data"
+import { createDefaultDashboardDateRange, createMockDashboard } from "./dashboard-mock-data"
 import { dashboards, localize, type DashboardId } from "./dashboard-site-data"
 import { applyPreferences, getInitialLocale, getInitialTheme, saveLocaleOverride, saveThemeOverride, type Theme } from "./preferences"
 import type { Locale } from "./i18n"
 import "./hero-dashboard.css"
 
-const periods = [7, 28, 90] as const
-const activity = [
-  { initials: "AL", name: "Atlas Labs", detail: "Upgraded to Scale", value: "+$4,800", tone: "violet" },
-  { initials: "NR", name: "Northstar", detail: "Annual renewal", value: "+$3,200", tone: "blue" },
-  { initials: "SC", name: "Sora Cloud", detail: "New workspace", value: "+$2,640", tone: "amber" },
-  { initials: "VM", name: "Vertex Media", detail: "Added 12 seats", value: "+$1,920", tone: "green" },
+const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+const bars = [29, 52, 34, 16, 43, 23, 25, 31, 9, 43, 37, 32]
+const organic = [2, 15, 8, 14, 15, 8, 18, 18, 20, 17, 22, 15]
+const paid = [1, 10, 12, 14, 8, 9, 12, 10, 5, 12, 18, 9]
+const employees = [
+  ["#4586936", "Alex Turner", "alex@agenic.dev", "Product Manager"],
+  ["#4586937", "Emma Davis", "emma@agenic.dev", "Senior Designer"],
+  ["#4586933", "John Smith", "john@agenic.dev", "Engineering Lead"],
+  ["#4586932", "Kate Moore", "kate@agenic.dev", "Operations Lead"],
+  ["#4586935", "Mike Wilson", "mike@agenic.dev", "Agent Engineer"],
 ]
 
-function rangeFor(days: number): DashboardDateRange {
-  const to = startOfDay(new Date())
-  return { from: subDays(to, days - 1), to }
+function PolylineChart() {
+  const points = (series: number[]) => series.map((value, index) => `${index * (100 / 11)},${86 - value * 3.4}`).join(" ")
+  return (
+    <div className="aligned-line-chart">
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="Traffic source trend">
+        {[20, 42, 64, 86].map((y) => <line key={y} x1="0" x2="100" y1={y} y2={y} />)}
+        <polyline className="is-organic" points={points(organic)} />
+        <polyline className="is-paid" points={points(paid)} />
+      </svg>
+      <div>{months.map((month) => <span key={month}>{month}</span>)}</div>
+    </div>
+  )
 }
 
-function AreaChart({ values }: { values: number[] }) {
-  const max = Math.max(...values)
-  const min = Math.min(...values)
-  const points = values.map((value, index) => {
-    const x = (index / Math.max(values.length - 1, 1)) * 720
-    const y = 205 - ((value - min) / Math.max(max - min, 1)) * 150
-    return [x, y]
-  })
-  const line = points.map(([x, y], index) => `${index ? "L" : "M"}${x} ${y}`).join(" ")
-  const area = `${line} L720 230 L0 230 Z`
-
+function BarChart() {
   return (
-    <svg className="hero-overview-chart" viewBox="0 0 720 230" preserveAspectRatio="none" role="img" aria-label="Revenue over time">
-      <defs><linearGradient id="overview-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="currentColor" stopOpacity=".22" /><stop offset="1" stopColor="currentColor" stopOpacity="0" /></linearGradient></defs>
-      {[55, 105, 155, 205].map((y) => <line key={y} x1="0" x2="720" y1={y} y2={y} />)}
-      <path className="hero-overview-area" d={area} />
-      <path className="hero-overview-line" d={line} />
-      <circle cx={points.at(-1)?.[0]} cy={points.at(-1)?.[1]} r="5" />
-    </svg>
+    <div className="aligned-bar-chart">
+      <div className="aligned-y-axis"><span>60</span><span>40</span><span>20</span><span>0</span></div>
+      <div className="aligned-bars">{bars.map((value, index) => <div key={index}><i style={{ height: `${value * 2.45}px` }} /><span>{String(index + 1).padStart(2, "0")}</span></div>)}</div>
+    </div>
   )
 }
 
@@ -74,72 +82,67 @@ function CandidateView({ dashboardId, locale }: { dashboardId: DashboardId; loca
   const navigate = useNavigate()
   const recipe = dashboards.find((item) => item.id === dashboardId) ?? dashboards[1]
   return (
-    <section className="hero-candidate">
-      <div className="hero-candidate-orb"><Sparkles /></div>
+    <section className="aligned-candidate">
+      <div><Sparkles /></div>
       <Chip size="sm" variant="soft">{locale === "zh" ? "候选 Recipe" : "Candidate Recipe"}</Chip>
       <h1>{localize(recipe.title, locale)}</h1>
-      <p>{locale === "zh" ? "我们先把 dashboard-overview-01 做到精品，再逐个扩展业务 Recipe。当前页面仅保留方向，不展示伪完成的交付。" : "We are polishing dashboard-overview-01 first, then expanding one business Recipe at a time. This direction is intentionally not presented as completed delivery."}</p>
-      <div><Button variant="primary" onPress={() => void navigate({ to: "/dashboard/$dashboardId", params: { dashboardId: "default" } })}>Open the Available Recipe</Button><Button variant="secondary" onPress={() => void navigate({ to: "/catalog" })}>View catalog</Button></div>
+      <p>{locale === "zh" ? "先完成 dashboard-overview-01 的精品闭环，再逐个推进业务 Recipe。" : "We are completing the flagship dashboard-overview-01 loop before expanding business Recipes."}</p>
+      <Button variant="primary" onPress={() => void navigate({ to: "/dashboard/$dashboardId", params: { dashboardId: "default" } })}>Open overview</Button>
     </section>
   )
 }
 
-function Overview({ locale, dateRange, setDateRange }: { locale: Locale; dateRange: DashboardDateRange; setDateRange: (range: DashboardDateRange) => void }) {
-  const dashboard = useMemo(() => createMockDashboard("default", dateRange), [dateRange])
+function MetricCard({ label, value, delta, down = false }: { label: string; value: string; delta: string; down?: boolean }) {
+  return (
+    <div className="aligned-metric-card">
+      <span>{label}</span>
+      <div><strong>{value}</strong><Chip className={down ? "is-down" : "is-up"} size="sm">{down ? <ArrowDown /> : <ArrowUp />}{delta}</Chip></div>
+    </div>
+  )
+}
+
+function Overview({ locale }: { locale: Locale }) {
+  const dashboard = useMemo(() => createMockDashboard("default", createDefaultDashboardDateRange()), [])
   return (
     <>
-      <header className="hero-overview-heading">
-        <div><p>{locale === "zh" ? "2026 年 7 月 29 日，星期三" : "Wednesday, July 29, 2026"}</p><h1>{locale === "zh" ? "早上好，Alex。" : "Good morning, Alex."}</h1><span>{locale === "zh" ? "这里是今天最值得关注的业务信号。" : "Here are the signals worth your attention today."}</span></div>
-        <div className="hero-overview-actions"><Button variant="secondary"><Download />{locale === "zh" ? "导出" : "Export"}</Button><Button variant="primary">{locale === "zh" ? "查看报告" : "View report"}<ArrowUpRight /></Button></div>
-      </header>
-
-      <section className="hero-overview-metrics" aria-label="Key metrics">
-        {dashboard.metrics.map((metric, index) => (
-          <Card key={localize(metric.label, "en")} className={index === 0 ? "is-featured" : ""}>
-            <Card.Content>
-              <div className="hero-metric-top"><span>{localize(metric.label, locale)}</span><div>{index === 0 ? <CircleDollarSign /> : index === 1 ? <Users /> : index === 2 ? <ShoppingBag /> : <Package2 />}</div></div>
-              <strong>{metric.value}</strong>
-              <small><b>{metric.delta}</b> {locale === "zh" ? "较上期" : "from last period"}</small>
-            </Card.Content>
-          </Card>
-        ))}
+      <section className="aligned-toolbar">
+        <div className="aligned-tabs"><Button variant="secondary">Overview</Button><Button variant="ghost">Sales</Button><Button variant="ghost">Expenses</Button></div>
+        <div className="aligned-controls"><Button isIconOnly variant="secondary" aria-label="Refresh"><RefreshCw /></Button><Button variant="secondary"><CalendarDays />{locale === "zh" ? "月度" : "Monthly"}<ChevronDown /></Button><Button variant="primary"><Download />{locale === "zh" ? "下载" : "Download"}</Button></div>
       </section>
 
-      <section className="hero-overview-primary-grid">
-        <Card className="hero-overview-revenue">
-          <Card.Header>
-            <div><Card.Title>{locale === "zh" ? "收入概览" : "Revenue overview"}</Card.Title><Card.Description>{locale === "zh" ? "净收入与目标进度" : "Net revenue and target progress"}</Card.Description></div>
-            <div className="hero-periods">{periods.map((days) => <Button key={days} size="sm" variant={getRangePeriodLabel(dateRange) === `${days}D` ? "primary" : "ghost"} onPress={() => setDateRange(rangeFor(days))}>{days}D</Button>)}</div>
-          </Card.Header>
+      <section className="aligned-metrics" aria-label="Key metrics">
+        <MetricCard label={locale === "zh" ? "收入" : "Revenue"} value="$228,441" delta="3.3%" />
+        <MetricCard label={locale === "zh" ? "支出" : "Expenses"} value="$25,108" delta="3.3%" down />
+        <MetricCard label={locale === "zh" ? "销售" : "Sales"} value="458" delta="3.3%" />
+        <MetricCard label={locale === "zh" ? "利润" : "Profit"} value="$203,133" delta="4.1%" />
+      </section>
+
+      <section className="aligned-chart-grid">
+        <Card className="aligned-chart-card">
+          <Card.Header><Card.Title>{locale === "zh" ? "销售表现" : "Sales Performance"}</Card.Title><Button size="sm" variant="secondary">{locale === "zh" ? "最近两周" : "Last 2 weeks"}<ChevronDown /></Button></Card.Header>
           <Card.Content>
-            <div className="hero-revenue-total"><strong>$124,860</strong><Chip size="sm" color="success" variant="soft">+12.4%</Chip></div>
-            <AreaChart values={dashboard.chart.primary} />
-            <div className="hero-chart-axis"><span>May 05</span><span>May 26</span><span>Jun 16</span><span>Jul 07</span><span>Jul 29</span></div>
+            <div className="aligned-chart-stats"><div><strong>$28,441</strong><b><ArrowUp />3.3%</b><span>Weekly Sales</span></div><div><strong>$4,063</strong><b><ArrowUp />3.3%</b><span>Daily Sales</span></div><div><strong>278</strong><b><ArrowUp />3.3%</b><span>Total Sales</span></div></div>
+            <BarChart />
           </Card.Content>
         </Card>
-
-        <Card className="hero-overview-goal">
-          <Card.Header><div><Card.Title>{locale === "zh" ? "月度目标" : "Monthly goal"}</Card.Title><span className="hero-card-subtitle">{locale === "zh" ? "7 月进度" : "July progress"}</span></div></Card.Header>
+        <Card className="aligned-chart-card">
+          <Card.Header><Card.Title>{locale === "zh" ? "流量来源" : "Traffic Source"}</Card.Title><div className="aligned-legend"><span><i />Organic</span><span><i />Paid Ads</span><Button isIconOnly size="sm" variant="secondary" aria-label="More"><MoreVertical /></Button></div></Card.Header>
           <Card.Content>
-            <div className="hero-goal-ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" /><circle className="is-value" cx="60" cy="60" r="50" pathLength="100" /></svg><div><strong>82%</strong><span>{locale === "zh" ? "已完成" : "completed"}</span></div></div>
-            <div className="hero-goal-copy"><strong>$164,200 <span>/ $200,000</span></strong><p>{locale === "zh" ? "保持当前速度，预计提前 3 天达成目标。" : "At this pace, you are projected to reach the goal 3 days early."}</p></div>
-            <ProgressBar aria-label="Monthly goal progress" value={82} />
+            <div className="aligned-session"><strong>231,856</strong><span>Sessions</span></div>
+            <PolylineChart />
           </Card.Content>
         </Card>
       </section>
 
-      <section className="hero-overview-secondary-grid">
-        <Card className="hero-overview-activity">
-          <Card.Header><div><Card.Title>{locale === "zh" ? "近期活动" : "Recent activity"}</Card.Title><span className="hero-card-subtitle">{locale === "zh" ? "最近产生收入的客户动作" : "Customer actions that generated revenue"}</span></div></Card.Header>
-          <Card.Content>{activity.map((item) => <div className="hero-activity-row" key={item.name}><span className={`hero-avatar is-${item.tone}`}>{item.initials}</span><div><strong>{item.name}</strong><small>{item.detail}</small></div><b>{item.value}</b><span>2h</span></div>)}</Card.Content>
-        </Card>
-        <Card className="hero-overview-proof">
-          <Card.Header><div><Card.Title>{locale === "zh" ? "交付可信度" : "Delivery confidence"}</Card.Title><Card.Description>dashboard-overview-01</Card.Description></div><ShieldCheck /></Card.Header>
-          <Card.Content>
-            {[["DashboardSpec", "passed"], ["Data Adapter", "mapped"], ["Route evidence", "live"]].map(([label, state]) => <div className="hero-proof-row" key={label}><span><Check />{label}</span><Chip size="sm" color="success" variant="soft">{state}</Chip></div>)}
-            <p>{locale === "zh" ? "这是 Live Demo 的证据状态；安装型 HeroUI Renderer 仍需独立通过 apply / verify。" : "This is Live Demo evidence. The installable HeroUI Renderer still requires its own apply / verify pass."}</p>
-          </Card.Content>
-        </Card>
+      <section className="aligned-table-section">
+        <header><h2>{locale === "zh" ? "全部成员" : "All members"} <Chip size="sm">{employees.length}</Chip></h2><div className="aligned-table-actions"><Button size="sm" variant="secondary"><Filter />Filter</Button><Button size="sm" variant="secondary"><SlidersHorizontal />Sort</Button><Button size="sm" variant="secondary"><Columns3 />Columns</Button></div><div className="aligned-table-search"><Search /><span>Search...</span></div></header>
+        <div className="aligned-table-wrap">
+          <table>
+            <thead><tr><th>Worker ID</th><th>Member</th><th>Role</th><th>Worker Type</th><th>Actions</th></tr></thead>
+            <tbody>{employees.map(([id, name, email, role], index) => <tr key={id}><td>{id}</td><td><span className={`aligned-avatar tone-${index}`}>{name.split(" ").map((part) => part[0]).join("")}</span><div><strong>{name}</strong><small>{email}</small></div></td><td>{role}</td><td>Employee</td><td><Button isIconOnly size="sm" variant="secondary" aria-label="View"><Eye /></Button><Button isIconOnly size="sm" variant="secondary" aria-label="Edit"><Pencil /></Button><Button isIconOnly size="sm" className="is-danger" aria-label="Delete"><Trash2 /></Button></td></tr>)}</tbody>
+          </table>
+        </div>
+        <footer><span><ShieldCheck />dashboard-overview-01 · Live Demo</span><span>{dashboard.table.rows.length} fixture rows · Proof boundary explicit</span></footer>
       </section>
     </>
   )
@@ -149,7 +152,6 @@ export function HeroDashboardPage({ dashboardId }: { dashboardId: DashboardId })
   const navigate = useNavigate()
   const [locale, setLocale] = useState<Locale>(() => getInitialLocale())
   const [theme, setTheme] = useState<Theme>(() => getInitialTheme())
-  const [dateRange, setDateRange] = useState<DashboardDateRange>(() => createDefaultDashboardDateRange())
   const [navOpen, setNavOpen] = useState(false)
 
   useEffect(() => {
@@ -163,27 +165,27 @@ export function HeroDashboardPage({ dashboardId }: { dashboardId: DashboardId })
   }
 
   return (
-    <main className="hero-dashboard">
-      <aside className={`hero-dashboard-sidebar ${navOpen ? "is-open" : ""}`}>
-        <button className="hero-dashboard-brand" type="button" onClick={() => void navigate({ to: "/" })}><AgenicMark /><span>Agenic</span></button>
-        <div className="hero-dashboard-workspace"><span>AC</span><div><strong>Acme Inc.</strong><small>Product workspace</small></div><ChevronDown /></div>
-        <nav className="hero-dashboard-nav" aria-label="Dashboard navigation">
-          <p>{locale === "zh" ? "工作区" : "Workspace"}</p>
-          <Button variant={dashboardId === "default" ? "primary" : "ghost"} onPress={() => openRecipe("default")}><LayoutDashboard /><span>{locale === "zh" ? "概览" : "Overview"}</span></Button>
-          <Button variant="ghost"><Users /><span>{locale === "zh" ? "客户" : "Customers"}</span><Chip size="sm">1,284</Chip></Button>
-          <Button variant="ghost"><ShoppingBag /><span>{locale === "zh" ? "订单" : "Orders"}</span></Button>
-          <p>{locale === "zh" ? "后续 Recipe" : "Next Recipes"}</p>
-          {dashboards.filter((item) => item.id !== "default").slice(0, 3).map((item) => <Button key={item.id} variant={dashboardId === item.id ? "secondary" : "ghost"} onPress={() => openRecipe(item.id)}><Sparkles /><span>{localize(item.title, locale)}</span><small>Soon</small></Button>)}
+    <main className="aligned-dashboard">
+      <aside className={`aligned-sidebar ${navOpen ? "is-open" : ""}`}>
+        <button className="aligned-profile" type="button" onClick={() => void navigate({ to: "/" })}><AgenicMark /><div><strong>Alex Bennett</strong><span>Agent operator</span></div></button>
+        <nav aria-label="Dashboard navigation">
+          <Button variant={dashboardId === "default" ? "primary" : "ghost"} onPress={() => openRecipe("default")}><LayoutDashboard />Dashboard</Button>
+          <Button variant="ghost"><ShoppingBag />Orders</Button>
+          <Button variant="ghost"><ListChecks />Tracker<Chip size="sm" color="success">New</Chip></Button>
+          <Button variant="ghost"><BarChart3 />Analytics</Button>
+          <Button variant="ghost"><Settings />Settings</Button>
+          <p>Next Recipes</p>
+          {dashboards.filter((item) => item.id !== "default").slice(0, 2).map((item) => <Button key={item.id} variant={dashboardId === item.id ? "secondary" : "ghost"} onPress={() => openRecipe(item.id)}><Sparkles />{localize(item.title, locale)}<small>Soon</small></Button>)}
         </nav>
-        <div className="hero-dashboard-sidebar-bottom"><Button variant="ghost" onPress={() => void navigate({ to: "/catalog" })}><Package2 />Recipes</Button><Button variant="ghost"><Settings2 />Settings</Button><a href={__PUBLIC_REPOSITORY_URL__} target="_blank" rel="noreferrer"><Github />GitHub</a></div>
+        <div className="aligned-sidebar-bottom"><Button variant="ghost"><CircleHelp />Help & information</Button><Button variant="ghost"><LogOut />Log out</Button><a href={__PUBLIC_REPOSITORY_URL__} target="_blank" rel="noreferrer"><Github />GitHub</a></div>
       </aside>
 
-      <div className="hero-dashboard-main">
-        <header className="hero-dashboard-topbar">
-          <div><Button isIconOnly variant="ghost" className="hero-dashboard-menu" aria-label="Open navigation" onPress={() => setNavOpen((open) => !open)}><Menu /></Button><div className="hero-dashboard-search"><Search /><span>{locale === "zh" ? "搜索…" : "Search anything…"}</span><kbd>⌘ K</kbd></div></div>
-          <div className="hero-dashboard-top-actions"><Button isIconOnly variant="ghost" aria-label="Notifications"><Bell /></Button><Button isIconOnly variant="ghost" aria-label="Toggle language" onPress={() => { const next = locale === "zh" ? "en" : "zh"; saveLocaleOverride(next); setLocale(next) }}><Languages /></Button><Button isIconOnly variant="ghost" aria-label="Toggle theme" onPress={() => { const next = theme === "light" ? "dark" : "light"; saveThemeOverride(next); setTheme(next) }}>{theme === "light" ? <Moon /> : <Sun />}</Button><span className="hero-dashboard-user">AB</span></div>
+      <div className="aligned-shell">
+        <header className="aligned-topbar">
+          <div><Button isIconOnly variant="ghost" className="aligned-menu" aria-label="Open navigation" onPress={() => setNavOpen((value) => !value)}><Menu /></Button><span className="aligned-topbar-mark"><AgenicMark /></span><h1>{locale === "zh" ? "早上好，Alex" : "Good morning, Alex"}</h1></div>
+          <div><Button isIconOnly variant="secondary" aria-label="Search"><Search /></Button><Button isIconOnly variant="secondary" aria-label="Notifications"><Bell /></Button><Button isIconOnly variant="ghost" aria-label="Toggle language" onPress={() => { const next = locale === "zh" ? "en" : "zh"; saveLocaleOverride(next); setLocale(next) }}><Languages /></Button><Button isIconOnly variant="ghost" aria-label="Toggle theme" onPress={() => { const next = theme === "light" ? "dark" : "light"; saveThemeOverride(next); setTheme(next) }}>{theme === "light" ? <Moon /> : <Sun />}</Button><Button variant="primary"><UserPlus />Invite</Button></div>
         </header>
-        <div className="hero-dashboard-content">{dashboardId === "default" ? <Overview locale={locale} dateRange={dateRange} setDateRange={setDateRange} /> : <CandidateView dashboardId={dashboardId} locale={locale} />}</div>
+        <div className="aligned-content">{dashboardId === "default" ? <Overview locale={locale} /> : <CandidateView dashboardId={dashboardId} locale={locale} />}</div>
       </div>
     </main>
   )
