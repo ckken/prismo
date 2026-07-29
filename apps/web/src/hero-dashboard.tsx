@@ -38,6 +38,7 @@ import {
 import { useNavigate } from "@tanstack/react-router"
 import { AgenicMark } from "./components/logo"
 import { FinancePreview } from "./finance-preview"
+import { ChatPreview, ComponentsPreview, MailPreview } from "./showcase-previews"
 import { dashboards, localize, type DashboardId } from "./dashboard-site-data"
 import { applyPreferences, getInitialLocale, getInitialTheme, saveLocaleOverride, saveThemeOverride, type Theme } from "./preferences"
 import type { Locale } from "./i18n"
@@ -190,9 +191,11 @@ export function HeroDashboardPage({ dashboardId }: { dashboardId: DashboardId })
         {["Components", "Dashboard", "Mail", "Chat", "Finances"].map((item) => <Button key={item} variant={showcase === item ? "secondary" : "ghost"} onPress={() => setShowcase(item)}>{item}</Button>)}
       </nav>
       <div className="agenic-showcase-frame">
-      {showcase === "Finances" ? <FinancePreview locale={locale} /> : showcase !== "Dashboard" ? (
-        <section className="agenic-showcase-candidate"><div><Sparkles /></div><Chip size="sm" variant="soft">Candidate showcase</Chip><h1>{showcase}</h1><p>{showcase} will be migrated after Dashboard and Finances reach the Agenic delivery boundary.</p><Button variant="primary" onPress={() => setShowcase("Dashboard")}>Back to Dashboard</Button></section>
-      ) : <main className="aligned-dashboard">
+      {showcase === "Components" ? <ComponentsPreview /> :
+       showcase === "Mail" ? <MailPreview /> :
+       showcase === "Chat" ? <ChatPreview /> :
+       showcase === "Finances" ? <FinancePreview locale={locale} /> :
+       <main className="aligned-dashboard">
       <aside className={`aligned-sidebar ${navOpen ? "is-open" : ""}`}>
         <button className="aligned-profile" type="button" onClick={() => void navigate({ to: "/" })}><AgenicMark /><div><strong>Alex Bennett</strong><span>Agent operator</span></div></button>
         <nav aria-label="Dashboard navigation">
