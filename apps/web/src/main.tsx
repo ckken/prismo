@@ -10,22 +10,16 @@ import {
   redirect,
   RouterProvider,
 } from "@tanstack/react-router"
-import { CatalogPage, DashboardLayout, WorkflowPage } from "./App"
 import { AgenicHomePage } from "./agenic-home"
+import { AgenicCatalogPage, AgenicWorkflowPage } from "./agenic-pages"
 import { HeroDashboardPage } from "./hero-dashboard"
 import { isDashboardId, type DashboardId } from "./dashboard-site-data"
 import { applyInitialPreferences } from "./preferences"
 import "./styles.css"
-import "./home.css"
 
 applyInitialPreferences()
 
 const rootRoute = createRootRoute({ component: () => <Outlet /> })
-const contentLayoutRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  id: "content-layout",
-  component: DashboardLayout,
-})
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/",
@@ -42,14 +36,14 @@ const dashboardRoute = createRoute({
   component: HeroDashboardRoute,
 })
 const catalogRoute = createRoute({
-  getParentRoute: () => contentLayoutRoute,
+  getParentRoute: () => rootRoute,
   path: "/catalog",
-  component: CatalogPage,
+  component: AgenicCatalogPage,
 })
 const workflowRoute = createRoute({
-  getParentRoute: () => contentLayoutRoute,
+  getParentRoute: () => rootRoute,
   path: "/workflow",
-  component: WorkflowPage,
+  component: AgenicWorkflowPage,
 })
 
 function HeroDashboardRoute() {
@@ -60,7 +54,8 @@ function HeroDashboardRoute() {
 const routeTree = rootRoute.addChildren([
   indexRoute,
   dashboardRoute,
-  contentLayoutRoute.addChildren([catalogRoute, workflowRoute]),
+  catalogRoute,
+  workflowRoute,
 ])
 const router = createRouter({
   routeTree,
