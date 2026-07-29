@@ -14,3 +14,5 @@
 .hero-overview-goal [data-slot=header]>button{flex:0 0 auto}
 .hero-overview-proof [data-slot=content]>div{display:flex!important;flex-direction:row!important}
 .hero-overview-proof [data-slot=content]>div>span{display:inline-flex!important;align-items:center;gap:8px}
+.hero-card-subtitle{display:block;margin-top:4px;color:oklch(.52 0 0);font-size:11px}
+.hero-proof-row{display:flex!important;align-items:center;justify-content:space-between}

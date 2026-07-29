@@ -12,7 +12,6 @@ import {
   LayoutDashboard,
   Menu,
   Moon,
-  MoreHorizontal,
   Package2,
   Search,
   Settings2,
@@ -120,7 +119,7 @@ function Overview({ locale, dateRange, setDateRange }: { locale: Locale; dateRan
         </Card>
 
         <Card className="hero-overview-goal">
-          <Card.Header><div><Card.Title>{locale === "zh" ? "月度目标" : "Monthly goal"}</Card.Title><Card.Description>{locale === "zh" ? "7 月进度" : "July progress"}</Card.Description></div><Button isIconOnly variant="ghost" aria-label="More"><MoreHorizontal /></Button></Card.Header>
+          <Card.Header><div><Card.Title>{locale === "zh" ? "月度目标" : "Monthly goal"}</Card.Title><span className="hero-card-subtitle">{locale === "zh" ? "7 月进度" : "July progress"}</span></div></Card.Header>
           <Card.Content>
             <div className="hero-goal-ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" /><circle className="is-value" cx="60" cy="60" r="50" pathLength="100" /></svg><div><strong>82%</strong><span>{locale === "zh" ? "已完成" : "completed"}</span></div></div>
             <div className="hero-goal-copy"><strong>$164,200 <span>/ $200,000</span></strong><p>{locale === "zh" ? "保持当前速度，预计提前 3 天达成目标。" : "At this pace, you are projected to reach the goal 3 days early."}</p></div>
@@ -131,13 +130,13 @@ function Overview({ locale, dateRange, setDateRange }: { locale: Locale; dateRan
 
       <section className="hero-overview-secondary-grid">
         <Card className="hero-overview-activity">
-          <Card.Header><div><Card.Title>{locale === "zh" ? "近期活动" : "Recent activity"}</Card.Title><Card.Description>{locale === "zh" ? "最近产生收入的客户动作" : "Customer actions that generated revenue"}</Card.Description></div><Button size="sm" variant="ghost">{locale === "zh" ? "查看全部" : "View all"}</Button></Card.Header>
+          <Card.Header><div><Card.Title>{locale === "zh" ? "近期活动" : "Recent activity"}</Card.Title><span className="hero-card-subtitle">{locale === "zh" ? "最近产生收入的客户动作" : "Customer actions that generated revenue"}</span></div></Card.Header>
           <Card.Content>{activity.map((item) => <div className="hero-activity-row" key={item.name}><span className={`hero-avatar is-${item.tone}`}>{item.initials}</span><div><strong>{item.name}</strong><small>{item.detail}</small></div><b>{item.value}</b><span>2h</span></div>)}</Card.Content>
         </Card>
         <Card className="hero-overview-proof">
           <Card.Header><div><Card.Title>{locale === "zh" ? "交付可信度" : "Delivery confidence"}</Card.Title><Card.Description>dashboard-overview-01</Card.Description></div><ShieldCheck /></Card.Header>
           <Card.Content>
-            {[["DashboardSpec", "passed"], ["Data Adapter", "mapped"], ["Route evidence", "live"]].map(([label, state]) => <div key={label}><span><Check />{label}</span><Chip size="sm" color="success" variant="soft">{state}</Chip></div>)}
+            {[["DashboardSpec", "passed"], ["Data Adapter", "mapped"], ["Route evidence", "live"]].map(([label, state]) => <div className="hero-proof-row" key={label}><span><Check />{label}</span><Chip size="sm" color="success" variant="soft">{state}</Chip></div>)}
             <p>{locale === "zh" ? "这是 Live Demo 的证据状态；安装型 HeroUI Renderer 仍需独立通过 apply / verify。" : "This is Live Demo evidence. The installable HeroUI Renderer still requires its own apply / verify pass."}</p>
           </Card.Content>
         </Card>
